@@ -25,6 +25,7 @@ var header = "/*!\n\
 
 gulp.task('build', buildTask);
 gulp.task('jshint', jsHintTask);
+gulp.task('default', ['build', 'jshint']);
 
 function buildTask() {
   var nonBundled = browserify('./src/index.js')

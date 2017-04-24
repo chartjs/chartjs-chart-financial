@@ -26,8 +26,7 @@ module.exports = function(Chart) {
 
 			var labels = [];
 			for (var i = 0; i < maxLength; i++) {
-				//labels.push(this.chart.data.datasets[0].data[maxLength].label);
-				labels.push('');
+				labels.push(this.chart.data.datasets[0].data[i].t);
 			}
 
 			return labels;
