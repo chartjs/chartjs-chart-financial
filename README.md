@@ -1,4 +1,5 @@
-# Chart.Financial.js
+# Chart.js Financial Charting
+
 Chart.js module for charting financial securities
 
 Currently supports the Candlestick element
