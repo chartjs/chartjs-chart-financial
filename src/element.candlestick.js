@@ -65,14 +65,14 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.rectangle.outlineCandleColor);
-			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineCandleWidth, globalOpts.elements.rectangle.outlineCandleWidth);
+			ctx.strokeStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.candlestick.outlineCandleColor);
+			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineCandleWidth, globalOpts.elements.candlestick.outlineCandleWidth);
 			if (c < o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.upCandleColor, globalOpts.elements.rectangle.upCandleColor);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.upCandleColor, globalOpts.elements.candlestick.upCandleColor);
 			} else if (c > o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.downCandleColor, globalOpts.elements.rectangle.downCandleColor);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.downCandleColor, globalOpts.elements.candlestick.downCandleColor);
 			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.rectangle.outlineCandleColor);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.candlestick.outlineCandleColor);
 			}
 
 			ctx.beginPath();
