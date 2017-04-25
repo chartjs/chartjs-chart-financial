@@ -15,12 +15,12 @@ var srcFiles = srcDir + '**.js';
 var buildDir = './';
 
 var header = "/*!\n\
- * Chart.Financial.js\n\
+ * chartjs-chart-financial\n\
  * Version: {{ version }}\n\
  *\n\
  * Copyright 2017 Ben McCann\n\
  * Released under the MIT license\n\
- * https://github.com/benmccann/Chart.Financial.js/blob/master/LICENSE.md\n\
+ * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
 gulp.task('build', buildTask);
