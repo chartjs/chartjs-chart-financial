@@ -1,12 +1,12 @@
 {
-  "name": "Chart.Financial.js",
+  "name": "chartjs-chart-financial",
   "description": "Chart.js module for charting financial securities",
   "main": "src/index.js",
   "version": "0.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/benmccann/Chart.Financial.js.git"
+    "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "dependencies": {
     "chart.js": "^2.5.0"
@@ -22,7 +22,7 @@
     "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^2.1.2",
     "jasmine": "^2.4.1",
-    "jshint": "^2.9.1-rc2",
+    "jshint": "^2.9.4",
     "karma": "^1.6.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",

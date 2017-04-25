@@ -17,7 +17,7 @@ module.exports = function(Chart) {
 		getLabels: function() {
 			var maxLength = 0;
 			helpers.each(this.chart.data.datasets, function(dataset, datasetIndex) {
-				if (maxLength == 0) {
+				if (maxLength === 0) {
 					maxLength = dataset.data.length;
 				} else if (dataset.data.length > maxLength) {
 					maxLength = dataset.data.length;

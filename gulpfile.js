@@ -15,17 +15,18 @@ var srcFiles = srcDir + '**.js';
 var buildDir = './';
 
 var header = "/*!\n\
- * Chart.Financial.js\n\
+ * chartjs-chart-financial\n\
  * Version: {{ version }}\n\
  *\n\
  * Copyright 2017 Ben McCann\n\
  * Released under the MIT license\n\
- * https://github.com/benmccann/Chart.Financial.js/blob/master/LICENSE.md\n\
+ * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
+gulp.task('default', ['watch']);
 gulp.task('build', buildTask);
 gulp.task('jshint', jsHintTask);
-gulp.task('default', ['build', 'jshint']);
+gulp.task('watch', watchTask);
 
 function buildTask() {
   var nonBundled = browserify('./src/index.js')
@@ -45,7 +46,10 @@ function buildTask() {
 
 }
 
-// Run JSHint
+function watchTask() {
+  return gulp.watch(srcFiles, ['build', 'jshint']);
+}
+
 function jsHintTask() {
   return gulp.src(srcFiles)
     .pipe(jshint())
