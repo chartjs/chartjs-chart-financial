@@ -22,7 +22,7 @@
     "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^2.1.2",
     "jasmine": "^2.4.1",
-    "jshint": "^2.9.1-rc2",
+    "jshint": "^2.9.4",
     "karma": "^1.6.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",
