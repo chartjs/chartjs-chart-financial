@@ -20,8 +20,6 @@ module.exports = function(Chart) {
 			var data = chart.data;
 			var datasets = data.datasets;
 			var isHorizontal = me.isHorizontal();
-			var DEFAULT_MIN = 0;
-			var DEFAULT_MAX = 1;
 
 			function IDMatches(meta) {
 				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
@@ -30,7 +28,6 @@ module.exports = function(Chart) {
 			// First Calculate the range
 			me.min = null;
 			me.max = null;
-
 
 			var hasStacks = opts.stacked;
 			if (hasStacks === undefined) {
@@ -155,9 +152,6 @@ module.exports = function(Chart) {
 				}
 			});
 
-			me.min = isFinite(me.min) ? me.min : DEFAULT_MIN;
-			me.max = isFinite(me.max) ? me.max : DEFAULT_MAX;
-
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
 		},
@@ -203,24 +197,6 @@ module.exports = function(Chart) {
 			}
 
 			pixel = me.bottom - (me.height / range * (rightValue - start));
-			return Math.round(pixel);
-		},
-		getPixelForConcreteValue: function(value) {
-			// This must be called after fit has been run so that
-			// this.left, this.top, this.right, and this.bottom have been defined
-			var me = this;
-			var start = me.start;
-		
-		
-			var pixel;
-			var range = me.end - start;
-		
-			if (me.isHorizontal()) {
-				pixel = me.left + (me.width / range * (value - start));
-				return Math.round(pixel);
-			}
-		
-			pixel = me.bottom - (me.height / range * (value - start));
 			return Math.round(pixel);
 		},
 		getValueForPixel: function(pixel) {
