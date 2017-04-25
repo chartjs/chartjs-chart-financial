@@ -155,8 +155,8 @@ module.exports = function(Chart) {
 				}
 			});
 
-			me.min = isFinite(me.min) ? me.min : DEFAULT_MIN;
-			me.max = isFinite(me.max) ? me.max : DEFAULT_MAX;
+            me.min = isFinite(me.min) ? me.min - me.min * 0.05 : DEFAULT_MIN;
+			me.max = isFinite(me.max) ? me.max + me.max * 0.05 : DEFAULT_MAX;
 
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
