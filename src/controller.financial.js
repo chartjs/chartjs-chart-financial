@@ -9,7 +9,7 @@ module.exports = function(Chart) {
 
 		scales: {
 			xAxes: [{
-				type: 'financialCategory',
+				type: 'timeseries',
 				// grid line settings
 				gridLines: {
 					offsetGridLines: true

@@ -140,6 +140,6 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.scaleService.registerScaleType('financialCategory', DatasetScale, defaultConfig);
+	Chart.scaleService.registerScaleType('timeseries', DatasetScale, defaultConfig);
 
 };
