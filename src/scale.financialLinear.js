@@ -28,8 +28,8 @@ module.exports = function(Chart) {
 			me.min = null;
 			me.max = null;
 
-            // Regular charts use x, y values
-            // For the financial chart we have rawValue.h (hi) and rawValue.l (low) for each point
+			// Regular charts use x, y values
+			// For the financial chart we have rawValue.h (hi) and rawValue.l (low) for each point
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {			
@@ -51,6 +51,10 @@ module.exports = function(Chart) {
 					});
 				}
 			});
+
+			// Add whitespace around bars. Axis shouldn't go exactly from min to max
+            me.min = me.min - me.min * 0.05;
+            me.max = me.max * 1.05;
 
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
