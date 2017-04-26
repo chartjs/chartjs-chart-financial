@@ -31,7 +31,7 @@ module.exports = function(Chart) {
 
 			return labels;
 		},
-		// Implement this so that
+
 		determineDataLimits: function() {
 			var me = this;
 			var labels = me.getLabels();
