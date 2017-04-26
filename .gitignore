@@ -35,9 +35,10 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
-/.vs/Chart.Financial.js/v15/.suo
-/.vs/Chart.Financial.js/v15/.suo
-/.vs/config/applicationhost.config
-/.vs/slnx.sqlite
+
+# Visual Studio
+.vs
+
+# Build files
 /Chart.Financial.js
 /Chart.Financial.min.js
