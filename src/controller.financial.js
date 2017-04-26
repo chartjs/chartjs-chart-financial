@@ -3,7 +3,9 @@
 module.exports = function(Chart) {
 
 	Chart.defaults.financial = {
-		hover: {
+        label: '',
+
+        hover: {
 			mode: 'label'
 		},
 
@@ -13,7 +15,10 @@ module.exports = function(Chart) {
 				// grid line settings
 				gridLines: {
 					offsetGridLines: true
-				}
+                },
+                time: {
+                    format: 'll'
+                }
 			}],
 			yAxes: [{
 				type: 'financialLinear'
@@ -74,8 +79,8 @@ module.exports = function(Chart) {
 			candle._index = index;
 
 			candle._model = {
-				datasetLabel: dataset.label,
-				label: '', // to get label value please use dataset.data[index].label
+				datasetLabel: dataset.label || '',
+				//label: '', // to get label value please use dataset.data[index].label
 
 				// Appearance
 				upCandleColor: dataset.upCandleColor,

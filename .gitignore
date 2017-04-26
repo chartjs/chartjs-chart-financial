@@ -41,3 +41,5 @@ jspm_packages
 /.vs/slnx.sqlite
 /Chart.Financial.js
 /Chart.Financial.min.js
+/.vs/chartjs-chart-financial/v15/.suo
+/.vs/VSWorkspaceState.json
