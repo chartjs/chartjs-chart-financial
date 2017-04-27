@@ -19,5 +19,15 @@ new Chart(ctx, {
         { t: 1491782400000, o: 30.23, h: 50.09, l: 20.87, c: 40.49 }
       ]
     }]
+  },
+  options: {
+      legend: {
+          display: true,
+          labels: {
+              fontColor: 'rgb(255, 99, 132)',
+              fontSize: 15,
+              boxWidth: 190
+          }
+      }
   }
 });
