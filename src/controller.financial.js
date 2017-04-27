@@ -104,16 +104,15 @@ module.exports = function(Chart) {
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();
 			var ruler = me._ruler || me.getRuler();
-			var vpixels = me.calculateBarValuePixels(me.index, index);
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
 			var candle = me.calculateCandleValuesPixels(me.index, index);
 
 			model.horizontal = horizontal;
-			model.base = reset ? base : vpixels.base;
-			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-			model.height = horizontal ? ipixels.size : undefined;
-			model.width = horizontal ? undefined : ipixels.size;
+			model.base = reset ? base : (candle.h + candle.l) / 2;
+			model.x = ipixels.center;
+			model.y = reset ? base : (candle.h + candle.l) / 2;
+			model.height = undefined;
+			model.width = ipixels.size;
 			model.candle = candle;
 
 		},
@@ -223,52 +222,6 @@ module.exports = function(Chart) {
 				h: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].h)),
 				l: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].l)),
 				c: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].c))
-			};
-		},
-
-
-		/**
-		 * Note: pixel values are not clamped to the scale area.
-		 * @private
-		 */
-		calculateBarValuePixels: function(datasetIndex, index) {
-			var me = this;
-			var chart = me.chart;
-			var meta = me.getMeta();
-			var scale = me.getValueScale();
-			var datasets = chart.data.datasets;
-			var value = Number(datasets[datasetIndex].data[index].o);
-			var stacked = scale.options.stacked;
-			var stack = meta.stack;
-			var start = 0;
-			var i, imeta, ivalue, base, head, size;
-
-			if (stacked || (stacked === undefined && stack !== undefined)) {
-				for (i = 0; i < datasetIndex; ++i) {
-					imeta = chart.getDatasetMeta(i);
-
-					if (imeta.bar &&
-						imeta.stack === stack &&
-						imeta.controller.getValueScaleId() === scale.id &&
-						chart.isDatasetVisible(i)) {
-
-						ivalue = Number(datasets[i].data[index]);
-						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
-							start += ivalue;
-						}
-					}
-				}
-			}
-
-			base = scale.getPixelForValue(start);
-			head = scale.getPixelForValue(start + value);
-			size = (head - base) / 2;
-
-			return {
-				size: size,
-				base: base,
-				head: head,
-				center: head + size / 2
 			};
 		},
 

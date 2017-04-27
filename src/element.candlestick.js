@@ -18,30 +18,21 @@ module.exports = function(Chart) {
 	}
 
 	/**
-	 * Helper function to get the bounds of the bar regardless of the orientation
+	 * Helper function to get the bounds of the candle
 	 * @private
-	 * @param bar {Chart.Element.Rectangle} the bar
+	 * @param bar {Chart.Element.Candlestick} the bar
 	 * @return {Bounds} bounds of the bar
 	 */
-	function getBarBounds(bar) {
-		var vm = bar._view;
+	function getBarBounds(candle) {
+		var vm = candle._view;
 		var x1, x2, y1, y2;
 
-		if (isVertical(bar)) {
-			// vertical
-			var halfWidth = vm.width / 2;
-			x1 = vm.x - halfWidth;
-			x2 = vm.x + halfWidth;
-			y1 = Math.min(vm.y, vm.base);
-			y2 = Math.max(vm.y, vm.base);
-		} else {
-			// horizontal bar
-			var halfHeight = vm.height / 2;
-			x1 = Math.min(vm.x, vm.base);
-			x2 = Math.max(vm.x, vm.base);
-			y1 = vm.y - halfHeight;
-			y2 = vm.y + halfHeight;
-		}
+		var halfWidth = vm.width / 2;
+		x1 = vm.x - halfWidth;
+		x2 = vm.x + halfWidth;
+		y1 = vm.candle.h;
+		y2 = vm.candle.l;
+
 
 		return {
 			left: x1,
@@ -125,13 +116,10 @@ module.exports = function(Chart) {
 		getCenterPoint: function() {
 			var vm = this._view;
 			var x, y;
-			if (isVertical(this)) {
-				x = vm.x;
-				y = (vm.y + vm.base) / 2;
-			} else {
-				x = (vm.x + vm.base) / 2;
-				y = vm.y;
-			}
+
+			var halfWidth = vm.width / 2;
+			x = vm.x - halfWidth;
+			y = (vm.candle.h + vm.candle.l) / 2;
 
 			return { x: x, y: y };
 		},
@@ -143,7 +131,7 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return {
 				x: vm.x,
-				y: vm.y
+				y: (vm.candle.h + vm.candle.l) / 2
 			};
 		}
 	});
