@@ -42,3 +42,5 @@ jspm_packages
 # Build files
 /Chart.Financial.js
 /Chart.Financial.min.js
+/.vs/chartjs-chart-financial/v15/.suo
+/.vs/VSWorkspaceState.json

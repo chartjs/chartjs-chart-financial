@@ -36,5 +36,15 @@ new Chart(ctx, {
 			label: "NASDAQ: MSFT - Microsoft Corporation",
 			data: data
 		}]
-	}
+	},
+  options: {
+    legend: {
+      display: true,
+        labels: {
+          fontColor: 'rgb(255, 99, 132)',
+          fontSize: 15,
+          boxWidth: 190
+          }
+      }
+  }
 });
