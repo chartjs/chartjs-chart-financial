@@ -189,7 +189,7 @@ module.exports = function(Chart) {
 			var stackCount = me.getStackCount();
 			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
 			var tickSize = fullSize / scale.ticks.length;
-			var categorySize = tickSize;
+			var categorySize = fullSize / me._data.length;
 			var fullBarSize = categorySize / stackCount;
 			var barSize = fullBarSize * 0.8;
 
