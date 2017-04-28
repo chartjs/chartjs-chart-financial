@@ -7,7 +7,8 @@ var browserify = require('browserify'),
   package = require('./package.json'),
   replace = require('gulp-replace'),
   source = require('vinyl-source-stream');
-  streamify = require('gulp-streamify');
+  streamify = require('gulp-streamify'),
+  uglify = require('gulp-uglify');
 
 var srcDir = './src/';
 var srcFiles = srcDir + '**.js';
