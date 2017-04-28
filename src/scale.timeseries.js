@@ -319,15 +319,24 @@ module.exports = function (Chart) {
 			me.min = helpers.min(ticks);
 		},
 
+		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
-			var data = me.chart.data;
-			var isHorizontal = me.isHorizontal();
+			var label = me.chart.data.labels && index < me.chart.data.labels.length ? me.chart.data.labels[index] : '';
+			var value = me.chart.data.datasets[datasetIndex].data[index];
 
-			if (data.yLabels && !isHorizontal) {
-				return me.getRightValue(data.datasets[datasetIndex].data[index]);
+			if (value !== null && typeof value === 'object') {
+				label = value.t;
 			}
-			return me.ticks[index - me.minIndex];
+
+			// Format nicely
+			if (me.options.time.tooltipFormat) {
+				label = parseTime(me, label).format(me.options.time.tooltipFormat);
+			} else {
+				label = parseTime(me, label).format(this.displayFormat);
+			}
+
+			return label;
 		},
 
 		// Function to format an individual tick mark
