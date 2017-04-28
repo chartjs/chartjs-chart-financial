@@ -120,7 +120,7 @@ module.exports = function (Chart) {
 			var steps = (unitDetails.steps && unitDetails.steps[unitDetails.steps.length - 1]) || unitDetails.maxStep;
 			var range = max - min;
 			var totalStepSize = steps * unitDetails.size;
-            var numSteps = Math.ceil(range / totalStepSize);
+			var numSteps = Math.ceil(range / totalStepSize);
 			if (steps === undefined || numSteps <= maxTicks) {
 				break;
 			}
@@ -296,12 +296,12 @@ module.exports = function (Chart) {
 				maxTimestamp = parseTime(me, timeOpts.max).valueOf();
 			}
 
-            var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
+			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
 			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
 			me.displayFormat = timeOpts.displayFormats[unit];
 
 			var stepSize = timeOpts.stepSize || determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
-			var ticks = me.ticks = Chart.Ticks.generators.time({
+			var spacedTimestamps = Chart.Ticks.generators.time({
 				maxTicks: maxTicks,
 				min: minTimestamp,
 				max: maxTimestamp,
@@ -312,6 +312,27 @@ module.exports = function (Chart) {
 				min: dataMin,
 				max: dataMax
 			});
+
+			// Ensure that ticks are only drawn from set of datapoints
+			// this could be made more efficient. don't really need two loops
+			// TODO: don't hardcode datasetIndex
+			var data = me.chart.chart.config.data.datasets[0].data;
+			var ticks = [];
+			for (var i = 0; i < spacedTimestamps.length; i++) {
+				var target = spacedTimestamps[i];
+				var curr = data[0].t;
+				var currDiff = Math.abs(target - curr);
+				for (var j = 0; j < data.length; j++) {
+					var diff = Math.abs (target - data[j].t);
+					if (diff < currDiff) {
+						currDiff = diff;
+						curr = data[j].t;
+					}
+				}
+				ticks.push(curr);
+			}
+
+			me.ticks = ticks;
 
 			// At this point, we need to update our max and min given the tick values since we have expanded the
 			// range of the scale
@@ -357,19 +378,6 @@ module.exports = function (Chart) {
 				return moment(tick);
 			}).map(me.tickFormatFunction, me);
 		},
-		getPixelForOffset: function(offset) {
-			var me = this;
-			var epochWidth = me.max - me.min;
-			var decimal = epochWidth ? (offset - me.min) / epochWidth : 0;
-
-			if (me.isHorizontal()) {
-				var valueOffset = (me.width * decimal);
-				return me.left + Math.round(valueOffset);
-			}
-
-			var heightOffset = (me.height * decimal);
-			return me.top + Math.round(heightOffset);
-		},
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			var me = this;
@@ -408,8 +416,19 @@ module.exports = function (Chart) {
 
 			return me.top + Math.round(heightOffset);
 		},
-		getPixelForTick: function(index) {
-			return this.getPixelForOffset(this.ticksAsTimestamps[index]);
+		getPixelForTick: function(index, includeOffset) {
+			var me = this;
+			var tick = parseTime(me, this.ticks[index]).valueOf();
+			// TODO: don't hardcode datasetIndex
+			var data = me.chart.chart.config.data.datasets[0].data;
+			var index = -1;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].t === tick) {
+					index = i;
+					break;
+				}
+			}
+			return this.getPixelForValue(tick, index + this.minIndex, null, includeOffset);
 		},
 		getValueForPixel: function(pixel) {
 			var me = this;
