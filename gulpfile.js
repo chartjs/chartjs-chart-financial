@@ -7,8 +7,7 @@ var browserify = require('browserify'),
   package = require('./package.json'),
   replace = require('gulp-replace'),
   source = require('vinyl-source-stream');
-  streamify = require('gulp-streamify'),
-  uglify = require('gulp-uglify');
+  streamify = require('gulp-streamify');
 
 var srcDir = './src/';
 var srcFiles = srcDir + '**.js';
@@ -27,6 +26,7 @@ gulp.task('default', ['watch']);
 gulp.task('build', buildTask);
 gulp.task('jshint', jsHintTask);
 gulp.task('watch', watchTask);
+gulp.task('test', testTask);
 
 function buildTask() {
   var nonBundled = browserify('./src/index.js')
@@ -54,4 +54,15 @@ function jsHintTask() {
   return gulp.src(srcFiles)
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
+}
+
+function runTest(done, singleRun) {
+    new karma.Server({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: singleRun
+    }, done).start();
+}
+
+function testTask(done) {
+    runTest(done, true);
 }
