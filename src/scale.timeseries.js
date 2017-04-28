@@ -1,5 +1,13 @@
 ﻿'use strict';
 
+/**
+ * For a description of this class see https://github.com/chartjs/Chart.js/issues/4189
+ *
+ * TODO: cleanup this code. it's almost all copied from other files
+ * calculateBarIndexPixels and getRuler are copied form controller.financial (which is probably copied from upstream)
+ * everything else is copied from scale.time and scale.category. this class is a mashup of the two
+ */
+
 var moment = require('moment');
 moment = typeof (moment) === 'function' ? moment : window.moment;
 
@@ -217,6 +225,50 @@ module.exports = function (Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
+		getRuler: function() {
+			var me = this;
+			var scale = me;
+			var options = scale.options;
+			var stackCount = 1;
+			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
+			var tickSize = fullSize / scale.ticks.length;
+			var categorySize = fullSize / me.chart.data.datasets[0].data.length;
+			var fullBarSize = categorySize / stackCount;
+			var barSize = fullBarSize * 0.8;
+
+			barSize = Math.min(
+				Chart.helpers.getValueOrDefault(options.barThickness, barSize),
+				Chart.helpers.getValueOrDefault(options.maxBarThickness, Infinity));
+
+			return {
+				stackCount: stackCount,
+				tickSize: tickSize,
+				categorySize: categorySize,
+				categorySpacing: fullBarSize - barSize,
+				fullBarSize: fullBarSize,
+				barSize: barSize,
+				barSpacing: fullBarSize - barSize,
+				scale: scale
+			};
+		},
+
+		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
+			var scale = ruler.scale;
+			var base = scale.getPixelForValue(null, index, datasetIndex, false);
+			var size = ruler.barSize;
+
+			base += ruler.categorySpacing / 2;
+			base += ruler.barSpacing / 2;
+
+			return {
+				size: size,
+				base: base,
+				head: base + size,
+				center: base + size / 2
+			};
+		},
+
+
 		/**
 		* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
 		* else fall back to data.labels
@@ -428,8 +480,12 @@ module.exports = function (Chart) {
 					break;
 				}
 			}
-			return this.getPixelForValue(tick, index + this.minIndex, null, includeOffset);
+
+			var ruler = me.getRuler();
+			var ipixels = me.calculateBarIndexPixels(0, index, ruler);
+			return ipixels.center;
 		},
+
 		getValueForPixel: function(pixel) {
 			var me = this;
 			var value;

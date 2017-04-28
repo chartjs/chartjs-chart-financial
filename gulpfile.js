@@ -23,7 +23,7 @@ var header = "/*!\n\
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build', 'jshint', 'watch']);
 gulp.task('build', buildTask);
 gulp.task('jshint', jsHintTask);
 gulp.task('watch', watchTask);
