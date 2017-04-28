@@ -201,7 +201,7 @@ module.exports = function(Chart) {
 				stackCount: stackCount,
 				tickSize: tickSize,
 				categorySize: categorySize,
-				categorySpacing: tickSize - categorySize,
+				categorySpacing: fullBarSize - barSize,
 				fullBarSize: fullBarSize,
 				barSize: barSize,
 				barSpacing: fullBarSize - barSize,
