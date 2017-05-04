@@ -473,16 +473,16 @@ module.exports = function (Chart) {
 			var tick = parseTime(me, this.ticks[index]).valueOf();
 			// TODO: don't hardcode datasetIndex
 			var data = me.chart.chart.config.data.datasets[0].data;
-			var index = -1;
+			var dataIndex = -1;
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].t === tick) {
-					index = i;
+					dataIndex = i;
 					break;
 				}
 			}
 
 			var ruler = me.getRuler();
-			var ipixels = me.calculateBarIndexPixels(0, index, ruler);
+			var ipixels = me.calculateBarIndexPixels(0, dataIndex, ruler);
 			return ipixels.center;
 		},
 
