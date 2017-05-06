@@ -1,11 +1,10 @@
 ﻿'use strict';
 
 /**
- * For a description of this class see https://github.com/chartjs/Chart.js/issues/4189
- *
- * TODO: cleanup this code. it's almost all copied from other files
- * calculateBarIndexPixels and getRuler are copied form controller.financial (which is probably copied from upstream)
- * everything else is copied from scale.time and scale.category. this class is a mashup of the two
+ * A scale which handles discrete ordered time values at fairly regular intervals.
+ * E.g. this scale may be utilized to plot a stock chart where the x-axis represents days in which
+ * the stock market is open (most weekdays exlucing market holidays).
+ * See https://github.com/chartjs/Chart.js/issues/4189
  */
 
 var moment = require('moment');
@@ -14,6 +13,9 @@ moment = typeof (moment) === 'function' ? moment : window.moment;
 module.exports = function (Chart) {
 
 	var helpers = Chart.helpers;
+
+	// TODO(benmccann): get all this code from helpers.time
+	// See https://github.com/chartjs/Chart.js/pull/4223
 	var interval = {
 		millisecond: {
 			size: 1,
@@ -225,6 +227,7 @@ module.exports = function (Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
+		// TODO(benmccann): this is copied from controller.bar
 		getRuler: function() {
 			var me = this;
 			var scale = me;
@@ -252,6 +255,7 @@ module.exports = function (Chart) {
 			};
 		},
 
+		// TODO(benmccann): this is copied from controller.bar
 		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
 			var scale = ruler.scale;
 			var base = scale.getPixelForValue(null, index, datasetIndex, false);
@@ -293,6 +297,7 @@ module.exports = function (Chart) {
 			return labels;
 		},
 
+		// TODO(benmcann): this is copied from scale.time.js with modifications
 		determineDataLimits: function() {
 			var me = this;
 
@@ -392,6 +397,7 @@ module.exports = function (Chart) {
 			me.min = helpers.min(ticks);
 		},
 
+		// TODO(benmcann): this is copied from scale.time.js with modifications
 		// Get tooltip label
 		getLabelForIndex: function(index, datasetIndex) {
 			var me = this;
@@ -412,6 +418,7 @@ module.exports = function (Chart) {
 			return label;
 		},
 
+		// TODO(benmcann): this is copied directly from scale.time.js
 		// Function to format an individual tick mark
 		tickFormatFunction: function(tick, index, ticks) {
 			var formattedTick = tick.format(this.displayFormat);
@@ -423,6 +430,7 @@ module.exports = function (Chart) {
 			}
 			return formattedTick;
 		},
+		// TODO(benmcann): this is copied directly from scale.time.js
 		convertTicksToLabels: function() {
 			var me = this;
 			me.ticksAsTimestamps = me.ticks;
@@ -430,6 +438,7 @@ module.exports = function (Chart) {
 				return moment(tick);
 			}).map(me.tickFormatFunction, me);
 		},
+		// TODO(benmcann): this is copied directly from scale.category.js
 		// Used to get data value locations.  Value can either be an index or a numerical value
 		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
 			var me = this;
@@ -485,7 +494,7 @@ module.exports = function (Chart) {
 			var ipixels = me.calculateBarIndexPixels(0, dataIndex, ruler);
 			return ipixels.center;
 		},
-
+        // TODO(bmccann): this copied directly from scale.category.js
 		getValueForPixel: function(pixel) {
 			var me = this;
 			var value;
@@ -510,6 +519,7 @@ module.exports = function (Chart) {
 		getBasePixel: function() {
 			return this.bottom;
 		},
+		// TODO(benmccann): this is copied directly from scale.time.js
 		// Crude approximation of what the label width might be
 		getLabelWidth: function(label) {
 			var me = this;
@@ -521,6 +531,7 @@ module.exports = function (Chart) {
 			var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
 			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
 		},
+		// TODO(benmccann): this is copied directly from scale.time.js
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
