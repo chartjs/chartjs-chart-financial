@@ -227,51 +227,6 @@ module.exports = function (Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
-		// TODO(benmccann): this is copied from controller.bar
-		getRuler: function() {
-			var me = this;
-			var scale = me;
-			var options = scale.options;
-			var stackCount = 1;
-			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
-			var tickSize = fullSize / scale.ticks.length;
-			var categorySize = fullSize / me.chart.data.datasets[0].data.length;
-			var fullBarSize = categorySize / stackCount;
-			var barSize = fullBarSize * 0.8;
-
-			barSize = Math.min(
-				Chart.helpers.getValueOrDefault(options.barThickness, barSize),
-				Chart.helpers.getValueOrDefault(options.maxBarThickness, Infinity));
-
-			return {
-				stackCount: stackCount,
-				tickSize: tickSize,
-				categorySize: categorySize,
-				categorySpacing: fullBarSize - barSize,
-				fullBarSize: fullBarSize,
-				barSize: barSize,
-				barSpacing: fullBarSize - barSize,
-				scale: scale
-			};
-		},
-
-		// TODO(benmccann): this is copied from controller.bar
-		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
-			var scale = ruler.scale;
-			var base = scale.getPixelForValue(null, index, datasetIndex, false);
-			var size = ruler.barSize;
-
-			base += ruler.categorySpacing / 2;
-			base += ruler.barSpacing / 2;
-
-			return {
-				size: size,
-				base: base,
-				head: base + size,
-				center: base + size / 2
-			};
-		},
-
 
 		/**
 		* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
@@ -481,7 +436,8 @@ module.exports = function (Chart) {
 			var me = this;
 			var tick = parseTime(me, this.ticks[index]).valueOf();
 			// TODO: don't hardcode datasetIndex
-			var data = me.chart.chart.config.data.datasets[0].data;
+			var datasetIndex = 0;
+			var data = me.chart.chart.config.data.datasets[datasetIndex].data;
 			var dataIndex = -1;
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].t === tick) {
@@ -490,9 +446,12 @@ module.exports = function (Chart) {
 				}
 			}
 
-			var ruler = me.getRuler();
-			var ipixels = me.calculateBarIndexPixels(0, dataIndex, ruler);
-			return ipixels.center;
+            var scale = me;
+			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
+			var categorySize = fullSize / me.chart.data.datasets[datasetIndex].data.length;
+			var base = scale.getPixelForValue(null, dataIndex, datasetIndex, false);
+			var center = base + (categorySize / 2);
+			return center;
 		},
         // TODO(bmccann): this copied directly from scale.category.js
 		getValueForPixel: function(pixel) {
