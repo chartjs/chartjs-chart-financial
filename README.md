@@ -12,6 +12,14 @@ We are currently working on improving the main Chart.js library's [time support]
 
 As we near an initial release we will add documentation. For now, please see the samples directory
 
+## Comparison
+
+Because Chart.js utilizes canvas it is more performant than the majority of JavaScript charting libraries. [ZingChart](https://www.zingchart.com/docs/chart-types/stock-charts/) and [Highcharts](https://www.highcharts.com/stock/demo/candlestick) with the [boost module](https://www.highcharts.com/blog/news/175-highcharts-performance-boost/) are two options that may also be performant.
+
+Most chart libraries don't have great handling of timescale axes. [AmCharts](https://www.amcharts.com/stock-chart/) is one exception to this.
+
+Chart.js will be the only popular JavaScript library that is both performant and has good timescale handling once the issues above are completed.
+
 ## Building
 
 ```sh
