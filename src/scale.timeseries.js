@@ -341,7 +341,9 @@ module.exports = function (Chart) {
 						curr = data[j].t;
 					}
 				}
-				ticks.push(curr);
+				if (ticks[ticks.length-1] !== curr) {
+					ticks.push(curr);
+				}
 			}
 
 			me.ticks = ticks;
