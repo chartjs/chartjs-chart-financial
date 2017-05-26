@@ -37,9 +37,7 @@ function buildTask() {
     .pipe(insert.prepend(header))
     .pipe(streamify(replace('{{ version }}', package.version)))
     .pipe(gulp.dest(buildDir))
-    .pipe(streamify(uglify({
-      preserveComments: 'some'
-    })))
+    .pipe(streamify(uglify()))
     .pipe(streamify(concat('Chart.Financial.min.js')))
     .pipe(gulp.dest(buildDir));
 
