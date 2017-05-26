@@ -5,6 +5,7 @@ var browserify = require('browserify'),
   jshint = require('gulp-jshint'),
   karma = require('karma'),
   package = require('./package.json'),
+  path = require('path'),
   replace = require('gulp-replace'),
   source = require('vinyl-source-stream');
   streamify = require('gulp-streamify'),
@@ -55,9 +56,20 @@ function jsHintTask() {
     .pipe(jshint.reporter('default'));
 }
 
+function startTest() {
+  return [
+    './node_modules/moment/min/moment.min.js',
+    './test/jasmine.index.js',
+    './src/**/*.js',
+  ].concat(
+    ['./test/specs/**/*.js']
+  );
+}
+
 function runTest(done, singleRun) {
     new karma.Server({
-        configFile: __dirname + '/karma.conf.js',
+        configFile: path.join(__dirname, 'karma.conf.js'),
+        files: startTest(),
         singleRun: singleRun
     }, done).start();
 }

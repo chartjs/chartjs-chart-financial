@@ -332,13 +332,13 @@ module.exports = function (Chart) {
 			var ticks = [];
 			for (var i = 0; i < spacedTimestamps.length; i++) {
 				var target = spacedTimestamps[i];
-				var curr = data[0].t;
+				var curr = parseTime(me, data[0].t).valueOf();
 				var currDiff = Math.abs(target - curr);
 				for (var j = 0; j < data.length; j++) {
-					var diff = Math.abs (target - data[j].t);
+					var diff = Math.abs(target - parseTime(me, data[j].t).valueOf());
 					if (diff < currDiff) {
 						currDiff = diff;
-						curr = data[j].t;
+						curr = parseTime(me, data[j].t).valueOf();
 					}
 				}
 				if (ticks[ticks.length-1] !== curr) {
