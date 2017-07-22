@@ -11,13 +11,13 @@ module.exports = function(Chart) {
 
 		scales: {
 			xAxes: [{
-				type: 'timeseries',
-				// grid line settings
-				gridLines: {
-					offsetGridLines: true
-				},
+				type: 'time',
+				distribution: 'series',
 				time: {
 					format: 'll'
+				},
+				ticks: {
+					source: 'data'
 				}
 			}],
 			yAxes: [{
