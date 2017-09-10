@@ -1,5 +1,7 @@
 ﻿'use strict';
 
+var helpers = Chart.helpers;
+
 module.exports = function(Chart) {
 
 	Chart.defaults.financial = {
@@ -39,6 +41,9 @@ module.exports = function(Chart) {
 		}
 	};
 
+	/**
+	 * This class is based off controller.bar.js from the upstream Chart.js library
+	 */
 	Chart.controllers.financial = Chart.DatasetController.extend({
 
 		dataElementType: Chart.elements.Candlestick,
@@ -104,17 +109,17 @@ module.exports = function(Chart) {
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();
 			var ruler = me._ruler || me.getRuler();
+			var vpixels = me.calculateBarValuePixels(me.index, index);
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
 			var candle = me.calculateCandleValuesPixels(me.index, index);
 
 			model.horizontal = horizontal;
-			model.base = reset ? base : (candle.h + candle.l) / 2;
-			model.x = ipixels.center;
-			model.y = reset ? base : (candle.h + candle.l) / 2;
-			model.height = undefined;
-			model.width = ipixels.size;
+			model.base = reset ? base : vpixels.base;
+			model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
+			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
+			model.height = horizontal ? ipixels.size : undefined;
+			model.width = horizontal ? undefined : ipixels.size;
 			model.candle = candle;
-
 		},
 
 		/**
@@ -185,35 +190,30 @@ module.exports = function(Chart) {
 		getRuler: function() {
 			var me = this;
 			var scale = me.getIndexScale();
-			var options = scale.options;
 			var stackCount = me.getStackCount();
-			var fullSize = scale.isHorizontal() ? scale.width : scale.height;
-			var tickSize = fullSize / scale.ticks.length;
-			var categorySize = fullSize / me._data.length;
-			var fullBarSize = categorySize / stackCount;
-			var barSize = fullBarSize * 0.8;
+			var datasetIndex = me.index;
+			var pixels = [];
+			var isHorizontal = scale.isHorizontal();
+			var start = isHorizontal ? scale.left : scale.top;
+			var end = start + (isHorizontal ? scale.width : scale.height);
+			var i, ilen;
 
-			barSize = Math.min(
-				Chart.helpers.getValueOrDefault(options.barThickness, barSize),
-				Chart.helpers.getValueOrDefault(options.maxBarThickness, Infinity));
+			for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
+				pixels.push(scale.getPixelForValue(null, i, datasetIndex));
+			}
 
 			return {
+				pixels: pixels,
+				start: start,
+				end: end,
 				stackCount: stackCount,
-				tickSize: tickSize,
-				categorySize: categorySize,
-				categorySpacing: fullBarSize - barSize,
-				fullBarSize: fullBarSize,
-				barSize: barSize,
-				barSpacing: fullBarSize - barSize,
 				scale: scale
 			};
 		},
 
 		calculateCandleValuesPixels: function(datasetIndex, index) {
-
 			var me = this;
 			var chart = me.chart;
-			var meta = me.getMeta();
 			var scale = me.getValueScale();
 			var datasets = chart.data.datasets;
 
@@ -226,20 +226,80 @@ module.exports = function(Chart) {
 		},
 
 		/**
+		 * Note: pixel values are not clamped to the scale area.
+		 * @private
+		 */
+		calculateBarValuePixels: function(datasetIndex, index) {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var scale = me.getValueScale();
+			var datasets = chart.data.datasets;
+			var value = datasets[datasetIndex].data[index].h;
+			var start = datasets[datasetIndex].data[index].l;
+			var i, imeta, ivalue, base, head, size;
+
+			base = scale.getPixelForValue(start);
+			head = scale.getPixelForValue(value);
+			size = (head - base) / 2;
+
+			return {
+				size: size,
+				base: base,
+				head: head,
+				center: head + size / 2
+			};
+		},
+
+		/**
 		 * @private
 		 */
 		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
 			var me = this;
-			var scale = ruler.scale;
-			var isCombo = me.chart.isCombo;
+			var options = ruler.scale.options;
 			var stackIndex = me.getStackIndex(datasetIndex);
-			var base = scale.getPixelForValue(null, index, datasetIndex, isCombo);
-			var size = ruler.barSize;
+			var pixels = ruler.pixels;
+			var base = pixels[index];
+			var length = pixels.length;
+			var start = ruler.start;
+			var end = ruler.end;
+			var leftSampleSize, rightSampleSize, leftCategorySize, rightCategorySize, fullBarSize, size;
 
-			base -= isCombo ? ruler.tickSize / 2 : 0;
-			base += ruler.fullBarSize * stackIndex;
-			base += ruler.categorySpacing / 2;
-			base += ruler.barSpacing / 2;
+			if (length === 1) {
+				leftSampleSize = base > start ? base - start : end - base;
+				rightSampleSize = base < end ? end - base : base - start;
+			} else {
+				if (index > 0) {
+					leftSampleSize = (base - pixels[index - 1]) / 2;
+					if (index === length - 1) {
+						rightSampleSize = leftSampleSize;
+					}
+				}
+				if (index < length - 1) {
+					rightSampleSize = (pixels[index + 1] - base) / 2;
+					if (index === 0) {
+						leftSampleSize = rightSampleSize;
+					}
+				}
+			}
+
+			// options.categoryPercentage is undefined for time scale
+			//leftCategorySize = leftSampleSize * options.categoryPercentage;
+			//rightCategorySize = rightSampleSize * options.categoryPercentage;
+			leftCategorySize = leftSampleSize * 0.8;
+			rightCategorySize = rightSampleSize * 0.8;
+			fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
+			// options.barPercentage is undefined for time scale
+			//size = fullBarSize * options.barPercentage;
+			size = fullBarSize * 0.9;
+
+			size = Math.min(
+				helpers.valueOrDefault(options.barThickness, size),
+				helpers.valueOrDefault(options.maxBarThickness, Infinity));
+
+			base -= leftCategorySize;
+			base += fullBarSize * stackIndex;
+			base += (fullBarSize - size) / 2;
 
 			return {
 				size: size,
