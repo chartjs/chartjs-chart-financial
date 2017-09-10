@@ -33,7 +33,7 @@ new Chart(ctx, {
 	type: 'financial',
 	data: {
 		datasets: [{
-			label: "NASDAQ: MSFT - Microsoft Corporation",
+			label: "CHRT - Chart.js Corporation",
 			data: data
 		}]
 	}
