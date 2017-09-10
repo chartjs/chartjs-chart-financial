@@ -20,7 +20,7 @@ var dateFormat = 'MMMM DD YYYY';
 var date = moment('April 01 2017', dateFormat);
 var data = [randomBar(date, 30)];
 while (data.length < 60) {
-	date = date.add(1, 'd');
+	date = date.clone().add(1, 'd');
 	if (date.isoWeekday() <= 5) {
 		data.push(randomBar(date, data[data.length - 1].c));
 	}
