@@ -8,7 +8,9 @@ Currently supports the Candlestick element. Pull requests are welcomed to add su
 
 This module has not yet had its initial release and is not yet available on npm
 
-Chart.js 2.7.0 added [our timeseries scale](https://github.com/chartjs/Chart.js/issues/4189) to Chart.js as new option called [`distribution: series`](http://www.chartjs.org/docs/latest/axes/cartesian/time.html). This has greatly improved support for financial timeseries.
+Chart.js 2.7.0 added our [timeseries scale](https://github.com/chartjs/Chart.js/issues/4189) as new option called [`distribution: series`](http://www.chartjs.org/docs/latest/axes/cartesian/time.html). This has greatly improved support for financial timeseries.
+
+We would like to add better tick/label generation before having an initial release.
 
 As we near an initial release we will add documentation. For now, please see the samples directory.
 
