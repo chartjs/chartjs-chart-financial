@@ -27,6 +27,31 @@ module.exports = function(Chart) {
 			}]
 		},
 
+		ticks: {
+			minor: {
+				displayFormats: {
+					millisecond: '.SSS', // .123,
+					second: 'h:mm:ss a', // 11:20:01
+					minute: 'h:mm', // 11:20
+					hour: 'hA', // 5PM
+					day: 'D', // 4
+					month: 'MMM', // Sept
+					year: 'YYYY' // 2015
+				},
+			},
+			major: {
+				displayFormats: {
+					millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
+					second: 'h:mm:ss a', // 11:20:01 AM
+					minute: 'h:mm a', // 11:20 AM
+					hour: 'MMM D, YYYY hA', // Sep 4, 2015 5PM
+					day: 'MMM D, YYYY', // Sep 4, 2015
+					month: 'MMM YYYY', // Sept 2015
+					year: 'YYYY' // 2015
+				}
+			}
+		},
+
 		tooltips: {
 			callbacks: {
 				label: function(tooltipItem, data) {
