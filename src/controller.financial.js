@@ -15,6 +15,8 @@ module.exports = function(Chart) {
 			xAxes: [{
 				type: 'time',
 				distribution: 'series',
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
 				time: {
 					format: 'll'
 				},
@@ -283,15 +285,10 @@ module.exports = function(Chart) {
 				}
 			}
 
-			// options.categoryPercentage is undefined for time scale
-			//leftCategorySize = leftSampleSize * options.categoryPercentage;
-			//rightCategorySize = rightSampleSize * options.categoryPercentage;
-			leftCategorySize = leftSampleSize * 0.8;
-			rightCategorySize = rightSampleSize * 0.8;
+			leftCategorySize = leftSampleSize * options.categoryPercentage;
+			rightCategorySize = rightSampleSize * options.categoryPercentage;
 			fullBarSize = (leftCategorySize + rightCategorySize) / ruler.stackCount;
-			// options.barPercentage is undefined for time scale
-			//size = fullBarSize * options.barPercentage;
-			size = fullBarSize * 0.9;
+			size = fullBarSize * options.barPercentage;
 
 			size = Math.min(
 				helpers.valueOrDefault(options.barThickness, size),
