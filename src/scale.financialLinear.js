@@ -78,8 +78,8 @@ module.exports = function(Chart) {
 			});
 
 			// Add whitespace around bars. Axis shouldn't go exactly from min to max
-            me.min = me.min - me.min * 0.05;
-            me.max = me.max + me.max * 0.05;
+			me.min = me.min - me.min * 0.05;
+			me.max = me.max + me.max * 0.05;
 
 			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
 			this.handleTickRangeOptions();
