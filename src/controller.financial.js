@@ -17,9 +17,6 @@ module.exports = function(Chart) {
 				distribution: 'series',
 				categoryPercentage: 0.8,
 				barPercentage: 0.9,
-				time: {
-					format: 'll'
-				},
 				ticks: {
 					source: 'data'
 				}
