@@ -12,7 +12,8 @@ function randomBar(date, lastClose) {
 		o: open,
 		h: high,
 		l: low,
-		c: close
+		c: close,
+		color: '#ef1',
 	};
 }
 
@@ -28,7 +29,7 @@ while (data.length < 60) {
 
 var ctx = document.getElementById("chart1").getContext("2d");
 ctx.canvas.width = 1000;
-ctx.canvas.height = 300;
+ctx.canvas.height = 250;
 new Chart(ctx, {
 	type: 'financial',
 	data: {
@@ -39,15 +40,55 @@ new Chart(ctx, {
 	}
 });
 
-var ctx = document.getElementById("chart2").getContext("2d");
-ctx.canvas.width = 1000;
-ctx.canvas.height = 300;
-new Chart(ctx, {
+
+var ctx2 = document.getElementById("chart2").getContext("2d");
+ctx2.canvas.width = 1000;
+ctx2.canvas.height = 250;
+new Chart(ctx2, {
 	type: 'ohlc',
 	data: {
 		datasets: [{
 			label: "CHRTO - Chart.js Corporation, OHLC division",
 			data: data
+		}]
+	}
+});
+
+
+var ctx3 = document.getElementById("chart3").getContext("2d");
+ctx3.canvas.width = 1000;
+ctx3.canvas.height = 250;
+new Chart(ctx3, {
+	type: 'financial',
+	data: {
+		datasets: [{
+			upCandleColor: "#11f",
+			downCandleColor: "#fb8",
+			outlineCandleColor: "#000",
+			outlineCandleWidth: 2,
+			label: "CHRT - Chart.js Corporation",
+			data: data
+		}]
+	}
+});
+
+
+var ctx4 = document.getElementById("chart4").getContext("2d");
+ctx4.canvas.width = 1000;
+ctx4.canvas.height = 250;
+new Chart(ctx4, {
+	type: 'ohlc',
+	data: {
+		datasets: [{
+			color: {
+				up: '#11f',
+				down: '#fb8',
+				middle: '#000',
+			},
+			armLength: 8,
+			lineWidth: 4,
+			label: "CHRTO - Chart.js Corporation, OHLC division",
+			data: data,
 		}]
 	}
 });

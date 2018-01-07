@@ -1,14 +1,13 @@
 ﻿'use strict';
-console.log("ohlc-1");
+
 module.exports = function(Chart) {
-console.log("ohlc-2");
 
 	var helpers = Chart.helpers,
 		globalOpts = Chart.defaults.global,
 		defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.ohlc = {
-		thickness: 2,
+		lineWidth: 2,
 		armLength: 6,
 		color: {
 			up: globalOpts.elements.candlestick.upCandleColor,
@@ -57,14 +56,17 @@ console.log("ohlc-2");
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 			var arm = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
+			var color = vm.candle.color;
 
 			if (c < o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.upColor, globalOpts.elements.ohlc.color.up);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
 			} else if (c > o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.downColor, globalOpts.elements.ohlc.color.down);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.ohlc.color.down);
 			} else {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.ohlc.color.middle);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.middle:undefined, globalOpts.elements.ohlc.color.middle);
 			}
+			ctx.strokeStyle = helpers.getValueOrDefault(color, ctx.strokeStyle);
+			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 			ctx.beginPath();
 			ctx.moveTo(x, h);

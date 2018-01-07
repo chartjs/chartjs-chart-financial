@@ -157,6 +157,35 @@ module.exports = function(Chart) {
 	Chart.defaults.ohlc = Chart.defaults.financial;
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 		dataElementType: Chart.elements.ohlc,
+		
+		updateElement: function(candle, index, reset) {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
+			var custom = candle.custom || {};
+
+			candle._xScale = me.getScaleForId(meta.xAxisID);
+			candle._yScale = me.getScaleForId(meta.yAxisID);
+			candle._datasetIndex = me.index;
+			candle._index = index;
+
+			candle._model = {
+				datasetLabel: dataset.label || '',
+				//label: '', // to get label value please use dataset.data[index].label
+
+				// Appearance
+				lineWidth: dataset.lineWidth,
+				armLength: dataset.armLength,
+				color: dataset.color,
+				armLength: dataset.armLength,
+			};
+
+			me.updateElementGeometry(candle, index, reset);
+
+			candle.pivot();
+		},
+		
 	});
 };
 
@@ -304,16 +333,15 @@ module.exports = function(Chart) {
 
 },{}],5:[function(require,module,exports){
 'use strict';
-console.log("ohlc-1");
+
 module.exports = function(Chart) {
-console.log("ohlc-2");
 
 	var helpers = Chart.helpers,
 		globalOpts = Chart.defaults.global,
 		defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.ohlc = {
-		thickness: 2,
+		lineWidth: 2,
 		armLength: 6,
 		color: {
 			up: globalOpts.elements.candlestick.upCandleColor,
@@ -362,14 +390,17 @@ console.log("ohlc-2");
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 			var arm = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
+			var color = vm.candle.color;
 
 			if (c < o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.upColor, globalOpts.elements.ohlc.color.up);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
 			} else if (c > o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.downColor, globalOpts.elements.ohlc.color.down);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.ohlc.color.down);
 			} else {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.ohlc.color.middle);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.middle:undefined, globalOpts.elements.ohlc.color.middle);
 			}
+			ctx.strokeStyle = helpers.getValueOrDefault(color, ctx.strokeStyle);
+			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 			ctx.beginPath();
 			ctx.moveTo(x, h);

@@ -30,19 +30,6 @@ var ctx = document.getElementById("chart1").getContext("2d");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 300;
 new Chart(ctx, {
-	type: 'financial',
-	data: {
-		datasets: [{
-			label: "CHRT - Chart.js Corporation",
-			data: data
-		}]
-	}
-});
-
-var ctx = document.getElementById("chart2").getContext("2d");
-ctx.canvas.width = 1000;
-ctx.canvas.height = 300;
-new Chart(ctx, {
 	type: 'ohlc',
 	data: {
 		datasets: [{
