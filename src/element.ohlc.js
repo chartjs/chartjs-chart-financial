@@ -2,11 +2,9 @@
 
 module.exports = function(Chart) {
 
-
 	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 	var defaultColor = globalOpts.defaultColor;
-
 
 	globalOpts.elements.ohlc = {
 		lineWidth: 2,
@@ -18,7 +16,6 @@ module.exports = function(Chart) {
 		}
 	};
 	
-
 	Chart.elements.ohlc = Chart.elements.Candlestick.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
@@ -31,7 +28,7 @@ module.exports = function(Chart) {
 			var h = vm.candle.h;
 			var l = vm.candle.l;
 			var c = vm.candle.c;
-			var arm = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
+			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 
 			if (c < o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
@@ -45,9 +42,9 @@ module.exports = function(Chart) {
 			ctx.beginPath();
 			ctx.moveTo(x, h);
 			ctx.lineTo(x, l);
-			ctx.moveTo(x-arm, o);
+			ctx.moveTo(x-armLength, o);
 			ctx.lineTo(x, o);
-			ctx.moveTo(x+arm, c);
+			ctx.moveTo(x+armLength, c);
 			ctx.lineTo(x, c);
 			ctx.stroke();
 		},
