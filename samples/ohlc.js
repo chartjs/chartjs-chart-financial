@@ -33,7 +33,7 @@ new Chart(ctx, {
 	type: 'financial',
 	data: {
 		datasets: [{
-			label: "CHRT - Chart.js Corporation",
+			label: "CHRTO - Chart.js Corporation, OHLC division",
 			data: data
 		}]
 	}
