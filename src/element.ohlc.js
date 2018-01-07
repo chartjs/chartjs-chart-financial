@@ -56,7 +56,6 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 			var arm = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
-			var color = vm.candle.color;
 
 			if (c < o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
@@ -65,7 +64,6 @@ module.exports = function(Chart) {
 			} else {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.middle:undefined, globalOpts.elements.ohlc.color.middle);
 			}
-			ctx.strokeStyle = helpers.getValueOrDefault(color, ctx.strokeStyle);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 			ctx.beginPath();

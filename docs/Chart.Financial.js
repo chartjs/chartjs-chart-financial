@@ -151,12 +151,17 @@ module.exports = function(Chart) {
 },{}],3:[function(require,module,exports){
 'use strict';
 
+
 var helpers = Chart.helpers;
+
 
 module.exports = function(Chart) {
 	Chart.defaults.ohlc = Chart.defaults.financial;
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
+		
+		
 		dataElementType: Chart.elements.ohlc,
+		
 		
 		updateElement: function(candle, index, reset) {
 			var me = this;
@@ -164,27 +169,21 @@ module.exports = function(Chart) {
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
 			var custom = candle.custom || {};
-
 			candle._xScale = me.getScaleForId(meta.xAxisID);
 			candle._yScale = me.getScaleForId(meta.yAxisID);
 			candle._datasetIndex = me.index;
 			candle._index = index;
-
 			candle._model = {
 				datasetLabel: dataset.label || '',
-				//label: '', // to get label value please use dataset.data[index].label
-
-				// Appearance
 				lineWidth: dataset.lineWidth,
 				armLength: dataset.armLength,
 				color: dataset.color,
 				armLength: dataset.armLength,
 			};
-
 			me.updateElementGeometry(candle, index, reset);
-
 			candle.pivot();
 		},
+		
 		
 	});
 };
@@ -390,7 +389,6 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 			var arm = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
-			var color = vm.candle.color;
 
 			if (c < o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
@@ -399,7 +397,6 @@ module.exports = function(Chart) {
 			} else {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.middle:undefined, globalOpts.elements.ohlc.color.middle);
 			}
-			ctx.strokeStyle = helpers.getValueOrDefault(color, ctx.strokeStyle);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 			ctx.beginPath();

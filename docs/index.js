@@ -13,7 +13,6 @@ function randomBar(date, lastClose) {
 		h: high,
 		l: low,
 		c: close,
-		color: '#ef1',
 	};
 }
 
