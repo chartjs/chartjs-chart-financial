@@ -27,7 +27,6 @@ module.exports = function(Chart) {
 				lineWidth: dataset.lineWidth,
 				armLength: dataset.armLength,
 				color: dataset.color,
-				armLength: dataset.armLength,
 			};
 			me.updateElementGeometry(candle, index, reset);
 			candle.pivot();
