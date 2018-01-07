@@ -26,6 +26,7 @@ while (data.length < 60) {
 	}
 }
 
+// Financial chart - Candlestick
 var ctx = document.getElementById("chart1").getContext("2d");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 250;
@@ -39,7 +40,7 @@ new Chart(ctx, {
 	}
 });
 
-
+// Financial chart - OHLC
 var ctx2 = document.getElementById("chart2").getContext("2d");
 ctx2.canvas.width = 1000;
 ctx2.canvas.height = 250;
@@ -53,7 +54,7 @@ new Chart(ctx2, {
 	}
 });
 
-
+// Financial chart - Custom Candlestick
 var ctx3 = document.getElementById("chart3").getContext("2d");
 ctx3.canvas.width = 1000;
 ctx3.canvas.height = 250;
@@ -61,9 +62,9 @@ new Chart(ctx3, {
 	type: 'financial',
 	data: {
 		datasets: [{
-			upCandleColor: "#11f",
-			downCandleColor: "#fb8",
-			outlineCandleColor: "#000",
+			upCandleColor: "#11fa",
+			downCandleColor: "#fb8a",
+			outlineCandleColor: "#000a",
 			outlineCandleWidth: 2,
 			label: "CHRT - Chart.js Corporation",
 			data: data
@@ -71,7 +72,7 @@ new Chart(ctx3, {
 	}
 });
 
-
+// Financial chart - Custom OHLC
 var ctx4 = document.getElementById("chart4").getContext("2d");
 ctx4.canvas.width = 1000;
 ctx4.canvas.height = 250;

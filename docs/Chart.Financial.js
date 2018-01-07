@@ -380,7 +380,6 @@ module.exports = function(Chart) {
 	});
 };
 
-
 },{}],6:[function(require,module,exports){
 'use strict';
 
