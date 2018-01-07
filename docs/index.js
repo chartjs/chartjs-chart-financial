@@ -83,7 +83,7 @@ new Chart(ctx4, {
 			color: {
 				up: '#11f',
 				down: '#fb8',
-				middle: '#000',
+				linear: '#000',
 			},
 			armLength: 8,
 			lineWidth: 4,

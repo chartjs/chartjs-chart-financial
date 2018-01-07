@@ -11,7 +11,7 @@ module.exports = function(Chart) {
 		armLength: 6,
 		color: {
 			up: globalOpts.elements.candlestick.upCandleColor,
-			middle: '#888',
+			linear: '#888',
 			down: globalOpts.elements.candlestick.downCandleColor,
 		}
 	};
@@ -35,7 +35,7 @@ module.exports = function(Chart) {
 			} else if (c > o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.ohlc.color.down);
 			} else {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.middle:undefined, globalOpts.elements.ohlc.color.middle);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.linear:undefined, globalOpts.elements.ohlc.color.linear);
 			}
 			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
