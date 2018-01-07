@@ -1,16 +1,10 @@
 ﻿'use strict';
 
-
-var helpers = Chart.helpers;
-
-
 module.exports = function(Chart) {
 	Chart.defaults.ohlc = Chart.defaults.financial;
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 		
-		
 		dataElementType: Chart.elements.ohlc,
-		
 		
 		updateElement: function(candle, index, reset) {
 			var me = this;
@@ -31,7 +25,6 @@ module.exports = function(Chart) {
 			me.updateElementGeometry(candle, index, reset);
 			candle.pivot();
 		},
-		
 		
 	});
 };
