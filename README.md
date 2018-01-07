@@ -28,6 +28,7 @@ We are aiming to make Chart.js the only popular JavaScript library that is both 
 npm install
 gulp
 ```
-## Samples
 
-Samples are available here : https://loicbourgois.github.io/chartjs-chart-financial/
+## Examples
+
+Out of the box examples are available here : https://loicbourgois.github.io/chartjs-chart-financial/
