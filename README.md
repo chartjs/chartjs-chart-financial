@@ -2,7 +2,7 @@
 
 Chart.js module for charting financial securities
 
-Currently supports the Candlestick element. Pull requests are welcomed to add support for the OHLC element
+Currently supports Candlestick and OHLC elements
 
 ## Usage and Roadmap
 
