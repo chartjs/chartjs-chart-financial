@@ -34,7 +34,27 @@ new Chart(ctx, {
 	data: {
 		datasets: [{
 			label: "CHRTO - Chart.js Corporation, OHLC division",
-			data: data
+			data: data,
+		}]
+	}
+});
+
+var ctx2 = document.getElementById("chart2").getContext("2d");
+ctx2.canvas.width = 1000;
+ctx2.canvas.height = 300;
+new Chart(ctx2, {
+	type: 'ohlc',
+	data: {
+		datasets: [{
+			label: "CHRTO - Chart.js Corporation, OHLC division",
+			data: data,
+			color: {
+				up: '#11f',
+				down: '#fb8',
+				middle: '#000',
+			},
+			armLength: 8,
+			lineWidth: 4,
 		}]
 	}
 });
