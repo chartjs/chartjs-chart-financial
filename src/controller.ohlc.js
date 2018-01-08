@@ -3,10 +3,10 @@
 module.exports = function(Chart) {
 
 
-	Chart.defaults.ohlc = Chart.defaults.financial;
+	Chart.defaults.ohlc = Chart.defaults.candlestick;
 	
 	
-	Chart.controllers.ohlc = Chart.controllers.financial.extend({
+	Chart.controllers.ohlc = Chart.controllers.candlestick.extend({
 		
 		dataElementType: Chart.elements.ohlc,
 		

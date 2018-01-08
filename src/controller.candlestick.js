@@ -2,7 +2,7 @@
 
 module.exports = function(Chart) {
 
-	Chart.defaults.financial = {
+	Chart.defaults.candlestick = {
 		label: '',
 
 		hover: {
@@ -41,7 +41,7 @@ module.exports = function(Chart) {
 	/**
 	 * This class is based off controller.bar.js from the upstream Chart.js library
 	 */
-	Chart.controllers.financial = Chart.controllers.bar.extend({
+	Chart.controllers.candlestick = Chart.controllers.bar.extend({
 
 		dataElementType: Chart.elements.Candlestick,
 

@@ -31,7 +31,7 @@ var ctx = document.getElementById("chart1").getContext("2d");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 250;
 new Chart(ctx, {
-	type: 'financial',
+	type: 'candlestick',
 	data: {
 		datasets: [{
 			label: "CHRT - Chart.js Corporation",

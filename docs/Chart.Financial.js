@@ -13,7 +13,7 @@
 
 module.exports = function(Chart) {
 
-	Chart.defaults.financial = {
+	Chart.defaults.candlestick = {
 		label: '',
 
 		hover: {
@@ -52,7 +52,7 @@ module.exports = function(Chart) {
 	/**
 	 * This class is based off controller.bar.js from the upstream Chart.js library
 	 */
-	Chart.controllers.financial = Chart.controllers.bar.extend({
+	Chart.controllers.candlestick = Chart.controllers.bar.extend({
 
 		dataElementType: Chart.elements.Candlestick,
 
@@ -150,10 +150,10 @@ module.exports = function(Chart) {
 module.exports = function(Chart) {
 
 
-	Chart.defaults.ohlc = Chart.defaults.financial;
+	Chart.defaults.ohlc = Chart.defaults.candlestick;
 	
 	
-	Chart.controllers.ohlc = Chart.controllers.financial.extend({
+	Chart.controllers.ohlc = Chart.controllers.candlestick.extend({
 		
 		dataElementType: Chart.elements.ohlc,
 		
@@ -378,11 +378,11 @@ Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
 
 require('./element.candlestick.js')(Chart);
 require('./scale.financialLinear.js')(Chart);
-require('./controller.financial.js')(Chart);
+require('./controller.candlestick.js')(Chart);
 require('./element.ohlc.js')(Chart);
 require('./controller.ohlc.js')(Chart);
 
-},{"./controller.financial.js":2,"./controller.ohlc.js":3,"./element.candlestick.js":4,"./element.ohlc.js":5,"./scale.financialLinear.js":7,"chart.js":1}],7:[function(require,module,exports){
+},{"./controller.candlestick.js":2,"./controller.ohlc.js":3,"./element.candlestick.js":4,"./element.ohlc.js":5,"./scale.financialLinear.js":7,"chart.js":1}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = function(Chart) {
