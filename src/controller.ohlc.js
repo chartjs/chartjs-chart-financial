@@ -12,10 +12,8 @@ module.exports = function(Chart) {
 		
 		updateElement: function(candle, index, reset) {
 			var me = this;
-			var chart = me.chart;
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
-			var custom = candle.custom || {};
 			candle._xScale = me.getScaleForId(meta.xAxisID);
 			candle._yScale = me.getScaleForId(meta.yAxisID);
 			candle._datasetIndex = me.index;

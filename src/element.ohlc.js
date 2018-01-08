@@ -4,7 +4,6 @@ module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
-	var defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.ohlc = {
 		lineWidth: 2,
@@ -20,8 +19,6 @@ module.exports = function(Chart) {
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
-			var left, right, top, bottom, signX, signY, borderSkipped;
-			var borderWidth = vm.borderWidth;
 
 			var x = vm.x;
 			var o = vm.candle.o;

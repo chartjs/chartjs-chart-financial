@@ -3,8 +3,7 @@
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global,
-		defaultColor = globalOpts.defaultColor;
+		globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.candlestick = {
 		upCandleColor: "rgba(80, 160, 115, 1)",
@@ -46,8 +45,6 @@ module.exports = function(Chart) {
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
-			var left, right, top, bottom, signX, signY, borderSkipped;
-			var borderWidth = vm.borderWidth;
 
 
 			var x = vm.x;

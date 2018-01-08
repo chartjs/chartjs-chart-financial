@@ -58,7 +58,7 @@ module.exports = function(Chart) {
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {			
-					helpers.each(dataset.data, function(rawValue, index) {
+					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;
 			

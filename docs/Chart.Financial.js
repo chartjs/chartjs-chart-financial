@@ -11,8 +11,6 @@
 },{}],2:[function(require,module,exports){
 'use strict';
 
-var helpers = Chart.helpers;
-
 module.exports = function(Chart) {
 
 	Chart.defaults.financial = {
@@ -60,10 +58,8 @@ module.exports = function(Chart) {
 
 		updateElement: function(candle, index, reset) {
 			var me = this;
-			var chart = me.chart;
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
-			var custom = candle.custom || {};
 
 			candle._xScale = me.getScaleForId(meta.xAxisID);
 			candle._yScale = me.getScaleForId(meta.yAxisID);
@@ -163,10 +159,8 @@ module.exports = function(Chart) {
 		
 		updateElement: function(candle, index, reset) {
 			var me = this;
-			var chart = me.chart;
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
-			var custom = candle.custom || {};
 			candle._xScale = me.getScaleForId(meta.xAxisID);
 			candle._yScale = me.getScaleForId(meta.yAxisID);
 			candle._datasetIndex = me.index;
@@ -190,8 +184,7 @@ module.exports = function(Chart) {
 module.exports = function(Chart) {
 
 	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global,
-		defaultColor = globalOpts.defaultColor;
+		globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.candlestick = {
 		upCandleColor: "rgba(80, 160, 115, 1)",
@@ -233,8 +226,6 @@ module.exports = function(Chart) {
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
-			var left, right, top, bottom, signX, signY, borderSkipped;
-			var borderWidth = vm.borderWidth;
 
 
 			var x = vm.x;
@@ -335,7 +326,6 @@ module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
-	var defaultColor = globalOpts.defaultColor;
 
 	globalOpts.elements.ohlc = {
 		lineWidth: 2,
@@ -351,8 +341,6 @@ module.exports = function(Chart) {
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
-			var left, right, top, bottom, signX, signY, borderSkipped;
-			var borderWidth = vm.borderWidth;
 
 			var x = vm.x;
 			var o = vm.candle.o;
@@ -455,7 +443,7 @@ module.exports = function(Chart) {
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {			
-					helpers.each(dataset.data, function(rawValue, index) {
+					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;
 			
