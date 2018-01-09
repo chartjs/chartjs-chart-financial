@@ -12,7 +12,7 @@ Chart.js 2.7.0 added our [timeseries scale](https://github.com/chartjs/Chart.js/
 
 We would like to add better tick/label generation before having an initial release.
 
-As we near an initial release we will add documentation. For now, please see the samples directory.
+As we near an initial release we will add documentation. For now, please see the docs directory.
 
 ## Comparison
 
@@ -31,4 +31,4 @@ gulp
 
 ## Examples
 
-Out of the box examples are available here : https://loicbourgois.github.io/chartjs-chart-financial/
+Out of the box examples are available here : https://chartjs.github.io/chartjs-chart-financial/
