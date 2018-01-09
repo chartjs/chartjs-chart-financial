@@ -171,11 +171,11 @@ module.exports = function(Chart) {
 module.exports = function(Chart) {
 
 	Chart.defaults.ohlc = Chart.defaults.financial;
-	
+
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
-		
+
 		dataElementType: Chart.elements.ohlc,
-		
+
 		updateElement: function(element, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -489,13 +489,13 @@ module.exports = function(Chart) {
 					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;
-			
+
 						if (me.min === null) {
 							me.min = low;
 						} else if (low < me.min) {
 							me.min = low;
 						}
-		
+
 						if (me.max === null) {
 							me.max = high;
 						} else if (high > me.max) {

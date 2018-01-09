@@ -61,13 +61,13 @@ module.exports = function(Chart) {
 					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;
-			
+
 						if (me.min === null) {
 							me.min = low;
 						} else if (low < me.min) {
 							me.min = low;
 						}
-		
+
 						if (me.max === null) {
 							me.max = high;
 						} else if (high > me.max) {
