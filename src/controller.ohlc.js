@@ -22,6 +22,7 @@ module.exports = function(Chart) {
 				datasetLabel: dataset.label || '',
 				lineWidth: dataset.lineWidth,
 				armLength: dataset.armLength,
+				armLengthRatio: dataset.armLengthRatio,
 				color: dataset.color,
 			};
 			me.updateElementGeometry(candle, index, reset);

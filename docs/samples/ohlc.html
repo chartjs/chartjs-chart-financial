@@ -52,6 +52,14 @@
 				data.push(randomBar(date, data[data.length - 1].c));
 			}
 		}
+		date = moment('April 01 2017', dateFormat);
+		var dataSmall = [randomBar(date, 30)];
+		while (dataSmall.length < 20) {
+			date = date.clone().add(1, 'd');
+			if (date.isoWeekday() <= 5) {
+				dataSmall.push(randomBar(date, dataSmall[dataSmall.length - 1].c));
+			}
+		}
 		
 		// OHLC
 		var ctx1 = document.getElementById("chart1").getContext("2d");
@@ -71,21 +79,25 @@
 		var ctx2 = document.getElementById("chart2").getContext("2d");
 		ctx2.canvas.width = 1000;
 		ctx2.canvas.height = 250;
-		new Chart(ctx2, {
+		var chart2 = new Chart(ctx2, {
 			type: 'ohlc',
 			data: {
 				datasets: [{
+					label: "CHRTO - Chart.js Corporation, OHLC division",
+					data: dataSmall,
 					color: {
 						up: '#11f',
 						down: '#fb8',
 						linear: '#000',
 					},
-					armLength: 8,
+					armLengthRatio: 0.75,
+					// armLength hase priority over armLengthRatio
+					// uncommenting the following line will override the length set by armLengthRatio
+					// armLength: 8,
 					lineWidth: 4,
-					label: "CHRTO - Chart.js Corporation, OHLC division",
-					data: data,
 				}]
 			}
 		});
+		
 	</script>
 </body>

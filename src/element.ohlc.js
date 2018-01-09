@@ -7,7 +7,8 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.ohlc = {
 		lineWidth: 2,
-		armLength: 6,
+		armLength: null,
+		armLengthRatio: 0.90,
 		color: {
 			up: globalOpts.elements.candlestick.upCandleColor,
 			linear: '#888',
@@ -26,6 +27,10 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
+			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
+			if(armLength === null) {
+				armLength = vm.width * 0.7 * armLengthRatio;
+			}
 
 			if (c < o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
