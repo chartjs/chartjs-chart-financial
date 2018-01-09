@@ -24,7 +24,6 @@ module.exports = function(Chart) {
 				// Appearance
 				color: dataset.color,
 				outlineWidth: dataset.outlineWidth,
-				label:'bob',
 			};
 
 			me.updateElementGeometry(element, index, reset);
