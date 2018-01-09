@@ -75,10 +75,13 @@
 			type: 'candlestick',
 			data: {
 				datasets: [{
-					upCandleColor: "#11fa",
-					downCandleColor: "#fb8a",
-					outlineCandleColor: "#000a",
-					outlineCandleWidth: 2,
+					color: {
+						up: '#11f',
+						down: '#fb8',
+						linear: '#000',
+						outline: '#000',
+					},
+					outlineWidth: 2,
 					label: "CHRT - Chart.js Corporation",
 					data: data
 				}]

@@ -5,18 +5,13 @@ module.exports = function(Chart) {
 	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 
-	globalOpts.elements.ohlc = {
+	globalOpts.elements.ohlc = Object.assign(globalOpts.elements.financial, {
 		lineWidth: 2,
 		armLength: null,
 		armLengthRatio: 0.90,
-		color: {
-			up: globalOpts.elements.candlestick.upCandleColor,
-			linear: '#888',
-			down: globalOpts.elements.candlestick.downCandleColor,
-		}
-	};
-	
-	Chart.elements.ohlc = Chart.elements.Candlestick.extend({
+	});
+
+	Chart.elements.ohlc = Chart.elements.financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;

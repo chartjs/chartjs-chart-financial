@@ -13,7 +13,46 @@
 
 module.exports = function(Chart) {
 
-	Chart.defaults.candlestick = {
+	Chart.defaults.candlestick = Chart.defaults.financial;
+
+	Chart.controllers.candlestick = Chart.controllers.financial.extend({
+		dataElementType: Chart.elements.candlestick,
+		
+		updateElement: function(element, index, reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
+
+			element._xScale = me.getScaleForId(meta.xAxisID);
+			element._yScale = me.getScaleForId(meta.yAxisID);
+			element._datasetIndex = me.index;
+			element._index = index;
+
+			element._model = {
+				datasetLabel: dataset.label || '',
+				//label: '', // to get label value please use dataset.data[index].label
+
+				// Appearance
+				color: dataset.color,
+				outlineWidth: dataset.outlineWidth,
+				label:'bob',
+			};
+
+			me.updateElementGeometry(element, index, reset);
+
+			element.pivot();
+		},
+		
+	});
+
+};
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.defaults.financial = {
 		label: '',
 
 		hover: {
@@ -52,42 +91,16 @@ module.exports = function(Chart) {
 	/**
 	 * This class is based off controller.bar.js from the upstream Chart.js library
 	 */
-	Chart.controllers.candlestick = Chart.controllers.bar.extend({
+	Chart.controllers.financial = Chart.controllers.bar.extend({
 
-		dataElementType: Chart.elements.Candlestick,
-
-		updateElement: function(candle, index, reset) {
-			var me = this;
-			var meta = me.getMeta();
-			var dataset = me.getDataset();
-
-			candle._xScale = me.getScaleForId(meta.xAxisID);
-			candle._yScale = me.getScaleForId(meta.yAxisID);
-			candle._datasetIndex = me.index;
-			candle._index = index;
-
-			candle._model = {
-				datasetLabel: dataset.label || '',
-				//label: '', // to get label value please use dataset.data[index].label
-
-				// Appearance
-				upCandleColor: dataset.upCandleColor,
-				downCandleColor: dataset.downCandleColor,
-				outlineCandleColor: dataset.outlineCandleColor,
-				outlineCandleWidth: dataset.outlineCandleWidth,
-			};
-
-			me.updateElementGeometry(candle, index, reset);
-
-			candle.pivot();
-		},
+		dataElementType: Chart.elements.financial,
 
 		/**
 		 * @private
 		 */
-		updateElementGeometry: function(rectangle, index, reset) {
+		updateElementGeometry: function(element, index, reset) {
 			var me = this;
-			var model = rectangle._model;
+			var model = element._model;
 			var vscale = me.getValueScale();
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();
@@ -144,54 +157,101 @@ module.exports = function(Chart) {
 	});
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 module.exports = function(Chart) {
 
-
-	Chart.defaults.ohlc = Chart.defaults.candlestick;
+	Chart.defaults.ohlc = Chart.defaults.financial;
 	
-	
-	Chart.controllers.ohlc = Chart.controllers.candlestick.extend({
+	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 		
 		dataElementType: Chart.elements.ohlc,
 		
-		updateElement: function(candle, index, reset) {
+		updateElement: function(element, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
 			var dataset = me.getDataset();
-			candle._xScale = me.getScaleForId(meta.xAxisID);
-			candle._yScale = me.getScaleForId(meta.yAxisID);
-			candle._datasetIndex = me.index;
-			candle._index = index;
-			candle._model = {
+			element._xScale = me.getScaleForId(meta.xAxisID);
+			element._yScale = me.getScaleForId(meta.yAxisID);
+			element._datasetIndex = me.index;
+			element._index = index;
+			element._model = {
 				datasetLabel: dataset.label || '',
 				lineWidth: dataset.lineWidth,
 				armLength: dataset.armLength,
 				armLengthRatio: dataset.armLengthRatio,
 				color: dataset.color,
 			};
-			me.updateElementGeometry(candle, index, reset);
-			candle.pivot();
+			me.updateElementGeometry(element, index, reset);
+			element.pivot();
 		},
 		
 	});
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = function(Chart) {
 
-	var helpers = Chart.helpers,
-		globalOpts = Chart.defaults.global;
+	var helpers = Chart.helpers;
+	var globalOpts = Chart.defaults.global;
 
-	globalOpts.elements.candlestick = {
-		upCandleColor: "rgba(80, 160, 115, 1)",
-		downCandleColor: "rgba(215, 85, 65, 1)",
-		outlineCandleColor: "rgba(90, 90, 90, 1)",
-		outlineCandleWidth: 1,
+	globalOpts.elements.candlestick = Object.assign(globalOpts.elements.financial, {
+		color: Object.assign(globalOpts.elements.financial.color, {
+			outline: globalOpts.elements.financial.color.linear,
+		}),
+		outlineWidth: 1,
+	});
+
+	Chart.elements.candlestick = Chart.elements.financial.extend({
+		draw: function() {
+			var ctx = this._chart.ctx;
+			var vm = this._view;
+
+			var x = vm.x;
+			var o = vm.candle.o;
+			var h = vm.candle.h;
+			var l = vm.candle.l;
+			var c = vm.candle.c;
+
+			ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.outline:undefined, globalOpts.elements.candlestick.color.outline);
+			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineWidth, globalOpts.elements.candlestick.outlineWidth);
+			if (c < o) {
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.candlestick.color.up);
+			} else if (c > o) {
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.candlestick.color.down);
+			} else {
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.linear:undefined, globalOpts.elements.candlestick.color.linear);
+			}
+
+			ctx.beginPath();
+			ctx.moveTo(x, h);
+			ctx.lineTo(x, Math.min(o,c));
+			ctx.moveTo(x, l);
+			ctx.lineTo(x, Math.max(o,c));
+			ctx.stroke();
+			ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
+			ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);
+			ctx.closePath();
+		},
+	});
+};
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var globalOpts = Chart.defaults.global;
+
+	globalOpts.elements.financial = {
+		color: {
+			up: "rgba(80, 160, 115, 1)",
+			down: "rgba(215, 85, 65, 1)",
+			linear: "rgba(90, 90, 90, 1)",
+		},
 	};
 
 	function isVertical(bar) {
@@ -201,7 +261,7 @@ module.exports = function(Chart) {
 	/**
 	 * Helper function to get the bounds of the candle
 	 * @private
-	 * @param bar {Chart.Element.Candlestick} the bar
+	 * @param bar {Chart.Element.financial} the bar
 	 * @return {Bounds} bounds of the bar
 	 */
 	function getBarBounds(candle) {
@@ -223,38 +283,8 @@ module.exports = function(Chart) {
 		};
 	}
 
-	Chart.elements.Candlestick = Chart.Element.extend({
-		draw: function() {
-			var ctx = this._chart.ctx;
-			var vm = this._view;
+	Chart.elements.financial = Chart.Element.extend({
 
-
-			var x = vm.x;
-			var o = vm.candle.o;
-			var h = vm.candle.h;
-			var l = vm.candle.l;
-			var c = vm.candle.c;
-
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.candlestick.outlineCandleColor);
-			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineCandleWidth, globalOpts.elements.candlestick.outlineCandleWidth);
-			if (c < o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.upCandleColor, globalOpts.elements.candlestick.upCandleColor);
-			} else if (c > o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.downCandleColor, globalOpts.elements.candlestick.downCandleColor);
-			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.outlineCandleColor, globalOpts.elements.candlestick.outlineCandleColor);
-			}
-
-			ctx.beginPath();
-			ctx.moveTo(x, h);
-			ctx.lineTo(x, Math.min(o,c));
-			ctx.moveTo(x, l);
-			ctx.lineTo(x, Math.max(o,c));
-			ctx.stroke();
-			ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
-			ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);
-			ctx.closePath();
-		},
 		height: function() {
 			var vm = this._view;
 			return vm.base - vm.y;
@@ -320,7 +350,7 @@ module.exports = function(Chart) {
 };
 
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = function(Chart) {
@@ -328,18 +358,13 @@ module.exports = function(Chart) {
 	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 
-	globalOpts.elements.ohlc = {
+	globalOpts.elements.ohlc = Object.assign(globalOpts.elements.financial, {
 		lineWidth: 2,
 		armLength: null,
 		armLengthRatio: 0.90,
-		color: {
-			up: globalOpts.elements.candlestick.upCandleColor,
-			linear: '#888',
-			down: globalOpts.elements.candlestick.downCandleColor,
-		}
-	};
-	
-	Chart.elements.ohlc = Chart.elements.Candlestick.extend({
+	});
+
+	Chart.elements.ohlc = Chart.elements.financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
@@ -376,19 +401,23 @@ module.exports = function(Chart) {
 	});
 };
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var Chart = require('chart.js');
 Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
 
-require('./element.candlestick.js')(Chart);
 require('./scale.financialLinear.js')(Chart);
-require('./controller.candlestick.js')(Chart);
+
+require('./element.financial.js')(Chart);
+require('./element.candlestick.js')(Chart);
 require('./element.ohlc.js')(Chart);
+
+require('./controller.financial.js')(Chart);
+require('./controller.candlestick.js')(Chart);
 require('./controller.ohlc.js')(Chart);
 
-},{"./controller.candlestick.js":2,"./controller.ohlc.js":3,"./element.candlestick.js":4,"./element.ohlc.js":5,"./scale.financialLinear.js":7,"chart.js":1}],7:[function(require,module,exports){
+},{"./controller.candlestick.js":2,"./controller.financial.js":3,"./controller.ohlc.js":4,"./element.candlestick.js":5,"./element.financial.js":6,"./element.ohlc.js":7,"./scale.financialLinear.js":9,"chart.js":1}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = function(Chart) {
@@ -481,4 +510,4 @@ module.exports = function(Chart) {
 
 };
 
-},{}]},{},[6]);
+},{}]},{},[8]);

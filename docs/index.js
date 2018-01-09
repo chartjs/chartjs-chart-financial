@@ -3,10 +3,11 @@ function randomNumber(min, max) {
 }
 
 function randomBar(date, lastClose) {
-	var open = randomNumber(lastClose * .95, lastClose * 1.05);
-	var close = randomNumber(open * .95, open * 1.05);
-	var high = randomNumber(Math.max(open, close), Math.max(open, close) * 1.1);
-	var low = randomNumber(Math.min(open, close) * .9, Math.min(open, close));
+	var interval = 0.1;
+	var open = randomNumber(lastClose * (1-interval/2), lastClose * (1+interval/2));
+	var close = randomNumber(open * (1-interval/2), open * (1+interval/2));
+	var high = randomNumber(Math.max(open, close), Math.max(open, close) * (1+interval));
+	var low = randomNumber(Math.min(open, close) * (1-interval), Math.min(open, close));
 	return {
 		t: date.valueOf(),
 		o: open,
