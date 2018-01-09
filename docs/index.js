@@ -1,31 +1,4 @@
-function randomNumber(min, max) {
-	return Math.random() * (max - min) + min;
-}
-
-function randomBar(date, lastClose) {
-	var interval = 0.1;
-	var open = randomNumber(lastClose * (1-interval/2), lastClose * (1+interval/2));
-	var close = randomNumber(open * (1-interval/2), open * (1+interval/2));
-	var high = randomNumber(Math.max(open, close), Math.max(open, close) * (1+interval));
-	var low = randomNumber(Math.min(open, close) * (1-interval), Math.min(open, close));
-	return {
-		t: date.valueOf(),
-		o: open,
-		h: high,
-		l: low,
-		c: close,
-	};
-}
-
-var dateFormat = 'MMMM DD YYYY';
-var date = moment('April 01 2017', dateFormat);
-var data = [randomBar(date, 30)];
-while (data.length < 60) {
-	date = date.clone().add(1, 'd');
-	if (date.isoWeekday() <= 5) {
-		data.push(randomBar(date, data[data.length - 1].c));
-	}
-}
+var data = getRandomData('April 01 2017', 60);
 
 // Candlestick
 var ctx = document.getElementById("chart1").getContext("2d");

@@ -7,6 +7,7 @@
 	<script src="../moment.js" type="text/javascript"></script>
 	<script src="../Chart.bundle.js" type="text/javascript"></script>
 	<script src="../Chart.Financial.js" type="text/javascript"></script>
+	<script src="../utils.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="../style.css">
 	<link rel="icon" href="../favicon.ico"/>
 </head>
@@ -25,41 +26,7 @@
 	</div>
 
 	<script>
-		function randomNumber(min, max) {
-			return Math.random() * (max - min) + min;
-		}
-
-		function randomBar(date, lastClose) {
-			var open = randomNumber(lastClose * .95, lastClose * 1.05);
-			var close = randomNumber(open * .95, open * 1.05);
-			var high = randomNumber(Math.max(open, close), Math.max(open, close) * 1.1);
-			var low = randomNumber(Math.min(open, close) * .9, Math.min(open, close));
-			return {
-				t: date.valueOf(),
-				o: open,
-				h: high,
-				l: low,
-				c: close,
-			};
-		}
-
-		var dateFormat = 'MMMM DD YYYY';
-		var date = moment('April 01 2017', dateFormat);
-		var data = [randomBar(date, 30)];
-		while (data.length < 60) {
-			date = date.clone().add(1, 'd');
-			if (date.isoWeekday() <= 5) {
-				data.push(randomBar(date, data[data.length - 1].c));
-			}
-		}
-		date = moment('April 01 2017', dateFormat);
-		var dataSmall = [randomBar(date, 30)];
-		while (dataSmall.length < 20) {
-			date = date.clone().add(1, 'd');
-			if (date.isoWeekday() <= 5) {
-				dataSmall.push(randomBar(date, dataSmall[dataSmall.length - 1].c));
-			}
-		}
+		var data = getRandomData('April 01 2017', 60);
 		
 		// OHLC
 		var ctx1 = document.getElementById("chart1").getContext("2d");
@@ -70,9 +37,16 @@
 			data: {
 				datasets: [{
 					label: "CHRTO - Chart.js Corporation, OHLC division",
-					data: data
+					data: data,
+					tooltipLength: 2,
 				}]
-			}
+			},
+			options: {
+				tooltips: {
+					position: 'nearest',
+					mode: 'index',
+				},
+			},
 		});
 
 		// Custom OHLC
@@ -84,7 +58,7 @@
 			data: {
 				datasets: [{
 					label: "CHRTO - Chart.js Corporation, OHLC division",
-					data: dataSmall,
+					data: data,
 					color: {
 						up: '#11f',
 						down: '#fb8',
@@ -94,7 +68,7 @@
 					// armLength hase priority over armLengthRatio
 					// uncommenting the following line will override the length set by armLengthRatio
 					// armLength: 8,
-					lineWidth: 4,
+					lineWidth: 3,
 				}]
 			}
 		});
