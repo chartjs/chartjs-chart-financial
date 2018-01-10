@@ -13,7 +13,11 @@
 
 module.exports = function(Chart) {
 
-	Chart.defaults.candlestick = Chart.defaults.financial;
+	Chart.defaults.candlestick = Object.assign({}, Chart.defaults.financial);
+	Chart.defaults.candlestick.scales = {
+		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
+		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+	};
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
 		dataElementType: Chart.elements.Candlestick,
@@ -170,7 +174,13 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-	Chart.defaults.ohlc = Chart.defaults.financial;
+	Chart.defaults.ohlc = Object.assign({}, Chart.defaults.financial);
+	Chart.defaults.ohlc.scales = {
+		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
+		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+	};
+	Chart.defaults.ohlc.scales.xAxes[0].barPercentage = 1.0;
+	Chart.defaults.ohlc.scales.xAxes[0].categoryPercentage = 1.0;
 
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 
@@ -370,7 +380,7 @@ module.exports = function(Chart) {
 	globalOpts.elements.ohlc = Object.assign(globalOpts.elements.financial, {
 		lineWidth: 2,
 		armLength: null,
-		armLengthRatio: 0.90,
+		armLengthRatio: 0.8,
 	});
 
 	Chart.elements.Ohlc = Chart.elements.Financial.extend({
@@ -386,7 +396,7 @@ module.exports = function(Chart) {
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
 			if (armLength === null) {
-				armLength = vm.width * 0.7 * armLengthRatio;
+				armLength = vm.width * armLengthRatio * 0.5;
 			}
 
 			if (c < o) {

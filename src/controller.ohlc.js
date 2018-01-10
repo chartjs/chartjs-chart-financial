@@ -2,7 +2,13 @@
 
 module.exports = function(Chart) {
 
-	Chart.defaults.ohlc = Chart.defaults.financial;
+	Chart.defaults.ohlc = Object.assign({}, Chart.defaults.financial);
+	Chart.defaults.ohlc.scales = {
+		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
+		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+	};
+	Chart.defaults.ohlc.scales.xAxes[0].barPercentage = 1.0;
+	Chart.defaults.ohlc.scales.xAxes[0].categoryPercentage = 1.0;
 
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 

@@ -26,7 +26,7 @@
 	</div>
 
 	<script>
-		var data = getRandomData('April 01 2017', 60);
+		var data = getRandomData('April 01 2017', 20);
 
 		// OHLC
 		var ctx1 = document.getElementById("chart1").getContext("2d");
@@ -64,11 +64,11 @@
 						down: '#fb8',
 						unchanged: '#000',
 					},
-					armLengthRatio: 0.75,
+					armLengthRatio: 0.5,
 					// armLength hase priority over armLengthRatio
 					// uncommenting the following line will override the length set by armLengthRatio
 					// armLength: 8,
-					lineWidth: 3,
+					lineWidth: 1,
 				}]
 			}
 		});

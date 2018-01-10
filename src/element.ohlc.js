@@ -8,7 +8,7 @@ module.exports = function(Chart) {
 	globalOpts.elements.ohlc = Object.assign(globalOpts.elements.financial, {
 		lineWidth: 2,
 		armLength: null,
-		armLengthRatio: 0.90,
+		armLengthRatio: 0.8,
 	});
 
 	Chart.elements.Ohlc = Chart.elements.Financial.extend({
@@ -24,7 +24,7 @@ module.exports = function(Chart) {
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
 			if (armLength === null) {
-				armLength = vm.width * 0.7 * armLengthRatio;
+				armLength = vm.width * armLengthRatio * 0.5;
 			}
 
 			if (c < o) {
