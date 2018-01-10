@@ -16,7 +16,7 @@ module.exports = function(Chart) {
 	Chart.defaults.candlestick = Chart.defaults.financial;
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
-		dataElementType: Chart.elements.candlestick,
+		dataElementType: Chart.elements.Candlestick,
 
 		updateElement: function(element, index, reset) {
 			var me = this;
@@ -101,7 +101,7 @@ module.exports = function(Chart) {
 	 */
 	Chart.controllers.financial = Chart.controllers.bar.extend({
 
-		dataElementType: Chart.elements.financial,
+		dataElementType: Chart.elements.Financial,
 
 		/**
 		 * @private
@@ -174,7 +174,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 
-		dataElementType: Chart.elements.ohlc,
+		dataElementType: Chart.elements.Ohlc,
 
 		updateElement: function(element, index, reset) {
 			var me = this;
@@ -213,7 +213,7 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.elements.candlestick = Chart.elements.financial.extend({
+	Chart.elements.Candlestick = Chart.elements.Financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
@@ -292,7 +292,7 @@ module.exports = function(Chart) {
 		};
 	}
 
-	Chart.elements.financial = Chart.Element.extend({
+	Chart.elements.Financial = Chart.Element.extend({
 
 		height: function() {
 			var vm = this._view;
@@ -373,7 +373,7 @@ module.exports = function(Chart) {
 		armLengthRatio: 0.90,
 	});
 
-	Chart.elements.ohlc = Chart.elements.financial.extend({
+	Chart.elements.Ohlc = Chart.elements.Financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;

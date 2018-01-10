@@ -11,7 +11,7 @@ module.exports = function(Chart) {
 		armLengthRatio: 0.90,
 	});
 
-	Chart.elements.ohlc = Chart.elements.financial.extend({
+	Chart.elements.Ohlc = Chart.elements.Financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;

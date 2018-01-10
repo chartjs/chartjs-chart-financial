@@ -52,7 +52,7 @@ module.exports = function(Chart) {
 	 */
 	Chart.controllers.financial = Chart.controllers.bar.extend({
 
-		dataElementType: Chart.elements.financial,
+		dataElementType: Chart.elements.Financial,
 
 		/**
 		 * @private

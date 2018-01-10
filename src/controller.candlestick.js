@@ -5,7 +5,7 @@ module.exports = function(Chart) {
 	Chart.defaults.candlestick = Chart.defaults.financial;
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
-		dataElementType: Chart.elements.candlestick,
+		dataElementType: Chart.elements.Candlestick,
 
 		updateElement: function(element, index, reset) {
 			var me = this;

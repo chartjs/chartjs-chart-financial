@@ -6,7 +6,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.ohlc = Chart.controllers.financial.extend({
 
-		dataElementType: Chart.elements.ohlc,
+		dataElementType: Chart.elements.Ohlc,
 
 		updateElement: function(element, index, reset) {
 			var me = this;

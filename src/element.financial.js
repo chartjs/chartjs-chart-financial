@@ -42,7 +42,7 @@ module.exports = function(Chart) {
 		};
 	}
 
-	Chart.elements.financial = Chart.Element.extend({
+	Chart.elements.Financial = Chart.Element.extend({
 
 		height: function() {
 			var vm = this._view;

@@ -12,7 +12,7 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.elements.candlestick = Chart.elements.financial.extend({
+	Chart.elements.Candlestick = Chart.elements.Financial.extend({
 		draw: function() {
 			var ctx = this._chart.ctx;
 			var vm = this._view;
