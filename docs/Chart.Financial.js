@@ -81,15 +81,15 @@ module.exports = function(Chart) {
 					var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
 
-					var f = data.datasets[tooltipItem.datasetIndex].tooltipLength;
-					if(f !== undefined) {
-						o = o.toFixed(f);
-						h = h.toFixed(f);
-						l = l.toFixed(f);
-						c = c.toFixed(f);
+					var fractionalDigitsCount = data.datasets[tooltipItem.datasetIndex].fractionalDigitsCount;
+					if(fractionalDigitsCount !== undefined) {
+						fractionalDigitsCount = Math.max(0, Math.min(100, fractionalDigitsCount));
+						o = o.toFixed(fractionalDigitsCount);
+						h = h.toFixed(fractionalDigitsCount);
+						l = l.toFixed(fractionalDigitsCount);
+						c = c.toFixed(fractionalDigitsCount);
 					}
 
-					//return ` O ${o} H ${h} L ${l} C ${c}`;
 					return ' O: ' + o + '    H: ' + h + '    L: ' + l + '    C: ' + c;
 				}
 			}
@@ -260,6 +260,7 @@ module.exports = function(Chart) {
 			down: "rgba(215, 85, 65, 1)",
 			linear: "rgba(90, 90, 90, 1)",
 		},
+		fractionalDigitsCount: undefined,
 	};
 
 	function isVertical(bar) {

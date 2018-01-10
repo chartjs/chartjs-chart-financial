@@ -10,6 +10,7 @@ module.exports = function(Chart) {
 			down: "rgba(215, 85, 65, 1)",
 			linear: "rgba(90, 90, 90, 1)",
 		},
+		fractionalDigitsCount: undefined,
 	};
 
 	function isVertical(bar) {
