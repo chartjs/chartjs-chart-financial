@@ -26,6 +26,6 @@ module.exports = function(Chart) {
 			me.updateElementGeometry(element, index, reset);
 			element.pivot();
 		},
-		
+
 	});
 };

@@ -17,7 +17,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
 		dataElementType: Chart.elements.candlestick,
-		
+
 		updateElement: function(element, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -41,7 +41,7 @@ module.exports = function(Chart) {
 
 			element.pivot();
 		},
-		
+
 	});
 
 };
@@ -80,7 +80,7 @@ module.exports = function(Chart) {
 					var h = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].h;
 					var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
-					
+
 					var f = data.datasets[tooltipItem.datasetIndex].tooltipLength;
 					if(f !== undefined) {
 						o = o.toFixed(f);
@@ -194,7 +194,7 @@ module.exports = function(Chart) {
 			me.updateElementGeometry(element, index, reset);
 			element.pivot();
 		},
-		
+
 	});
 };
 
@@ -485,7 +485,7 @@ module.exports = function(Chart) {
 			// For the financial chart we have rawValue.h (hi) and rawValue.l (low) for each point
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {			
+				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
 					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;

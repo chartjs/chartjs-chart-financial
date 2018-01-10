@@ -4,18 +4,23 @@ function randomNumber(min, max) {
 	return Math.random() * (max - min) + min;
 }
 
-function randomBar(date, lastClose) {
+function getRandomBarNoTime(lastClose) {
 	var open = randomNumber(lastClose * .95, lastClose * 1.05);
 	var close = randomNumber(open * .95, open * 1.05);
 	var high = randomNumber(Math.max(open, close), Math.max(open, close) * 1.1);
 	var low = randomNumber(Math.min(open, close) * .9, Math.min(open, close));
 	return {
-		t: date.valueOf(),
 		o: open,
 		h: high,
 		l: low,
 		c: close,
 	};
+}
+
+function randomBar(date, lastClose) {
+	var bar = getRandomBarNoTime(lastClose);
+	bar.t = date.valueOf();
+	return bar;
 }
 
 function getRandomData(date, count) {

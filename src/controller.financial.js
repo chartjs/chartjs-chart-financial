@@ -31,7 +31,7 @@ module.exports = function(Chart) {
 					var h = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].h;
 					var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
-					
+
 					var f = data.datasets[tooltipItem.datasetIndex].tooltipLength;
 					if(f !== undefined) {
 						o = o.toFixed(f);

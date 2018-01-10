@@ -6,7 +6,7 @@ module.exports = function(Chart) {
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
 		dataElementType: Chart.elements.candlestick,
-		
+
 		updateElement: function(element, index, reset) {
 			var me = this;
 			var meta = me.getMeta();
@@ -30,7 +30,7 @@ module.exports = function(Chart) {
 
 			element.pivot();
 		},
-		
+
 	});
 
 };
