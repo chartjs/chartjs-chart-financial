@@ -7,7 +7,7 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.candlestick = Object.assign(globalOpts.elements.financial, {
 		color: Object.assign(globalOpts.elements.financial.color, {
-			outline: globalOpts.elements.financial.color.linear,
+			outline: globalOpts.elements.financial.color.unchanged,
 		}),
 		outlineWidth: 1,
 	});
@@ -30,7 +30,7 @@ module.exports = function(Chart) {
 			} else if (c > o) {
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.candlestick.color.linear);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 			}
 
 			ctx.beginPath();

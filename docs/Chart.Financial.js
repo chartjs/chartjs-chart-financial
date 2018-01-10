@@ -208,7 +208,7 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.candlestick = Object.assign(globalOpts.elements.financial, {
 		color: Object.assign(globalOpts.elements.financial.color, {
-			outline: globalOpts.elements.financial.color.linear,
+			outline: globalOpts.elements.financial.color.unchanged,
 		}),
 		outlineWidth: 1,
 	});
@@ -231,7 +231,7 @@ module.exports = function(Chart) {
 			} else if (c > o) {
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.candlestick.color.linear);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 			}
 
 			ctx.beginPath();
@@ -258,7 +258,7 @@ module.exports = function(Chart) {
 		color: {
 			up: "rgba(80, 160, 115, 1)",
 			down: "rgba(215, 85, 65, 1)",
-			linear: "rgba(90, 90, 90, 1)",
+			unchanged: "rgba(90, 90, 90, 1)",
 		},
 		fractionalDigitsCount: undefined,
 	};
@@ -394,7 +394,7 @@ module.exports = function(Chart) {
 			} else if (c > o) {
 				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.ohlc.color.down);
 			} else {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.ohlc.color.linear);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts.elements.ohlc.color.unchanged);
 			}
 			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 

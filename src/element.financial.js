@@ -8,7 +8,7 @@ module.exports = function(Chart) {
 		color: {
 			up: "rgba(80, 160, 115, 1)",
 			down: "rgba(215, 85, 65, 1)",
-			linear: "rgba(90, 90, 90, 1)",
+			unchanged: "rgba(90, 90, 90, 1)",
 		},
 		fractionalDigitsCount: undefined,
 	};
