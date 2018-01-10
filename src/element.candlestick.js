@@ -23,14 +23,14 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.outline:undefined, globalOpts.elements.candlestick.color.outline);
+			ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.outline : undefined, globalOpts.elements.candlestick.color.outline);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineWidth, globalOpts.elements.candlestick.outlineWidth);
 			if (c < o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.candlestick.color.up);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
 			} else if (c > o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.candlestick.color.down);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.linear:undefined, globalOpts.elements.candlestick.color.linear);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.candlestick.color.linear);
 			}
 
 			ctx.beginPath();

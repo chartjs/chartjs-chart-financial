@@ -82,7 +82,7 @@ module.exports = function(Chart) {
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
 
 					var fractionalDigitsCount = data.datasets[tooltipItem.datasetIndex].fractionalDigitsCount;
-					if(fractionalDigitsCount !== undefined) {
+					if (fractionalDigitsCount !== undefined) {
 						fractionalDigitsCount = Math.max(0, Math.min(100, fractionalDigitsCount));
 						o = o.toFixed(fractionalDigitsCount);
 						h = h.toFixed(fractionalDigitsCount);
@@ -224,14 +224,14 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.outline:undefined, globalOpts.elements.candlestick.color.outline);
+			ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.outline : undefined, globalOpts.elements.candlestick.color.outline);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.outlineWidth, globalOpts.elements.candlestick.outlineWidth);
 			if (c < o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.candlestick.color.up);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
 			} else if (c > o) {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.candlestick.color.down);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 			} else {
-				ctx.fillStyle = helpers.getValueOrDefault(vm.color?vm.color.linear:undefined, globalOpts.elements.candlestick.color.linear);
+				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.candlestick.color.linear);
 			}
 
 			ctx.beginPath();
@@ -385,16 +385,16 @@ module.exports = function(Chart) {
 			var c = vm.candle.c;
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
-			if(armLength === null) {
+			if (armLength === null) {
 				armLength = vm.width * 0.7 * armLengthRatio;
 			}
 
 			if (c < o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.up:undefined, globalOpts.elements.ohlc.color.up);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.ohlc.color.up);
 			} else if (c > o) {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.down:undefined, globalOpts.elements.ohlc.color.down);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.ohlc.color.down);
 			} else {
-				ctx.strokeStyle = helpers.getValueOrDefault(vm.color?vm.color.linear:undefined, globalOpts.elements.ohlc.color.linear);
+				ctx.strokeStyle = helpers.getValueOrDefault(vm.color ? vm.color.linear : undefined, globalOpts.elements.ohlc.color.linear);
 			}
 			ctx.lineWidth = helpers.getValueOrDefault(vm.lineWidth, globalOpts.elements.ohlc.lineWidth);
 

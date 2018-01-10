@@ -33,7 +33,7 @@ module.exports = function(Chart) {
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
 
 					var fractionalDigitsCount = data.datasets[tooltipItem.datasetIndex].fractionalDigitsCount;
-					if(fractionalDigitsCount !== undefined) {
+					if (fractionalDigitsCount !== undefined) {
 						fractionalDigitsCount = Math.max(0, Math.min(100, fractionalDigitsCount));
 						o = o.toFixed(fractionalDigitsCount);
 						h = h.toFixed(fractionalDigitsCount);
