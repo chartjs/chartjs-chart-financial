@@ -27,7 +27,8 @@ module.exports = function(Chart) {
 
 				// Appearance
 				color: dataset.color,
-				border: dataset.border,
+				borderColor: dataset.borderColor,
+				borderWidth: dataset.borderWidth,
 			};
 
 			me.updateElementGeometry(element, index, reset);

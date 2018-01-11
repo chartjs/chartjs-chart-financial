@@ -38,7 +38,8 @@ module.exports = function(Chart) {
 
 				// Appearance
 				color: dataset.color,
-				border: dataset.border,
+				borderColor: dataset.borderColor,
+				borderWidth: dataset.borderWidth,
 			};
 
 			me.updateElementGeometry(element, index, reset);
@@ -217,10 +218,8 @@ module.exports = function(Chart) {
 	var globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.candlestick = Object.assign(globalOpts.elements.financial, {
-		border: {
-			color: globalOpts.elements.financial.color.unchanged,
-			width: 1,
-		}
+		borderColor: globalOpts.elements.financial.color.unchanged,
+		borderWidth: 1,
 	});
 
 	Chart.elements.Candlestick = Chart.elements.Financial.extend({
@@ -234,8 +233,8 @@ module.exports = function(Chart) {
 			var l = vm.candle.l;
 			var c = vm.candle.c;
 
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.border ? vm.border.color : undefined, globalOpts.elements.candlestick.border.color);
-			ctx.lineWidth = helpers.getValueOrDefault(vm.border ? vm.border.width : undefined, globalOpts.elements.candlestick.border.width);
+			ctx.strokeStyle = helpers.getValueOrDefault(vm.borderColor, globalOpts.elements.candlestick.borderColor);
+			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.candlestick.borderWidth);
 			if (c < o) {
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
 			} else if (c > o) {
