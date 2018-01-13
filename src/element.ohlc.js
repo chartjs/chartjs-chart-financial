@@ -24,6 +24,12 @@ module.exports = function(Chart) {
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
 			if (armLength === null) {
+				// The width of an ohlc is affected by barPercentage and categoryPercentage
+				// This behavior is caused by extending controller.financial, which extends controller.bar
+				// barPercentage and categoryPercentage are now set to 1.0 (see controller.ohlc)
+				// and armLengthRatio is multipled by 0.5,
+				// so that when armLengthRatio=1.0, the arms from neighbour ohcl touch,
+				// and when armLengthRatio=0.0, ohcl are just vertical lines.
 				armLength = vm.width * armLengthRatio * 0.5;
 			}
 
