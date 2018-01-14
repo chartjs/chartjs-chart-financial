@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Financial > OHLC | Chart.js sample</title>
+	<script src="../moment.js" type="text/javascript"></script>
+	<script src="../Chart.js" type="text/javascript"></script>
+	<script src="../Chart.Financial.js" type="text/javascript"></script>
+	<script src="../utils.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	<link rel="icon" href="../favicon.ico"/>
+</head>
+<body>
+
+	<a href="../index.html">Home</a>
+	<div class="content">
+		<h2>OHLC</h2>
+		<div style="width:1000px">
+			<canvas id="chart1"></canvas>
+		<div>
+		<h2>Custom OHLC</h2>
+		<div style="width:1000px">
+			<canvas id="chart2"></canvas>
+		<div>
+	</div>
+
+	<script>
+		var data = getRandomData('April 01 2017', 20);
+
+		// OHLC
+		var ctx1 = document.getElementById("chart1").getContext("2d");
+		ctx1.canvas.width = 1000;
+		ctx1.canvas.height = 250;
+		new Chart(ctx1, {
+			type: 'ohlc',
+			data: {
+				datasets: [{
+					label: "CHRTO - Chart.js Corporation, OHLC division",
+					data: data,
+					fractionalDigitsCount: 2,
+				}]
+			},
+			options: {
+				tooltips: {
+					position: 'nearest',
+					mode: 'index',
+				},
+			},
+		});
+
+		// Custom OHLC
+		var ctx2 = document.getElementById("chart2").getContext("2d");
+		ctx2.canvas.width = 1000;
+		ctx2.canvas.height = 250;
+		var chart2 = new Chart(ctx2, {
+			type: 'ohlc',
+			data: {
+				datasets: [{
+					label: "CHRTO - Chart.js Corporation, OHLC division",
+					data: data,
+					color: {
+						up: '#11f',
+						down: '#fb8',
+						unchanged: '#000',
+					},
+					armLengthRatio: 0.5,
+					// armLength hase priority over armLengthRatio
+					// uncommenting the following line will override the length set by armLengthRatio
+					// armLength: 8,
+					lineWidth: 1,
+				}]
+			}
+		});
+
+	</script>
+</body>

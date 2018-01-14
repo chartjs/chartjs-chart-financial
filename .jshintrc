@@ -1,4 +1,5 @@
 {
 	"browser": true,
-	"node": true
+	"node": true,
+	"unused": true
 }

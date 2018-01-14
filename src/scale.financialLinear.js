@@ -57,17 +57,17 @@ module.exports = function(Chart) {
 			// For the financial chart we have rawValue.h (hi) and rawValue.l (low) for each point
 			helpers.each(datasets, function(dataset, datasetIndex) {
 				var meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {			
-					helpers.each(dataset.data, function(rawValue, index) {
+				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
+					helpers.each(dataset.data, function(rawValue) {
 						var high = rawValue.h;
 						var low = rawValue.l;
-			
+
 						if (me.min === null) {
 							me.min = low;
 						} else if (low < me.min) {
 							me.min = low;
 						}
-		
+
 						if (me.max === null) {
 							me.max = high;
 						} else if (high > me.max) {

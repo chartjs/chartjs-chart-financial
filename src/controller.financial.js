@@ -1,7 +1,5 @@
 ﻿'use strict';
 
-var helpers = Chart.helpers;
-
 module.exports = function(Chart) {
 
 	Chart.defaults.financial = {
@@ -34,7 +32,16 @@ module.exports = function(Chart) {
 					var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
 					var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
 
-					return ' O ' + o + ' H ' + h + ' L ' + l + ' C ' + c;
+					var fractionalDigitsCount = data.datasets[tooltipItem.datasetIndex].fractionalDigitsCount;
+					if (fractionalDigitsCount !== undefined) {
+						fractionalDigitsCount = Math.max(0, Math.min(100, fractionalDigitsCount));
+						o = o.toFixed(fractionalDigitsCount);
+						h = h.toFixed(fractionalDigitsCount);
+						l = l.toFixed(fractionalDigitsCount);
+						c = c.toFixed(fractionalDigitsCount);
+					}
+
+					return ' O: ' + o + '    H: ' + h + '    L: ' + l + '    C: ' + c;
 				}
 			}
 		}
@@ -45,42 +52,14 @@ module.exports = function(Chart) {
 	 */
 	Chart.controllers.financial = Chart.controllers.bar.extend({
 
-		dataElementType: Chart.elements.Candlestick,
-
-		updateElement: function(candle, index, reset) {
-			var me = this;
-			var chart = me.chart;
-			var meta = me.getMeta();
-			var dataset = me.getDataset();
-			var custom = candle.custom || {};
-
-			candle._xScale = me.getScaleForId(meta.xAxisID);
-			candle._yScale = me.getScaleForId(meta.yAxisID);
-			candle._datasetIndex = me.index;
-			candle._index = index;
-
-			candle._model = {
-				datasetLabel: dataset.label || '',
-				//label: '', // to get label value please use dataset.data[index].label
-
-				// Appearance
-				upCandleColor: dataset.upCandleColor,
-				downCandleColor: dataset.downCandleColor,
-				outlineCandleColor: dataset.outlineCandleColor,
-				outlineCandleWidth: dataset.outlineCandleWidth,
-			};
-
-			me.updateElementGeometry(candle, index, reset);
-
-			candle.pivot();
-		},
+		dataElementType: Chart.elements.Financial,
 
 		/**
 		 * @private
 		 */
-		updateElementGeometry: function(rectangle, index, reset) {
+		updateElementGeometry: function(element, index, reset) {
 			var me = this;
-			var model = rectangle._model;
+			var model = element._model;
 			var vscale = me.getValueScale();
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();

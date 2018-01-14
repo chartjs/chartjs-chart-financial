@@ -2,7 +2,7 @@
 
 Chart.js module for charting financial securities
 
-Currently supports the Candlestick element. Pull requests are welcomed to add support for the OHLC element
+Currently supports Candlestick and OHLC elements
 
 ## Usage and Roadmap
 
@@ -12,7 +12,7 @@ Chart.js 2.7.0 added our [timeseries scale](https://github.com/chartjs/Chart.js/
 
 We would like to add better tick/label generation before having an initial release.
 
-As we near an initial release we will add documentation. For now, please see the samples directory.
+As we near an initial release we will add documentation. For now, please see the docs directory.
 
 ## Comparison
 
@@ -28,3 +28,7 @@ We are aiming to make Chart.js the only popular JavaScript library that is both 
 npm install
 gulp
 ```
+
+## Examples
+
+Out of the box examples are available here : https://chartjs.github.io/chartjs-chart-financial/
