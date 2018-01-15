@@ -1,6 +1,7 @@
 ﻿'use strict';
 
 module.exports = function(Chart) {
+	var helpers = Chart.helpers;
 
 	Chart.defaults.financial = {
 		label: '',
