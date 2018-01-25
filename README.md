@@ -1,8 +1,6 @@
 # Chart.js Financial Charting
 
-Chart.js module for charting financial securities
-
-Currently supports Candlestick and OHLC elements
+Chart.js module for Candlestick and OHLC charts
 
 ## Usage and Roadmap
 
@@ -35,4 +33,4 @@ gulp
 
 ## Examples
 
-Out of the box examples are available here : https://chartjs.github.io/chartjs-chart-financial/
+Out of the box examples are available here: https://chartjs.github.io/chartjs-chart-financial/
