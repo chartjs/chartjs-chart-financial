@@ -8,7 +8,7 @@ describe('FinancialLinear Scale', function() {
 
 	it('Should have the correct min/max values', function() {
 		var chart = window.acquireChart({
-			type: 'financial',
+			type: 'candlestick',
 			data: {
 				datasets: [{
 					yAxisID: 'yScale0',
