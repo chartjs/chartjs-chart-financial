@@ -1,12 +1,12 @@
-describe('Financial controller tests', function () {
-	it('Should be constructed', function () {
+describe('Financial controller tests', function() {
+	it('Should be constructed', function() {
 		var chart = {
 			data: {
 				datasets: [{
 					data: []
 				}]
 			},
-			getDatasetMeta: function (datasetIndex) {
+			getDatasetMeta: function(datasetIndex) {
 				this.data.datasets[datasetIndex].meta = this.data.datasets[datasetIndex].meta || {
 					data: [],
 					dataset: null
@@ -52,10 +52,11 @@ describe('Financial controller tests', function () {
 				return this.data.datasets[datasetIndex].meta;
 			},
 			config: {
-				type: 'financial'
+				type: 'candlestick'
 			},
 		};
 
+		new Chart.controllers.candlestick(chart, 0);
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(10);
 		for (var i = 0; i < meta.data.length; i++) {
