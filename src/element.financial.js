@@ -6,9 +6,9 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.financial = {
 		color: {
-			up: "rgba(80, 160, 115, 1)",
-			down: "rgba(215, 85, 65, 1)",
-			unchanged: "rgba(90, 90, 90, 1)",
+			up: 'rgba(80, 160, 115, 1)',
+			down: 'rgba(215, 85, 65, 1)',
+			unchanged: 'rgba(90, 90, 90, 1)',
 		},
 		fractionalDigitsCount: undefined,
 	};
@@ -91,7 +91,7 @@ module.exports = function(Chart) {
 			x = vm.x - halfWidth;
 			y = (vm.candle.h + vm.candle.l) / 2;
 
-			return { x: x, y: y };
+			return {x: x, y: y};
 		},
 		getArea: function() {
 			var vm = this._view;

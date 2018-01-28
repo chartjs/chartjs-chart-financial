@@ -45,9 +45,9 @@ module.exports = function(Chart) {
 			ctx.beginPath();
 			ctx.moveTo(x, h);
 			ctx.lineTo(x, l);
-			ctx.moveTo(x-armLength, o);
+			ctx.moveTo(x - armLength, o);
 			ctx.lineTo(x, o);
-			ctx.moveTo(x+armLength, c);
+			ctx.moveTo(x + armLength, c);
 			ctx.lineTo(x, c);
 			ctx.stroke();
 		},

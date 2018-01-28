@@ -4,8 +4,8 @@ module.exports = function(Chart) {
 
 	Chart.defaults.candlestick = Object.assign({}, Chart.defaults.financial);
 	Chart.defaults.candlestick.scales = {
-		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
-		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+		xAxes: [Object.assign({}, Chart.defaults.financial.scales.xAxes[0])],
+		yAxes: [Object.assign({}, Chart.defaults.financial.scales.yAxes[0])]
 	};
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
@@ -23,7 +23,7 @@ module.exports = function(Chart) {
 
 			element._model = {
 				datasetLabel: dataset.label || '',
-				//label: '', // to get label value please use dataset.data[index].label
+				// label: '', // to get label value please use dataset.data[index].label
 
 				// Appearance
 				color: dataset.color,

@@ -33,9 +33,9 @@ module.exports = function(Chart) {
 
 			ctx.beginPath();
 			ctx.moveTo(x, h);
-			ctx.lineTo(x, Math.min(o,c));
+			ctx.lineTo(x, Math.min(o, c));
 			ctx.moveTo(x, l);
-			ctx.lineTo(x, Math.max(o,c));
+			ctx.lineTo(x, Math.max(o, c));
 			ctx.stroke();
 			ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
 			ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);

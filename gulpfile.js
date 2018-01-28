@@ -1,8 +1,8 @@
 var browserify = require('browserify'),
   concat = require('gulp-concat'),
+  eslint = require('gulp-eslint'),
   gulp = require('gulp'),
   insert = require('gulp-insert'),
-  jshint = require('gulp-jshint'),
   karma = require('karma'),
   package = require('./package.json'),
   path = require('path'),
@@ -10,7 +10,7 @@ var browserify = require('browserify'),
   source = require('vinyl-source-stream');
   streamify = require('gulp-streamify'),
   uglify = require('gulp-uglify'),
-  jscs = require('gulp-jscs');
+  yargs = require('yargs');
 
 var srcDir = './src/';
 var srcFiles = srcDir + '**.js';
@@ -21,17 +21,23 @@ var header = "/*!\n\
  * chartjs-chart-financial\n\
  * Version: {{ version }}\n\
  *\n\
- * Copyright 2017 Ben McCann\n\
+ * Copyright 2017 chartjs-chart-financial contributors\n\
  * Released under the MIT license\n\
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
-gulp.task('default', ['build', 'jshint', 'jscs', 'watch']);
+gulp.task('default', ['build', 'watch']);
 gulp.task('build', buildTask);
-gulp.task('jshint', jsHintTask);
-gulp.task('jscs', jscsTask);
+gulp.task('lint', lintTask);
 gulp.task('watch', watchTask);
-gulp.task('test', testTask);
+gulp.task('test', ['lint', 'unittest']);
+gulp.task('unittest', unittestTask);
+
+var argv = yargs
+  .option('force-output', {default: false})
+  .option('silent-errors', {default: false})
+  .option('verbose', {default: false})
+  .argv
 
 function buildTask() {
   var nonBundled = browserify('./src/index.js')
@@ -50,20 +56,27 @@ function buildTask() {
 
 }
 
-function watchTask() {
-  return gulp.watch(srcFiles, ['build', 'jshint', 'jscs']);
-}
+function lintTask() {
+  var files = [
+//    'docs/**/*.js',
+    'src/**/*.js'
+//    'test/**/*.js'
+  ];
 
-function jsHintTask() {
-  return gulp.src(srcFiles)
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
-}
+  // NOTE(SB) codeclimate has 'complexity' and 'max-statements' eslint rules way too strict
+  // compare to what the current codebase can support, and since it's not straightforward
+  // to fix, let's turn them as warnings and rewrite code later progressively.
+  var options = {
+    rules: {
+      'complexity': [1, 10],
+      'max-statements': [1, 30]
+    }
+  };
 
-function jscsTask() {
-  return gulp.src(srcFiles)
-    .pipe(jscs())
-    .pipe(jscs.reporter());
+  return gulp.src(files)
+    .pipe(eslint(options))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 }
 
 function startTest() {
@@ -76,14 +89,22 @@ function startTest() {
   );
 }
 
-function runTest(done, singleRun) {
-    new karma.Server({
-        configFile: path.join(__dirname, 'karma.conf.js'),
-        files: startTest(),
-        singleRun: singleRun
-    }, done).start();
+function unittestTask(done) {
+  new karma.Server({
+    configFile: path.join(__dirname, 'karma.conf.js'),
+    singleRun: !argv.watch,
+    files: startTest(),
+    args: {
+      coverage: !!argv.coverage
+    }
+  },
+  // https://github.com/karma-runner/gulp-karma/issues/18
+  function(error) {
+    error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
+    done(error);
+  }).start();
 }
 
-function testTask(done) {
-    runTest(done, true);
+function watchTask() {
+  return gulp.watch(srcFiles, ['build']);
 }

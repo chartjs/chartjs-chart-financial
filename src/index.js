@@ -1,7 +1,7 @@
 'use strict';
 
 var Chart = require('chart.js');
-Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+Chart = typeof Chart === 'function' ? Chart : window.Chart;
 
 require('./scale.financialLinear.js')(Chart);
 
