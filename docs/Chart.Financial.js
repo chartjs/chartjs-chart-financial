@@ -2,7 +2,7 @@
  * chartjs-chart-financial
  * Version: 0.1.0
  *
- * Copyright 2017 Ben McCann
+ * Copyright 2017 chartjs-chart-financial contributors
  * Released under the MIT license
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md
  */
@@ -15,8 +15,8 @@ module.exports = function(Chart) {
 
 	Chart.defaults.candlestick = Object.assign({}, Chart.defaults.financial);
 	Chart.defaults.candlestick.scales = {
-		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
-		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+		xAxes: [Object.assign({}, Chart.defaults.financial.scales.xAxes[0])],
+		yAxes: [Object.assign({}, Chart.defaults.financial.scales.yAxes[0])]
 	};
 
 	Chart.controllers.candlestick = Chart.controllers.financial.extend({
@@ -34,7 +34,7 @@ module.exports = function(Chart) {
 
 			element._model = {
 				datasetLabel: dataset.label || '',
-				//label: '', // to get label value please use dataset.data[index].label
+				// label: '', // to get label value please use dataset.data[index].label
 
 				// Appearance
 				color: dataset.color,
@@ -177,8 +177,8 @@ module.exports = function(Chart) {
 
 	Chart.defaults.ohlc = Object.assign({}, Chart.defaults.financial);
 	Chart.defaults.ohlc.scales = {
-		xAxes: [ Object.assign({}, Chart.defaults.financial.scales.xAxes[0]) ],
-		yAxes: [ Object.assign({}, Chart.defaults.financial.scales.yAxes[0]) ]
+		xAxes: [Object.assign({}, Chart.defaults.financial.scales.xAxes[0])],
+		yAxes: [Object.assign({}, Chart.defaults.financial.scales.yAxes[0])]
 	};
 	Chart.defaults.ohlc.scales.xAxes[0].barPercentage = 1.0;
 	Chart.defaults.ohlc.scales.xAxes[0].categoryPercentage = 1.0;
@@ -245,9 +245,9 @@ module.exports = function(Chart) {
 
 			ctx.beginPath();
 			ctx.moveTo(x, h);
-			ctx.lineTo(x, Math.min(o,c));
+			ctx.lineTo(x, Math.min(o, c));
 			ctx.moveTo(x, l);
-			ctx.lineTo(x, Math.max(o,c));
+			ctx.lineTo(x, Math.max(o, c));
 			ctx.stroke();
 			ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
 			ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);
@@ -265,9 +265,9 @@ module.exports = function(Chart) {
 
 	globalOpts.elements.financial = {
 		color: {
-			up: "rgba(80, 160, 115, 1)",
-			down: "rgba(215, 85, 65, 1)",
-			unchanged: "rgba(90, 90, 90, 1)",
+			up: 'rgba(80, 160, 115, 1)',
+			down: 'rgba(215, 85, 65, 1)',
+			unchanged: 'rgba(90, 90, 90, 1)',
 		},
 		fractionalDigitsCount: undefined,
 	};
@@ -350,7 +350,7 @@ module.exports = function(Chart) {
 			x = vm.x - halfWidth;
 			y = (vm.candle.h + vm.candle.l) / 2;
 
-			return { x: x, y: y };
+			return {x: x, y: y};
 		},
 		getArea: function() {
 			var vm = this._view;
@@ -416,9 +416,9 @@ module.exports = function(Chart) {
 			ctx.beginPath();
 			ctx.moveTo(x, h);
 			ctx.lineTo(x, l);
-			ctx.moveTo(x-armLength, o);
+			ctx.moveTo(x - armLength, o);
 			ctx.lineTo(x, o);
-			ctx.moveTo(x+armLength, c);
+			ctx.moveTo(x + armLength, c);
 			ctx.lineTo(x, c);
 			ctx.stroke();
 		},
@@ -429,7 +429,7 @@ module.exports = function(Chart) {
 'use strict';
 
 var Chart = require('chart.js');
-Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+Chart = typeof Chart === 'function' ? Chart : window.Chart;
 
 require('./scale.financialLinear.js')(Chart);
 
@@ -451,32 +451,7 @@ module.exports = function(Chart) {
 	var defaultConfig = {
 		position: 'left',
 		ticks: {
-			// Copied from Ticks.formatters.linear
-			callback: function(tickValue, index, ticks) {
-				// If we have lots of ticks, don't use the ones
-				var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
-
-				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
-				if (Math.abs(delta) > 1) {
-					if (tickValue !== Math.floor(tickValue)) {
-						// not an integer
-						delta = tickValue - Math.floor(tickValue);
-					}
-				}
-
-				var logDelta = helpers.log10(Math.abs(delta));
-				var tickString = '';
-
-				if (tickValue !== 0) {
-					var numDecimal = -1 * Math.floor(logDelta);
-					numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-					tickString = tickValue.toFixed(numDecimal);
-				} else {
-					tickString = '0'; // never show decimal places for 0
-				}
-
-				return tickString;
-			}
+			callback: Chart.Ticks.formatters.linear
 		}
 	};
 
