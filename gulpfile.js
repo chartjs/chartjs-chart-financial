@@ -37,7 +37,7 @@ var argv = yargs
   .option('force-output', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
-  .argv
+  .argv;
 
 function buildTask() {
   var nonBundled = browserify('./src/index.js')
