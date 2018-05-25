@@ -66,6 +66,9 @@ module.exports = function(Chart) {
 			var ruler = me._ruler || me.getRuler();
 			var vpixels = me.calculateBarValuePixels(me.index, index);
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+			var chart = me.chart;
+			var datasets = chart.data.datasets;
+			var indexData = datasets[me.index].data[index];
 
 			model.horizontal = horizontal;
 			model.base = reset ? base : vpixels.base;
@@ -73,24 +76,10 @@ module.exports = function(Chart) {
 			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
 			model.height = horizontal ? ipixels.size : undefined;
 			model.width = horizontal ? undefined : ipixels.size;
-			model.candle = me.calculateCandleValuesPixels(me.index, index);
-		},
-
-		/**
-		 * @private
-		 */
-		calculateCandleValuesPixels: function(datasetIndex, index) {
-			var me = this;
-			var chart = me.chart;
-			var scale = me.getValueScale();
-			var datasets = chart.data.datasets;
-
-			return {
-				o: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].o)),
-				h: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].h)),
-				l: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].l)),
-				c: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].c))
-			};
+			model.candleOpen = vscale.getPixelForValue(Number(indexData.o));
+			model.candleHigh = vscale.getPixelForValue(Number(indexData.h));
+			model.candleLow = vscale.getPixelForValue(Number(indexData.l));
+			model.candleClose = vscale.getPixelForValue(Number(indexData.c));
 		},
 
 		draw: function() {

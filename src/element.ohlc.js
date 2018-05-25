@@ -17,10 +17,10 @@ module.exports = function(Chart) {
 			var vm = this._view;
 
 			var x = vm.x;
-			var o = vm.candle.o;
-			var h = vm.candle.h;
-			var l = vm.candle.l;
-			var c = vm.candle.c;
+			var o = vm.candleOpen;
+			var h = vm.candleHigh;
+			var l = vm.candleLow;
+			var c = vm.candleClose;
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
 			if (armLength === null) {

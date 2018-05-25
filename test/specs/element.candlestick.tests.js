@@ -22,12 +22,10 @@ describe('Candlestick element tests', function() {
 			x: 10,
 			y: 150,
 			width: 50,
-			candle: {
-				o: 180,
-				h: 100,
-				l: 200,
-				c: 120,
-			}
+			candleOpen: 180,
+			candleHigh: 100,
+			candleLow: 200,
+			candleClose: 120,
 		};
 
 		expect(candle.inRange(10, 130)).toBe(true);
