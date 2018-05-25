@@ -12,7 +12,7 @@ Chart.js 2.7.1 added fixes for timeseries.
 
 Chart.js 2.7.2 added timestamp formatting in tooltips.
 
-We would like to add better tick/label generation when `source:data`, fixes for mixed chart types, [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863), and possibly timezone handling before having an initial release.
+We would like to add better tick/label generation when `source:data`, [fix for hovering](https://github.com/chartjs/Chart.js/pull/5194), fixes for mixed chart types, [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863), and timezone handling before having an initial release.
 
 As we near an initial release we will add documentation. For now, please see the docs directory.
 
