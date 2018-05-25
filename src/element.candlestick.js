@@ -16,10 +16,10 @@ module.exports = function(Chart) {
 			var vm = this._view;
 
 			var x = vm.x;
-			var o = vm.candle.o;
-			var h = vm.candle.h;
-			var l = vm.candle.l;
-			var c = vm.candle.c;
+			var o = vm.candleOpen;
+			var h = vm.candleHigh;
+			var l = vm.candleLow;
+			var c = vm.candleClose;
 
 			ctx.strokeStyle = helpers.getValueOrDefault(vm.borderColor, globalOpts.elements.candlestick.borderColor);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.candlestick.borderWidth);

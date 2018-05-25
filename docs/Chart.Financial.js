@@ -6,7 +6,7 @@
  * Released under the MIT license
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md
  */
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -120,6 +120,9 @@ module.exports = function(Chart) {
 			var ruler = me._ruler || me.getRuler();
 			var vpixels = me.calculateBarValuePixels(me.index, index);
 			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+			var chart = me.chart;
+			var datasets = chart.data.datasets;
+			var indexData = datasets[me.index].data[index];
 
 			model.horizontal = horizontal;
 			model.base = reset ? base : vpixels.base;
@@ -127,24 +130,10 @@ module.exports = function(Chart) {
 			model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
 			model.height = horizontal ? ipixels.size : undefined;
 			model.width = horizontal ? undefined : ipixels.size;
-			model.candle = me.calculateCandleValuesPixels(me.index, index);
-		},
-
-		/**
-		 * @private
-		 */
-		calculateCandleValuesPixels: function(datasetIndex, index) {
-			var me = this;
-			var chart = me.chart;
-			var scale = me.getValueScale();
-			var datasets = chart.data.datasets;
-
-			return {
-				o: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].o)),
-				h: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].h)),
-				l: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].l)),
-				c: scale.getPixelForValue(Number(datasets[datasetIndex].data[index].c))
-			};
+			model.candleOpen = vscale.getPixelForValue(Number(indexData.o));
+			model.candleHigh = vscale.getPixelForValue(Number(indexData.h));
+			model.candleLow = vscale.getPixelForValue(Number(indexData.l));
+			model.candleClose = vscale.getPixelForValue(Number(indexData.c));
 		},
 
 		draw: function() {
@@ -228,10 +217,10 @@ module.exports = function(Chart) {
 			var vm = this._view;
 
 			var x = vm.x;
-			var o = vm.candle.o;
-			var h = vm.candle.h;
-			var l = vm.candle.l;
-			var c = vm.candle.c;
+			var o = vm.candleOpen;
+			var h = vm.candleHigh;
+			var l = vm.candleLow;
+			var c = vm.candleClose;
 
 			ctx.strokeStyle = helpers.getValueOrDefault(vm.borderColor, globalOpts.elements.candlestick.borderColor);
 			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.candlestick.borderWidth);
@@ -289,8 +278,8 @@ module.exports = function(Chart) {
 		var halfWidth = vm.width / 2;
 		x1 = vm.x - halfWidth;
 		x2 = vm.x + halfWidth;
-		y1 = vm.candle.h;
-		y2 = vm.candle.l;
+		y1 = vm.candleHigh;
+		y2 = vm.candleLow;
 
 
 		return {
@@ -348,7 +337,7 @@ module.exports = function(Chart) {
 
 			var halfWidth = vm.width / 2;
 			x = vm.x - halfWidth;
-			y = (vm.candle.h + vm.candle.l) / 2;
+			y = (vm.candleHigh + vm.candleLow) / 2;
 
 			return {x: x, y: y};
 		},
@@ -360,7 +349,7 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return {
 				x: vm.x,
-				y: (vm.candle.h + vm.candle.l) / 2
+				y: (vm.candleHigh + vm.candleLow) / 2
 			};
 		}
 	});
@@ -388,10 +377,10 @@ module.exports = function(Chart) {
 			var vm = this._view;
 
 			var x = vm.x;
-			var o = vm.candle.o;
-			var h = vm.candle.h;
-			var l = vm.candle.l;
-			var c = vm.candle.c;
+			var o = vm.candleOpen;
+			var h = vm.candleHigh;
+			var l = vm.candleLow;
+			var c = vm.candleClose;
 			var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 			var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
 			if (armLength === null) {

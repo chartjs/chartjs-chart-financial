@@ -30,8 +30,8 @@ module.exports = function(Chart) {
 		var halfWidth = vm.width / 2;
 		x1 = vm.x - halfWidth;
 		x2 = vm.x + halfWidth;
-		y1 = vm.candle.h;
-		y2 = vm.candle.l;
+		y1 = vm.candleHigh;
+		y2 = vm.candleLow;
 
 
 		return {
@@ -89,7 +89,7 @@ module.exports = function(Chart) {
 
 			var halfWidth = vm.width / 2;
 			x = vm.x - halfWidth;
-			y = (vm.candle.h + vm.candle.l) / 2;
+			y = (vm.candleHigh + vm.candleLow) / 2;
 
 			return {x: x, y: y};
 		},
@@ -101,7 +101,7 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return {
 				x: vm.x,
-				y: (vm.candle.h + vm.candle.l) / 2
+				y: (vm.candleHigh + vm.candleLow) / 2
 			};
 		}
 	});
