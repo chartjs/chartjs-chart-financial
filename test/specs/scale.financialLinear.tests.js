@@ -13,8 +13,8 @@ describe('FinancialLinear Scale', function() {
 				datasets: [{
 					yAxisID: 'yScale0',
 					data: [
-						{t: 'April 01 2017', o: 70, h: 100, l: 30, c: 50},
-						{t: 'April 02 2017', o: 60, h: 200, l: 40, c: 90},
+						{t: '2017-04-01', o: 70, h: 100, l: 30, c: 50},
+						{t: '2017-04-02', o: 60, h: 200, l: 40, c: 90},
 					]
 				}]
 			},
