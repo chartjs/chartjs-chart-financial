@@ -222,15 +222,31 @@ module.exports = function(Chart) {
 			var l = vm.candleLow;
 			var c = vm.candleClose;
 
-			ctx.strokeStyle = helpers.getValueOrDefault(vm.borderColor, globalOpts.elements.candlestick.borderColor);
-			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.candlestick.borderWidth);
+			var borderColors = vm.borderColor;
+
+			if (typeof borderColors === 'string') {
+				borderColors = {
+					up: borderColors,
+					down: borderColors,
+					unchanged: borderColors
+				};
+			}
+
+			var borderColor;
+
 			if (c < o) {
+				borderColor = helpers.getValueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.color.up);
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
 			} else if (c > o) {
+				borderColor = helpers.getValueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.color.down);
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 			} else {
+				borderColor = helpers.getValueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 				ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 			}
+
+			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.candlestick.borderWidth);
+			ctx.strokeStyle = helpers.getValueOrDefault(borderColor, globalOpts.elements.candlestick.borderColor);
 
 			ctx.beginPath();
 			ctx.moveTo(x, h);
