@@ -14,6 +14,8 @@ Chart.js 2.7.2 added timestamp formatting in tooltips.
 
 Chart.js 2.7.3 included a [fix for hovering](https://github.com/chartjs/Chart.js/pull/5570).
 
+Chart.js 2.8.0 will include datetime adapters. This will allow users to use Luxon instead of Moment in order to get i18n and timezone support
+
 We would like to add better tick/label generation when `source:data`, fixes for mixed chart types, [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863), and timezone handling before having an initial release.
 
 The current work is centered around [providing other datetime implementations for Chart.js](https://github.com/chartjs/Chart.js/pull/5522) to reduce the size of the library and add timezone support.
