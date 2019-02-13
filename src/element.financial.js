@@ -2,6 +2,7 @@
 
 module.exports = function(Chart) {
 
+	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.financial = {
@@ -103,6 +104,11 @@ module.exports = function(Chart) {
 				x: vm.x,
 				y: (vm.candleHigh + vm.candleLow) / 2
 			};
+		},
+		hasValue: function() {
+			return helpers.isNumber(this._model.x) &&
+				helpers.isNumber(this._model.candleHigh) &&
+				helpers.isNumber(this._model.candleLow);
 		}
 	});
 
