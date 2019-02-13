@@ -34,8 +34,9 @@ We are aiming to make Chart.js the only popular JavaScript library that is both 
 
 The plugins below may be particularly interesting to use with financial charts. See [the Chart.js plugin API](https://www.chartjs.org/docs/latest/developers/plugins.html) and [longer list of plugins](https://www.chartjs.org/docs/latest/notes/extensions.html#plugins) for more info about Chart.js plugins generally.
 
-- https://github.com/chartjs/chartjs-plugin-zoom
-- https://github.com/abelheinsbroek/chartjs-plugin-crosshair
+- [chartjs-plugin-zoom](https://github.com/chartjs/chartjs-plugin-zoom)
+- [chartjs-plugin-crosshair](https://github.com/abelheinsbroek/chartjs-plugin-crosshair)
+- [chartjs-plugin-streaming](https://github.com/nagix/chartjs-plugin-streaming) ([demo](https://nagix.github.io/chartjs-plugin-streaming/samples/financial.html))
 
 ## Building
 
