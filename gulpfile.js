@@ -26,12 +26,12 @@ var header = "/*!\n\
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
-gulp.task('default', ['build', 'watch']);
 gulp.task('build', buildTask);
 gulp.task('lint', lintTask);
-gulp.task('watch', watchTask);
-gulp.task('test', ['lint', 'unittest']);
 gulp.task('unittest', unittestTask);
+gulp.task('test', gulp.parallel('lint', 'unittest'));
+gulp.task('watch', watchTask);
+gulp.task('default', gulp.parallel('build'));
 
 var argv = yargs
   .option('force-output', {default: false})
