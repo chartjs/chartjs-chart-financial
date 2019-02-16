@@ -266,6 +266,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
+	var helpers = Chart.helpers;
 	var globalOpts = Chart.defaults.global;
 
 	globalOpts.elements.financial = {
@@ -349,13 +350,10 @@ module.exports = function(Chart) {
 		},
 		getCenterPoint: function() {
 			var vm = this._view;
-			var x, y;
-
-			var halfWidth = vm.width / 2;
-			x = vm.x - halfWidth;
-			y = (vm.candleHigh + vm.candleLow) / 2;
-
-			return {x: x, y: y};
+			return {
+				x: vm.x,
+				y: (vm.candleHigh + vm.candleLow) / 2
+			};
 		},
 		getArea: function() {
 			var vm = this._view;
@@ -365,8 +363,16 @@ module.exports = function(Chart) {
 			var vm = this._view;
 			return {
 				x: vm.x,
-				y: (vm.candleHigh + vm.candleLow) / 2
+				y: (vm.candleOpen + vm.candleClose) / 2
 			};
+		},
+		hasValue: function() {
+			var model = this._model;
+			return helpers.isNumber(model.x) &&
+				helpers.isNumber(model.candleOpen) &&
+				helpers.isNumber(model.candleHigh) &&
+				helpers.isNumber(model.candleLow) &&
+				helpers.isNumber(model.candleClose);
 		}
 	});
 
