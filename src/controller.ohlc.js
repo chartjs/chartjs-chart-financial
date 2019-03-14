@@ -29,7 +29,7 @@ module.exports = function(Chart) {
 				armLengthRatio: dataset.armLengthRatio,
 				color: dataset.color,
 			};
-			me.updateElementGeometry(element, index, reset);
+			me._updateElementGeometry(element, index, reset);
 			element.pivot();
 		},
 

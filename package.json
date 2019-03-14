@@ -9,7 +9,7 @@
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "dependencies": {
-    "chart.js": "^2.7.3"
+    "chart.js": "^2.8.0"
   },
   "devDependencies": {
     "browserify": "^16.2.3",

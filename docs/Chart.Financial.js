@@ -42,7 +42,7 @@ module.exports = function(Chart) {
 				borderWidth: dataset.borderWidth,
 			};
 
-			me.updateElementGeometry(element, index, reset);
+			me._updateElementGeometry(element, index, reset);
 
 			element.pivot();
 		},
@@ -111,10 +111,10 @@ module.exports = function(Chart) {
 		/**
 		 * @private
 		 */
-		updateElementGeometry: function(element, index, reset) {
+		_updateElementGeometry: function(element, index, reset) {
 			var me = this;
 			var model = element._model;
-			var vscale = me.getValueScale();
+			var vscale = me._getValueScale();
 			var base = vscale.getBasePixel();
 			var horizontal = vscale.isHorizontal();
 			var ruler = me._ruler || me.getRuler();
@@ -191,7 +191,7 @@ module.exports = function(Chart) {
 				armLengthRatio: dataset.armLengthRatio,
 				color: dataset.color,
 			};
-			me.updateElementGeometry(element, index, reset);
+			me._updateElementGeometry(element, index, reset);
 			element.pivot();
 		},
 

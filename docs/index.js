@@ -1,5 +1,6 @@
 var candleCount = 60;
-var data = getRandomData('April 01 2017', candleCount);
+var initialDateStr = '01 Apr 2017 00:00 Z';
+var data = getRandomData(initialDateStr, candleCount);
 
 // Candlestick
 var ctx = document.getElementById("chart1").getContext("2d");
@@ -35,12 +36,12 @@ var getRandomInt = function(max) {
 
 document.getElementById('randomizeData').addEventListener('click', function() {
 	candlestickChart.data.datasets.forEach(function(dataset) {
-		dataset.data = getRandomData('April 01 2017', candleCount + getRandomInt(10));
+		dataset.data = getRandomData(initialDateStr, candleCount + getRandomInt(10));
 	});
 	candlestickChart.update();
 
 	ohlcChart.data.datasets.forEach(function(dataset) {
-		dataset.data = getRandomData('April 01 2017', candleCount + getRandomInt(10));
+		dataset.data = getRandomData(initialDateStr, candleCount + getRandomInt(10));
 	});
 	ohlcChart.update();
 });

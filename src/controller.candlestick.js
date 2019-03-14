@@ -31,7 +31,7 @@ module.exports = function(Chart) {
 				borderWidth: dataset.borderWidth,
 			};
 
-			me.updateElementGeometry(element, index, reset);
+			me._updateElementGeometry(element, index, reset);
 
 			element.pivot();
 		},

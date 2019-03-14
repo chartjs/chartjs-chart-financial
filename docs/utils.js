@@ -23,13 +23,12 @@ function randomBar(date, lastClose) {
 	return bar;
 }
 
-function getRandomData(date, count) {
-	var dateFormat = 'MMMM DD YYYY';
-	var date = moment(date, dateFormat);
+function getRandomData(dateStr, count) {
+	var date = luxon.DateTime.fromRFC2822(dateStr);
 	var data = [randomBar(date, 30)];
 	while (data.length < count) {
-		date = date.clone().add(1, 'd');
-		if (date.isoWeekday() <= 5) {
+		date = date.plus({ days: 1 });
+		if (date.weekday <= 5) {
 			data.push(randomBar(date, data[data.length - 1].c));
 		}
 	}

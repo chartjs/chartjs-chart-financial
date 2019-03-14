@@ -4,8 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Financial > OHLC | Chart.js sample</title>
-	<script src="../moment.js" type="text/javascript"></script>
-	<script src="../Chart.js" type="text/javascript"></script>
+	<script src="https://moment.github.io/luxon/global/luxon.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.1.1"></script>
 	<script src="../Chart.Financial.js" type="text/javascript"></script>
 	<script src="../utils.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="../style.css">
@@ -26,7 +27,7 @@
 	</div>
 
 	<script>
-		var data = getRandomData('April 01 2017', 20);
+		var data = getRandomData('01 Apr 2017 00:00 Z', 20);
 
 		// OHLC
 		var ctx1 = document.getElementById("chart1").getContext("2d");
