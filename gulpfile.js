@@ -87,27 +87,18 @@ function lintHtmlTask() {
     }));
 }
 
-function startTest() {
-  return [
-    './node_modules/moment/min/moment.min.js',
-    './test/jasmine.index.js',
-    './src/**/*.js',
-  ].concat(
-    ['./test/specs/**/*.js']
-  );
-}
-
 function unittestTask(done) {
   new karma.Server({
     configFile: path.join(__dirname, 'karma.conf.js'),
     singleRun: !argv.watch,
-    files: startTest(),
     args: {
-      coverage: !!argv.coverage
+      coverage: !!argv.coverage,
+      inputs: (argv.inputs || 'test/specs/**/*.js').split(';'),
+      watch: argv.watch
     }
   },
-  // https://github.com/karma-runner/gulp-karma/issues/18
   function(error) {
+    // https://github.com/karma-runner/gulp-karma/issues/18
     error = error ? new Error('Karma returned with the error code: ' + error) : undefined;
     done(error);
   }).start();

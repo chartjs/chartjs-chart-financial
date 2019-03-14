@@ -12,6 +12,7 @@
     "chart.js": "^2.8.0"
   },
   "devDependencies": {
+    "chartjs-adapter-luxon": "^0.1.1",
     "eslint": "^5.15.1",
     "eslint-config-chartjs": "^0.1.0",
     "eslint-plugin-html": "^5.0.3",
@@ -26,8 +27,11 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "karma-rollup-preprocessor": "^7.0.0",
+    "luxon": "^1.11.4",
     "rollup": "^1.6.0",
     "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-resolve": "^4.0.1",
     "rollup-plugin-terser": "^4.0.4",
     "yargs": "^13.2.2"

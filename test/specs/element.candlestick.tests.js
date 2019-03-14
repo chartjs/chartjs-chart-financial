@@ -1,7 +1,9 @@
+import CandlestickElement from '../../src/element.candlestick';
+
 describe('Candlestick element tests', function() {
 
 	it('Should be constructed', function() {
-		var candle = new Chart.elements.Candlestick({
+		var candle = new CandlestickElement({
 			_datasetIndex: 2,
 			_index: 1
 		});
@@ -12,7 +14,7 @@ describe('Candlestick element tests', function() {
 	});
    
 	it('Should correctly identify as in range', function() {
-		var candle = new Chart.elements.Candlestick({
+		var candle = new CandlestickElement({
 			_datasetIndex: 2,
 			_index: 1
 		});
