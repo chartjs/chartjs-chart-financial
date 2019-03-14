@@ -2,6 +2,7 @@ const concat = require('gulp-concat');
 const eslint = require('gulp-eslint');
 const {exec} = require('child_process');
 const gulp = require('gulp');
+const htmllint = require('gulp-htmllint');
 const karma = require('karma');
 const path = require('path');
 const pkg = require('./package.json');
@@ -22,7 +23,9 @@ const header = "/*!\n\
  */\n";
 
 gulp.task('build', gulp.series(rollupTask, copyDistFilesTask));
-gulp.task('lint', lintTask);
+gulp.task('lint-html', lintHtmlTask);
+gulp.task('lint-js', lintJsTask);
+gulp.task('lint', gulp.parallel('lint-html', 'lint-js'));
 gulp.task('unittest', unittestTask);
 gulp.task('test', gulp.parallel('lint', 'unittest'));
 gulp.task('watch', watchTask);
@@ -53,8 +56,9 @@ function copyDistFilesTask() {
     .pipe(gulp.dest(docsDir));
 }
 
-function lintTask() {
+function lintJsTask() {
   var files = [
+    'docs/**/*.html',
 //    'docs/**/*.js',
     'src/**/*.js'
 //    'test/**/*.js'
@@ -74,6 +78,13 @@ function lintTask() {
     .pipe(eslint(options))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+}
+
+function lintHtmlTask() {
+  return gulp.src('docs/**/*.html')
+    .pipe(htmllint({
+      failOnError: true,
+    }));
 }
 
 function startTest() {
