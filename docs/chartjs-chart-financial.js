@@ -172,7 +172,7 @@ var FinancialController = Chart.controllers.bar.extend({
 		Chart.canvasHelpers.clipArea(ctx, this.chart.chartArea);
 
 		for (; i < ilen; ++i) {
-		d = dataset.data[i].o;
+			d = dataset.data[i].o;
 			if (d !== null && d !== undefined && !isNaN(d)) {
 				elements[i].draw();
 			}

@@ -1,0 +1,10 @@
+extends: chartjs
+
+parserOptions:
+  sourceType: module
+
+env:
+  browser: true
+  node: true
+
+plugins: ['html']

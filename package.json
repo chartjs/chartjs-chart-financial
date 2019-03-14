@@ -14,6 +14,7 @@
   "devDependencies": {
     "eslint": "^5.8.0",
     "eslint-config-chartjs": "^0.1.0",
+    "eslint-plugin-html": "^5.0.0",
     "gulp": "^4.0.0",
     "gulp-concat": ">=2.6.1",
     "gulp-eslint": "^5.0.0",
