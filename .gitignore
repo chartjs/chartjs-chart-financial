@@ -40,5 +40,4 @@ jspm_packages
 .vs
 
 # Build files
-/Chart.Financial.js
-/Chart.Financial.min.js
+dist/

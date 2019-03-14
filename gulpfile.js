@@ -1,23 +1,18 @@
-var browserify = require('browserify'),
-  concat = require('gulp-concat'),
-  eslint = require('gulp-eslint'),
-  gulp = require('gulp'),
-  insert = require('gulp-insert'),
-  karma = require('karma'),
-  package = require('./package.json'),
-  path = require('path'),
-  replace = require('gulp-replace'),
-  source = require('vinyl-source-stream');
-  streamify = require('gulp-streamify'),
-  uglify = require('gulp-uglify'),
-  yargs = require('yargs');
+const concat = require('gulp-concat');
+const eslint = require('gulp-eslint');
+const {exec} = require('child_process');
+const gulp = require('gulp');
+const karma = require('karma');
+const path = require('path');
+const pkg = require('./package.json');
+const yargs = require('yargs');
 
-var srcDir = './src/';
-var srcFiles = srcDir + '**.js';
-var buildDir = './';
-var docsDir = './docs/';
+const srcDir = './src/';
+const srcFiles = srcDir + '**.js';
+const buildDir = './dist/';
+const docsDir = './docs/';
 
-var header = "/*!\n\
+const header = "/*!\n\
  * chartjs-chart-financial\n\
  * Version: {{ version }}\n\
  *\n\
@@ -26,34 +21,36 @@ var header = "/*!\n\
  * https://github.com/chartjs/chartjs-chart-financial/blob/master/LICENSE.md\n\
  */\n";
 
-gulp.task('build', buildTask);
+gulp.task('build', gulp.series(rollupTask, copyDistFilesTask));
 gulp.task('lint', lintTask);
 gulp.task('unittest', unittestTask);
 gulp.task('test', gulp.parallel('lint', 'unittest'));
 gulp.task('watch', watchTask);
 gulp.task('default', gulp.parallel('build'));
 
-var argv = yargs
+const argv = yargs
   .option('force-output', {default: false})
   .option('silent-errors', {default: false})
   .option('verbose', {default: false})
   .argv;
 
-function buildTask() {
-  var nonBundled = browserify('./src/index.js')
-    .ignore('chart.js')
-    .bundle()
-    .pipe(source('Chart.Financial.js'))
-    .pipe(insert.prepend(header))
-    .pipe(streamify(replace('{{ version }}', package.version)))
-    .pipe(gulp.dest(buildDir))
-    .pipe(gulp.dest(docsDir))
-    .pipe(streamify(uglify()))
-    .pipe(streamify(concat('Chart.Financial.min.js')))
-    .pipe(gulp.dest(buildDir));
+function run(bin, args, done) {
+  var exe = '"' + process.execPath + '"';
+  var src = require.resolve(bin);
+  var ps = exec([exe, src].concat(args || []).join(' '));
 
-  return nonBundled;
+  ps.stdout.pipe(process.stdout);
+  ps.stderr.pipe(process.stderr);
+  ps.on('close', () => done());
+}
 
+function rollupTask(done) {
+  run('rollup/bin/rollup', ['-c'], done);
+}
+
+function copyDistFilesTask() {
+  return gulp.src(buildDir + pkg.name + '.js')
+    .pipe(gulp.dest(docsDir));
 }
 
 function lintTask() {
