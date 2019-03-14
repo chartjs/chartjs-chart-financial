@@ -8,9 +8,9 @@ This module has not yet had its initial release and is not yet available on npm.
 
 Chart.js 2.7.0 added our timeseries scale as new option called [`distribution: series`](http://www.chartjs.org/docs/latest/axes/cartesian/time.html). This has greatly improved support for financial timeseries.
 
-Chart.js 2.7.1 added fixes for timeseries.
+Chart.js 2.7.1 added [fixes for timeseries](https://github.com/chartjs/Chart.js/pull/4779).
 
-Chart.js 2.7.2 added timestamp formatting in tooltips.
+Chart.js 2.7.2 added [formatting of timestamps in tooltips](https://github.com/chartjs/Chart.js/pull/5095).
 
 Chart.js 2.7.3 included a [fix for hovering](https://github.com/chartjs/Chart.js/pull/5570).
 
