@@ -13,20 +13,30 @@
 	</head>
 	<body>
 		<h1>Chart.js - Financial chart</h1>
-		<p>Below are examples for the financial charts only.</p>
-		<p>Source code for these examples is available here : <a href="https://github.com/chartjs/chartjs-chart-financial/tree/master/docs">chartjs-chart-financial/docs/</a>.</p>
-		<p>The official Chart.js website is here : <a href="http://www.chartjs.org/">www.chartjs.org</a></p>
-		<button id="randomizeData">Randomize Data</button>
-		<h2>Candlestick</h2>
-		<a href="samples/candlestick.html">More samples</a>
+		<p>See the <a href="https://github.com/chartjs/chartjs-chart-financial/tree/master/docs">Source Code</a>, <a href="https://github.com/chartjs/chartjs-chart-financial">README</a>, and <a href="https://www.chartjs.org/docs/">Chart.js docs</a> for more details.</p>
+		<h2>Sample Chart</h2>
 		<div style="width:1000px">
-			<canvas id="chart1"></canvas>
+			<canvas id="chart"></canvas>
 		<div>
-		<h2>OHLC</h2>
-		<a href="samples/ohlc.html">More samples</a>
-		<div style="width:1000px">
-			<canvas id="chart2"></canvas>
 		<div>
+			Bar Type:
+			<select id="type">
+				<option value="candlestick" selected>Candlestick</option>
+				<option value="ohlc">OHLC</option>
+			</select>
+			Color Scheme:
+			<select id="color-scheme">
+				<option value="muted" selected>Muted</option>
+				<option value="neon">Neon</option>
+			</select>
+			Border:
+			<select id="border">
+				<option value="true">Yes</option>
+				<option value="false" selected>No</option>
+			</select>
+			<button id="update">Update</button>
+			<button id="randomizeData">Randomize Data</button>
+		</div>
 		<script type="text/javascript" src="index.js"></script>
 	</body>
 </html>
