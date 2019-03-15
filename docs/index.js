@@ -72,7 +72,7 @@ var update = function() {
 	var border = document.getElementById('border').value;
 	if (border === 'true') {
 		dataset.borderColor = '#000';
-		dataset.borderWidth = 2;
+		dataset.borderWidth = 1;
 	} else {
 		delete dataset.borderColor;
 		delete dataset.borderWidth;
