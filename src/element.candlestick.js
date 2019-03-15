@@ -23,7 +23,6 @@ var CandlestickElement = FinancialElement.extend({
 		var c = vm.candleClose;
 
 		var borderColors = vm.borderColor;
-
 		if (typeof borderColors === 'string') {
 			borderColors = {
 				up: borderColors,
@@ -33,15 +32,14 @@ var CandlestickElement = FinancialElement.extend({
 		}
 
 		var borderColor;
-
 		if (c < o) {
-			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.color.up);
+			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.borderColor);
 			ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
 		} else if (c > o) {
-			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.color.down);
+			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.borderColor);
 			ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts.elements.candlestick.color.down);
 		} else {
-			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
+			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.borderColor);
 			ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 		}
 

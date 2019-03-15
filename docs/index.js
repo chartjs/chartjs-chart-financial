@@ -70,12 +70,15 @@ var update = function() {
 
 	// border
 	var border = document.getElementById('border').value;
+	var defaultOpts = Chart.defaults.global.elements[type];
 	if (border === 'true') {
-		dataset.borderColor = '#000';
-		dataset.borderWidth = 1;
+		dataset.borderColor = defaultOpts.borderColor;
 	} else {
-		delete dataset.borderColor;
-		delete dataset.borderWidth;
+		dataset.borderColor = {
+			up: defaultOpts.color.up,
+			down: defaultOpts.color.down,
+			unchanged: defaultOpts.color.up
+		};
 	}
 
 	chart.update();
