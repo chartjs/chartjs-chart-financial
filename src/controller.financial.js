@@ -17,6 +17,7 @@ Chart.defaults.financial = {
 			distribution: 'series',
 			categoryPercentage: 0.8,
 			barPercentage: 0.9,
+			offset: true,
 			ticks: {
 				source: 'data'
 			}

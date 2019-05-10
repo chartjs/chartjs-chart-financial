@@ -93,6 +93,7 @@ Chart.defaults.financial = {
 			distribution: 'series',
 			categoryPercentage: 0.8,
 			barPercentage: 0.9,
+			offset: true,
 			ticks: {
 				source: 'data'
 			}
@@ -310,7 +311,6 @@ var CandlestickElement = FinancialElement.extend({
 		var c = vm.candleClose;
 
 		var borderColors = vm.borderColor;
-
 		if (typeof borderColors === 'string') {
 			borderColors = {
 				up: borderColors,
