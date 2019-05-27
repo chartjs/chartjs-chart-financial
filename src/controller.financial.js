@@ -32,20 +32,19 @@ Chart.defaults.financial = {
 		mode: 'index',
 		callbacks: {
 			label: function(tooltipItem, data) {
-				var o = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].o;
-				var h = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].h;
-				var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
-				var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
-
 				var dataset = data.datasets[tooltipItem.datasetIndex];
-				var precision = helpers.valueOrDefault(dataset.precision, 2);
-				precision = Math.max(0, Math.min(100, precision));
-				o = o.toFixed(precision);
-				h = h.toFixed(precision);
-				l = l.toFixed(precision);
-				c = c.toFixed(precision);
+				var point = dataset.data[tooltipItem.index];
 
-				return ' O: ' + o + '    H: ' + h + '    L: ' + l + '    C: ' + c;
+				if (!helpers.isNullOrUndef(point.y)) {
+					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+				}
+
+				var o = point.o;
+				var h = point.h;
+				var l = point.l;
+				var c = point.c;
+
+				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
 			}
 		}
 	}

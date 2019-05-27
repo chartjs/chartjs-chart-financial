@@ -27,6 +27,30 @@ var defaultConfig = {
 
 var FinancialLinearScale = Chart.scaleService.getScaleConstructor('linear').extend({
 
+	_parseValue: function(value) {
+		var start, end, min, max;
+
+		if (typeof value.c !== 'undefined') {
+			start = +this.getRightValue(value.l);
+			end = +this.getRightValue(value.h);
+			min = Math.min(start, end);
+			max = Math.max(start, end);
+		} else {
+			value = +this.getRightValue(value.y);
+			start = undefined;
+			end = value;
+			min = value;
+			max = value;
+		}
+
+		return {
+			min: min,
+			max: max,
+			start: start,
+			end: end
+		};
+	},
+
 	determineDataLimits: function() {
 		var me = this;
 		var chart = me.chart;
@@ -42,25 +66,22 @@ var FinancialLinearScale = Chart.scaleService.getScaleConstructor('linear').exte
 		me.min = null;
 		me.max = null;
 
-		// Regular charts use x, y values
-		// For the financial chart we have rawValue.h (hi) and rawValue.l (low) for each point
 		helpers.each(datasets, function(dataset, datasetIndex) {
 			var meta = chart.getDatasetMeta(datasetIndex);
 			if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-				helpers.each(dataset.data, function(rawValue) {
-					var high = rawValue.h;
-					var low = rawValue.l;
+				helpers.each(dataset.data, function(rawValue, index) {
+					var value = me._parseValue(rawValue);
 
-					if (me.min === null) {
-						me.min = low;
-					} else if (low < me.min) {
-						me.min = low;
+					if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
+						return;
 					}
 
-					if (me.max === null) {
-						me.max = high;
-					} else if (high > me.max) {
-						me.max = high;
+					if (me.min === null || value.min < me.min) {
+						me.min = value.min;
+					}
+
+					if (me.max === null || me.max < value.max) {
+						me.max = value.max;
 					}
 				});
 			}
@@ -108,20 +129,19 @@ Chart.defaults.financial = {
 		mode: 'index',
 		callbacks: {
 			label: function(tooltipItem, data) {
-				var o = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].o;
-				var h = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].h;
-				var l = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].l;
-				var c = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].c;
-
 				var dataset = data.datasets[tooltipItem.datasetIndex];
-				var precision = helpers$1.valueOrDefault(dataset.precision, 2);
-				precision = Math.max(0, Math.min(100, precision));
-				o = o.toFixed(precision);
-				h = h.toFixed(precision);
-				l = l.toFixed(precision);
-				c = c.toFixed(precision);
+				var point = dataset.data[tooltipItem.index];
 
-				return ' O: ' + o + '    H: ' + h + '    L: ' + l + '    C: ' + c;
+				if (!helpers$1.isNullOrUndef(point.y)) {
+					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+				}
+
+				var o = point.o;
+				var h = point.h;
+				var l = point.l;
+				var c = point.c;
+
+				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
 			}
 		}
 	}
