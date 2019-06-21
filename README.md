@@ -16,9 +16,9 @@ Chart.js 2.7.3 included a [fix for hovering](https://github.com/chartjs/Chart.js
 
 Chart.js 2.8.0 added datetime adapters and [time scale performance improvements](https://github.com/chartjs/Chart.js/pull/6019). This allows users to use a datetime library of their choosing such as [Luxon](https://moment.github.io/luxon/) in order to get i18n and timezone support
 
-Chart.js 2.9.0 will add [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863) and [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999)
+Chart.js 2.9.0 will add [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863), [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999), and numerous performance improvements ([#6301](https://github.com/chartjs/Chart.js/pull/6301), [#6304](https://github.com/chartjs/Chart.js/pull/6304), [#6307](https://github.com/chartjs/Chart.js/pull/6307)).
 
-We would like to add [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6274), performance improvements, and sharper drawing before having an initial release. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
+We would like to add [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6274) and sharper drawing before having an initial release. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
 
 As we near an initial release we will add documentation. For now, please see the docs directory.
 
