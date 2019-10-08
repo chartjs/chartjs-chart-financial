@@ -48,7 +48,7 @@ function run(bin, args, done) {
 }
 
 function rollupTask(done) {
-  run('rollup/bin/rollup', ['-c'], done);
+  run('rollup/dist/bin/rollup', ['-c'], done);
 }
 
 function copyDistFilesTask() {
