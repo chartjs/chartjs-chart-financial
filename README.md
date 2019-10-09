@@ -42,6 +42,8 @@ The plugins below may be particularly interesting to use with financial charts. 
 
 ## Building
 
+<a href="https://travis-ci.org/chartjs/chartjs-chart-financial"><img src="https://img.shields.io/travis/chartjs/chartjs-chart-financial.svg?style=flat-square&maxAge=600" alt="Builds"></a>
+
 ```sh
 npm install
 gulp build
