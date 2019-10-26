@@ -5,8 +5,15 @@ import FinancialController from './controller.financial';
 import OhlcElement from './element.ohlc';
 
 Chart.defaults.ohlc = Chart.helpers.merge({}, Chart.defaults.financial);
-Chart.defaults.ohlc.scales.xAxes[0].barPercentage = 1.0;
-Chart.defaults.ohlc.scales.xAxes[0].categoryPercentage = 1.0;
+
+Chart.defaults._set('global', {
+	datasets: {
+		ohlc: {
+			barPercentage: 1.0,
+			categoryPercentage: 1.0
+		}
+	}
+});
 
 var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 
@@ -16,6 +23,8 @@ var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
+		var options = me._resolveDataElementOptions(element, index);
+
 		element._xScale = me.getScaleForId(meta.xAxisID);
 		element._yScale = me.getScaleForId(meta.yAxisID);
 		element._datasetIndex = me.index;
@@ -27,7 +36,7 @@ var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 			armLengthRatio: dataset.armLengthRatio,
 			color: dataset.color,
 		};
-		me._updateElementGeometry(element, index, reset);
+		me._updateElementGeometry(element, index, reset, options);
 		element.pivot();
 	},
 

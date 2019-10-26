@@ -9,7 +9,7 @@
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "dependencies": {
-    "chart.js": "^2.8.0"
+    "chart.js": "^2.9.0"
   },
   "devDependencies": {
     "chartjs-adapter-luxon": "^0.2.0",

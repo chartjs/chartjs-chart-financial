@@ -6,6 +6,12 @@ import CandlestickElement from './element.candlestick';
 
 Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
 
+Chart.defaults._set('global', {
+	datasets: {
+		candlestick: Chart.defaults.global.datasets.bar
+	}
+});
+
 var CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
 	dataElementType: CandlestickElement,
 
@@ -13,6 +19,7 @@ var CandlestickController = Chart.controllers.candlestick = FinancialController.
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
+		var options = me._resolveDataElementOptions(element, index);
 
 		element._xScale = me.getScaleForId(meta.xAxisID);
 		element._yScale = me.getScaleForId(meta.yAxisID);
@@ -29,7 +36,7 @@ var CandlestickController = Chart.controllers.candlestick = FinancialController.
 			borderWidth: dataset.borderWidth,
 		};
 
-		me._updateElementGeometry(element, index, reset);
+		me._updateElementGeometry(element, index, reset, options);
 
 		element.pivot();
 	},

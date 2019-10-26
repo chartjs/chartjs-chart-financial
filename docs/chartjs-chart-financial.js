@@ -112,11 +112,17 @@ Chart.defaults.financial = {
 		xAxes: [{
 			type: 'time',
 			distribution: 'series',
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
 			offset: true,
 			ticks: {
-				source: 'data'
+				major: {
+					enabled: true,
+					fontStyle: 'bold'
+				},
+				source: 'data',
+				maxRotation: 0,
+				autoSkip: true,
+				autoSkipPadding: 75,
+				sampleSize: 100
 			}
 		}],
 		yAxes: [{
@@ -157,15 +163,15 @@ var FinancialController = Chart.controllers.bar.extend({
 	/**
 	 * @private
 	 */
-	_updateElementGeometry: function(element, index, reset) {
+	_updateElementGeometry: function(element, index, reset, options) {
 		var me = this;
 		var model = element._model;
 		var vscale = me._getValueScale();
 		var base = vscale.getBasePixel();
 		var horizontal = vscale.isHorizontal();
 		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(me.index, index);
-		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+		var vpixels = me.calculateBarValuePixels(me.index, index, options);
+		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
 		var chart = me.chart;
 		var datasets = chart.data.datasets;
 		var indexData = datasets[me.index].data[index];
@@ -368,6 +374,12 @@ var CandlestickElement = FinancialElement.extend({
 
 Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
 
+Chart.defaults._set('global', {
+	datasets: {
+		candlestick: Chart.defaults.global.datasets.bar
+	}
+});
+
 var CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
 	dataElementType: CandlestickElement,
 
@@ -375,6 +387,7 @@ var CandlestickController = Chart.controllers.candlestick = FinancialController.
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
+		var options = me._resolveDataElementOptions(element, index);
 
 		element._xScale = me.getScaleForId(meta.xAxisID);
 		element._yScale = me.getScaleForId(meta.yAxisID);
@@ -391,7 +404,7 @@ var CandlestickController = Chart.controllers.candlestick = FinancialController.
 			borderWidth: dataset.borderWidth,
 		};
 
-		me._updateElementGeometry(element, index, reset);
+		me._updateElementGeometry(element, index, reset, options);
 
 		element.pivot();
 	},
@@ -450,8 +463,15 @@ var OhlcElement = FinancialElement.extend({
 });
 
 Chart.defaults.ohlc = Chart.helpers.merge({}, Chart.defaults.financial);
-Chart.defaults.ohlc.scales.xAxes[0].barPercentage = 1.0;
-Chart.defaults.ohlc.scales.xAxes[0].categoryPercentage = 1.0;
+
+Chart.defaults._set('global', {
+	datasets: {
+		ohlc: {
+			barPercentage: 1.0,
+			categoryPercentage: 1.0
+		}
+	}
+});
 
 var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 
@@ -461,6 +481,8 @@ var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
+		var options = me._resolveDataElementOptions(element, index);
+
 		element._xScale = me.getScaleForId(meta.xAxisID);
 		element._yScale = me.getScaleForId(meta.yAxisID);
 		element._datasetIndex = me.index;
@@ -472,7 +494,7 @@ var OhlcController = Chart.controllers.ohlc = FinancialController.extend({
 			armLengthRatio: dataset.armLengthRatio,
 			color: dataset.color,
 		};
-		me._updateElementGeometry(element, index, reset);
+		me._updateElementGeometry(element, index, reset, options);
 		element.pivot();
 	},
 

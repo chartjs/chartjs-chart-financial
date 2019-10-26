@@ -15,11 +15,17 @@ Chart.defaults.financial = {
 		xAxes: [{
 			type: 'time',
 			distribution: 'series',
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
 			offset: true,
 			ticks: {
-				source: 'data'
+				major: {
+					enabled: true,
+					fontStyle: 'bold'
+				},
+				source: 'data',
+				maxRotation: 0,
+				autoSkip: true,
+				autoSkipPadding: 75,
+				sampleSize: 100
 			}
 		}],
 		yAxes: [{
@@ -60,15 +66,15 @@ var FinancialController = Chart.controllers.bar.extend({
 	/**
 	 * @private
 	 */
-	_updateElementGeometry: function(element, index, reset) {
+	_updateElementGeometry: function(element, index, reset, options) {
 		var me = this;
 		var model = element._model;
 		var vscale = me._getValueScale();
 		var base = vscale.getBasePixel();
 		var horizontal = vscale.isHorizontal();
 		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(me.index, index);
-		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+		var vpixels = me.calculateBarValuePixels(me.index, index, options);
+		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
 		var chart = me.chart;
 		var datasets = chart.data.datasets;
 		var indexData = datasets[me.index].data[index];

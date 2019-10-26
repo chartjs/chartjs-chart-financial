@@ -11,6 +11,38 @@ var chart = new Chart(ctx, {
 			label: 'CHRT - Chart.js Corporation',
 			data: getRandomData(initialDateStr, barCount)
 		}]
+	},
+	options: {
+		scales: {
+			xAxes: [{
+				afterBuildTicks: function(scale, ticks) {
+					var majorUnit = scale._majorUnit;
+					var firstTick = ticks[0];
+					var i, ilen, val, tick, currMajor, lastMajor;
+
+					val = luxon.DateTime.fromMillis(ticks[0].value);
+					if ((majorUnit === 'minute' && val.second === 0)
+							|| (majorUnit === 'hour' && val.minute === 0)
+							|| (majorUnit === 'day' && val.hour === 9)
+							|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
+							|| (majorUnit === 'year' && val.month === 0)) {
+						firstTick.major = true;
+					} else {
+						firstTick.major = false;
+					}
+					lastMajor = val.get(majorUnit);
+
+					for (i = 1, ilen = ticks.length; i < ilen; i++) {
+						tick = ticks[i];
+						val = luxon.DateTime.fromMillis(tick.value);
+						currMajor = val.get(majorUnit);
+						tick.major = currMajor !== lastMajor;
+						lastMajor = currMajor;
+					}
+					return ticks;
+				}
+			}]
+		}
 	}
 });
 
