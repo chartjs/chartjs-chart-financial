@@ -16,19 +16,19 @@ Chart.js 2.7.3 included a [fix for hovering](https://github.com/chartjs/Chart.js
 
 Chart.js 2.8.0 added datetime adapters and [time scale performance improvements](https://github.com/chartjs/Chart.js/pull/6019). This allows users to use a datetime library of their choosing such as [Luxon](https://moment.github.io/luxon/) in order to get i18n and timezone support
 
-Chart.js 2.9.0 will add [support for floating bars](https://github.com/chartjs/Chart.js/issues/4863), [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999), and numerous performance improvements ([#6301](https://github.com/chartjs/Chart.js/pull/6301), [#6304](https://github.com/chartjs/Chart.js/pull/6304), [#6307](https://github.com/chartjs/Chart.js/pull/6307)).
+Chart.js 2.9.0 added [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6509), [support for floating bars](https://github.com/chartjs/Chart.js/pull/6056), [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999), and [numerous performance improvements](https://github.com/chartjs/Chart.js/releases/tag/v2.9.0).
 
-We would like to add [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6274) and sharper drawing before having an initial release. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
+We are very close to ready for an initial release. We would also like to make drawing sharper and add support for scriptable elements. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
 
 ## Comparison
 
 We are aiming to make Chart.js the only popular JavaScript library that is both performant and has good timescale handling.
 
-Most chart libraries don't have great handling of timescale axes. Chart.js 2.9.0 will be the best library available in this regard by utilizing the concept of major ticks. E.g. it will make sure that the first day of each month is plotted before plotting days in between.
+Most chart libraries don't have great handling of timescale axes and will not always choose the first of the month, year, etc. as labels. This library leverages the concept of major ticks that we introduced in Chart.js. E.g. it will make sure that the first day of each month is plotted before plotting days in between.
 
-One of the best libraries we've found for financial charts is [react-stockcharts](https://github.com/rrag/react-stockcharts). However, it ties the user to utilizing React. Currently this library and react-stock charts are the same speed. However, we expect this library should be much faster after Chart.js 2.9.0 is released.
+One of the best libraries we've found for financial charts is [react-stockcharts](https://github.com/rrag/react-stockcharts). However, it ties the user to utilizing React.
 
-Because Chart.js utilizes canvas it is more performant than the majority of JavaScript charting libraries. [ZingChart](https://www.zingchart.com/docs/chart-types/stock-charts/) and [Highcharts](https://www.highcharts.com/stock/demo/candlestick) with the [boost module](https://www.highcharts.com/blog/news/175-highcharts-performance-boost/) are two options that also offer canvas rendering and may be performant.
+Because Chart.js utilizes canvas it is more performant than the majority of JavaScript charting libraries. In a [benchmark of the fastest JavaScript chart libraries](https://github.com/leeoniya/uPlot#performance), Chart.js performs respectably. Chart.js is slower than some of the fastest libraries like uPlot because it accepts varied input (parsing, linear and timeseries support in time scale, etc.) and has animation support (which is still costly even when off due to the way the code is structured).
 
 ## Documentation
 
