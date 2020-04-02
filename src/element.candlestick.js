@@ -3,26 +3,26 @@
 import Chart from 'chart.js';
 import FinancialElement from './element.financial';
 
-var helpers = Chart.helpers;
-var globalOpts = Chart.defaults.global;
+const helpers = Chart.helpers;
+const globalOpts = Chart.defaults.global;
 
 globalOpts.elements.candlestick = helpers.merge({}, [globalOpts.elements.financial, {
 	borderColor: globalOpts.elements.financial.color.unchanged,
 	borderWidth: 1,
 }]);
 
-var CandlestickElement = FinancialElement.extend({
-	draw: function() {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
+const CandlestickElement = FinancialElement.extend({
+	draw() {
+		const ctx = this._chart.ctx;
+		const vm = this._view;
 
-		var x = vm.x;
-		var o = vm.candleOpen;
-		var h = vm.candleHigh;
-		var l = vm.candleLow;
-		var c = vm.candleClose;
+		const x = vm.x;
+		const o = vm.candleOpen;
+		const h = vm.candleHigh;
+		const l = vm.candleLow;
+		const c = vm.candleClose;
 
-		var borderColors = vm.borderColor;
+		let borderColors = vm.borderColor;
 		if (typeof borderColors === 'string') {
 			borderColors = {
 				up: borderColors,
@@ -31,7 +31,7 @@ var CandlestickElement = FinancialElement.extend({
 			};
 		}
 
-		var borderColor;
+		let borderColor;
 		if (c < o) {
 			borderColor = helpers.getValueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.borderColor);
 			ctx.fillStyle = helpers.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts.elements.candlestick.color.up);
@@ -55,7 +55,7 @@ var CandlestickElement = FinancialElement.extend({
 		ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
 		ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);
 		ctx.closePath();
-	},
+	}
 });
 
 export default CandlestickElement;

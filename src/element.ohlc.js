@@ -3,8 +3,8 @@
 import Chart from 'chart.js';
 import FinancialElement from './element.financial';
 
-var helpers = Chart.helpers;
-var globalOpts = Chart.defaults.global;
+const helpers = Chart.helpers;
+const globalOpts = Chart.defaults.global;
 
 globalOpts.elements.ohlc = helpers.merge({}, [globalOpts.elements.financial, {
 	lineWidth: 2,
@@ -12,18 +12,18 @@ globalOpts.elements.ohlc = helpers.merge({}, [globalOpts.elements.financial, {
 	armLengthRatio: 0.8,
 }]);
 
-var OhlcElement = FinancialElement.extend({
-	draw: function() {
-		var ctx = this._chart.ctx;
-		var vm = this._view;
+const OhlcElement = FinancialElement.extend({
+	draw() {
+		const ctx = this._chart.ctx;
+		const vm = this._view;
 
-		var x = vm.x;
-		var o = vm.candleOpen;
-		var h = vm.candleHigh;
-		var l = vm.candleLow;
-		var c = vm.candleClose;
-		var armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
-		var armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
+		const x = vm.x;
+		const o = vm.candleOpen;
+		const h = vm.candleHigh;
+		const l = vm.candleLow;
+		const c = vm.candleClose;
+		const armLengthRatio = helpers.getValueOrDefault(vm.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
+		let armLength = helpers.getValueOrDefault(vm.armLength, globalOpts.elements.ohlc.armLength);
 		if (armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
@@ -51,7 +51,7 @@ var OhlcElement = FinancialElement.extend({
 		ctx.moveTo(x + armLength, c);
 		ctx.lineTo(x, c);
 		ctx.stroke();
-	},
+	}
 });
 
 export default OhlcElement;

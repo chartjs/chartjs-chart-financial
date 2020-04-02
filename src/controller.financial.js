@@ -2,7 +2,7 @@
 
 import Chart from 'chart.js';
 
-var helpers = Chart.helpers;
+const helpers = Chart.helpers;
 
 Chart.defaults.financial = {
 	label: '',
@@ -37,18 +37,18 @@ Chart.defaults.financial = {
 		intersect: false,
 		mode: 'index',
 		callbacks: {
-			label: function(tooltipItem, data) {
-				var dataset = data.datasets[tooltipItem.datasetIndex];
-				var point = dataset.data[tooltipItem.index];
+			label(tooltipItem, data) {
+				const dataset = data.datasets[tooltipItem.datasetIndex];
+				const point = dataset.data[tooltipItem.index];
 
 				if (!helpers.isNullOrUndef(point.y)) {
 					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
 				}
 
-				var o = point.o;
-				var h = point.h;
-				var l = point.l;
-				var c = point.c;
+				const o = point.o;
+				const h = point.h;
+				const l = point.l;
+				const c = point.c;
 
 				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
 			}
@@ -59,25 +59,25 @@ Chart.defaults.financial = {
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-var FinancialController = Chart.controllers.bar.extend({
+const FinancialController = Chart.controllers.bar.extend({
 
 	dataElementType: Chart.elements.Financial,
 
 	/**
 	 * @private
 	 */
-	_updateElementGeometry: function(element, index, reset, options) {
-		var me = this;
-		var model = element._model;
-		var vscale = me._getValueScale();
-		var base = vscale.getBasePixel();
-		var horizontal = vscale.isHorizontal();
-		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(me.index, index, options);
-		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var indexData = datasets[me.index].data[index];
+	_updateElementGeometry(element, index, reset, options) {
+		const me = this;
+		const model = element._model;
+		const vscale = me._getValueScale();
+		const base = vscale.getBasePixel();
+		const horizontal = vscale.isHorizontal();
+		const ruler = me._ruler || me.getRuler();
+		const vpixels = me.calculateBarValuePixels(me.index, index, options);
+		const ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
+		const chart = me.chart;
+		const datasets = chart.data.datasets;
+		const indexData = datasets[me.index].data[index];
 
 		model.horizontal = horizontal;
 		model.base = reset ? base : vpixels.base;
@@ -91,13 +91,13 @@ var FinancialController = Chart.controllers.bar.extend({
 		model.candleClose = vscale.getPixelForValue(Number(indexData.c));
 	},
 
-	draw: function() {
-		var ctx = this.chart.chart.ctx;
-		var elements = this.getMeta().data;
-		var dataset = this.getDataset();
-		var ilen = elements.length;
-		var i = 0;
-		var d;
+	draw() {
+		const ctx = this.chart.chart.ctx;
+		const elements = this.getMeta().data;
+		const dataset = this.getDataset();
+		const ilen = elements.length;
+		let i = 0;
+		let d;
 
 		Chart.canvasHelpers.clipArea(ctx, this.chart.chartArea);
 
@@ -109,7 +109,7 @@ var FinancialController = Chart.controllers.bar.extend({
 		}
 
 		Chart.canvasHelpers.unclipArea(ctx);
-	},
+	}
 });
 
 export default FinancialController;

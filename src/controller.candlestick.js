@@ -12,14 +12,14 @@ Chart.defaults._set('global', {
 	}
 });
 
-var CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
+const CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
 	dataElementType: CandlestickElement,
 
-	updateElement: function(element, index, reset) {
-		var me = this;
-		var meta = me.getMeta();
-		var dataset = me.getDataset();
-		var options = me._resolveDataElementOptions(element, index);
+	updateElement(element, index, reset) {
+		const me = this;
+		const meta = me.getMeta();
+		const dataset = me.getDataset();
+		const options = me._resolveDataElementOptions(element, index);
 
 		element._xScale = me.getScaleForId(meta.xAxisID);
 		element._yScale = me.getScaleForId(meta.yAxisID);
