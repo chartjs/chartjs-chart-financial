@@ -18,89 +18,6 @@ Chart = Chart && Object.prototype.hasOwnProperty.call(Chart, 'default') ? Chart[
 
 const helpers = Chart.helpers;
 
-const defaultConfig = {
-	position: 'left',
-	ticks: {
-		callback: Chart.Ticks.formatters.linear
-	}
-};
-
-const FinancialLinearScale = Chart.scaleService.getScaleConstructor('linear').extend({
-
-	_parseValue(value) {
-		let start, end, min, max;
-
-		if (typeof value.c !== 'undefined') {
-			start = +this.getRightValue(value.l);
-			end = +this.getRightValue(value.h);
-			min = Math.min(start, end);
-			max = Math.max(start, end);
-		} else {
-			value = +this.getRightValue(value.y);
-			start = undefined;
-			end = value;
-			min = value;
-			max = value;
-		}
-
-		return {
-			min,
-			max,
-			start,
-			end
-		};
-	},
-
-	determineDataLimits() {
-		const me = this;
-		const chart = me.chart;
-		const data = chart.data;
-		const datasets = data.datasets;
-		const isHorizontal = me.isHorizontal();
-
-		function IDMatches(meta) {
-			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
-		}
-
-		// First Calculate the range
-		me.min = null;
-		me.max = null;
-
-		helpers.each(datasets, (dataset, datasetIndex) => {
-			const meta = chart.getDatasetMeta(datasetIndex);
-			if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-				helpers.each(dataset.data, (rawValue, index) => {
-					const value = me._parseValue(rawValue);
-
-					if (isNaN(value.min) || isNaN(value.max) || meta.data[index].hidden) {
-						return;
-					}
-
-					if (me.min === null || value.min < me.min) {
-						me.min = value.min;
-					}
-
-					if (me.max === null || me.max < value.max) {
-						me.max = value.max;
-					}
-				});
-			}
-		});
-
-		// Add whitespace around bars. Axis shouldn't go exactly from min to max
-		const space = (me.max - me.min) * 0.05;
-		me.min -= space;
-		me.max += space;
-
-		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
-		this.handleTickRangeOptions();
-	}
-});
-
-Chart.scaleService.registerScaleType('financialLinear', FinancialLinearScale, defaultConfig);
-
-const helpers$1 = Chart.helpers;
-
 Chart.defaults.financial = {
 	label: '',
 
@@ -108,26 +25,37 @@ Chart.defaults.financial = {
 		mode: 'label'
 	},
 
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height', 'open', 'high', 'low', 'close']
+			}
+		}
+	},
+
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'time',
 			distribution: 'series',
 			offset: true,
 			ticks: {
 				major: {
 					enabled: true,
-					fontStyle: 'bold'
 				},
+				fontStyle: context => context.tick.major ? 'bold' : undefined,
 				source: 'data',
 				maxRotation: 0,
 				autoSkip: true,
 				autoSkipPadding: 75,
 				sampleSize: 100
 			}
-		}],
-		yAxes: [{
-			type: 'financialLinear'
-		}]
+		},
+		y: {
+			type: 'linear'
+		}
 	},
 
 	tooltips: {
@@ -138,14 +66,11 @@ Chart.defaults.financial = {
 				const dataset = data.datasets[tooltipItem.datasetIndex];
 				const point = dataset.data[tooltipItem.index];
 
-				if (!helpers$1.isNullOrUndef(point.y)) {
+				if (!helpers.isNullOrUndef(point.y)) {
 					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
 				}
 
-				const o = point.o;
-				const h = point.h;
-				const l = point.l;
-				const c = point.c;
+				const {o, h, l, c} = point;
 
 				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
 			}
@@ -153,64 +78,111 @@ Chart.defaults.financial = {
 	}
 };
 
+function parseFloatBar(obj, item, vScale, i) {
+	const low = vScale.parse(obj.l, i);
+	const high = vScale.parse(obj.h, i);
+	const min = Math.min(low, high);
+	const max = Math.max(low, high);
+	let barStart = min;
+	let barEnd = max;
+
+	if (Math.abs(min) > Math.abs(max)) {
+		barStart = max;
+		barEnd = min;
+	}
+
+	// Store `barEnd` (furthest away from origin) as parsed value,
+	// to make stacking straight forward
+	item[vScale.axis] = barEnd;
+
+	item._custom = {
+		barStart,
+		barEnd,
+		min,
+		max
+	};
+}
+
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-const FinancialController = Chart.controllers.bar.extend({
-
-	dataElementType: Chart.elements.Financial,
+class FinancialController extends Chart.controllers.bar {
 
 	/**
-	 * @private
+	 * Overriding since we use {o, h, l, c}
+	 * @protected
 	 */
-	_updateElementGeometry(element, index, reset, options) {
+	parseObjectData(meta, data, start, count) {
+		const {iScale, vScale} = meta;
+		const parsed = [];
+		let i, ilen, item, obj;
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			obj = data[i];
+			item = {};
+			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
+			parseFloatBar(obj, item, vScale, i);
+			parsed.push(item);
+		}
+		return parsed;
+	}
+
+	/**
+	 * Implement this ourselves since it doesn't handle high and low values
+	 * https://github.com/chartjs/Chart.js/issues/7328
+	 * @protected
+	 */
+	getMinMax(scale) {
+		const meta = this._cachedMeta;
+		const _parsed = meta._parsed;
+
+		if (scale.axis === 'x') {
+			return {min: _parsed[0].x, max: _parsed[_parsed.length - 1].x};
+		}
+
+		let min = Number.POSITIVE_INFINITY;
+		let max = Number.NEGATIVE_INFINITY;
+		for (let i = 0; i < _parsed.length; i++) {
+			const custom = _parsed[i]._custom;
+			min = Math.min(min, custom.min);
+			max = Math.max(max, custom.max);
+		}
+		return {min, max};
+	}
+
+	/**
+	 * @protected
+	 */
+	calculateElementProperties(index, reset, options) {
 		const me = this;
-		const model = element._model;
 		const vscale = me._getValueScale();
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
-		const ruler = me._ruler || me.getRuler();
-		const vpixels = me.calculateBarValuePixels(me.index, index, options);
-		const ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
-		const chart = me.chart;
-		const datasets = chart.data.datasets;
+		const ruler = me._ruler || me._getRuler();
+		const vpixels = me._calculateBarValuePixels(index, options);
+		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
+		const datasets = me.chart.data.datasets;
 		const indexData = datasets[me.index].data[index];
 
-		model.horizontal = horizontal;
-		model.base = reset ? base : vpixels.base;
-		model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-		model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-		model.height = horizontal ? ipixels.size : undefined;
-		model.width = horizontal ? undefined : ipixels.size;
-		model.candleOpen = vscale.getPixelForValue(Number(indexData.o));
-		model.candleHigh = vscale.getPixelForValue(Number(indexData.h));
-		model.candleLow = vscale.getPixelForValue(Number(indexData.l));
-		model.candleClose = vscale.getPixelForValue(Number(indexData.c));
-	},
-
-	draw() {
-		const ctx = this.chart.chart.ctx;
-		const elements = this.getMeta().data;
-		const dataset = this.getDataset();
-		const ilen = elements.length;
-		let i = 0;
-		let d;
-
-		Chart.canvasHelpers.clipArea(ctx, this.chart.chartArea);
-
-		for (; i < ilen; ++i) {
-			d = dataset.data[i].o;
-			if (d !== null && d !== undefined && !isNaN(d)) {
-				elements[i].draw();
-			}
-		}
-
-		Chart.canvasHelpers.unclipArea(ctx);
+		return {
+			horizontal,
+			base: reset ? base : vpixels.base,
+			x: horizontal ? reset ? base : vpixels.head : ipixels.center,
+			y: horizontal ? ipixels.center : reset ? base : vpixels.head,
+			height: horizontal ? ipixels.size : undefined,
+			width: horizontal ? undefined : ipixels.size,
+			open: vscale.getPixelForValue(indexData.o),
+			high: vscale.getPixelForValue(indexData.h),
+			low: vscale.getPixelForValue(indexData.l),
+			close: vscale.getPixelForValue(indexData.c)
+		};
 	}
-});
 
-const helpers$2 = Chart.helpers;
-const globalOpts = Chart.defaults.global;
+}
+
+FinancialController.prototype.dataElementType = Chart.elements.Financial;
+
+const helpers$1 = Chart.helpers;
+const globalOpts = Chart.defaults;
 
 globalOpts.elements.financial = {
 	color: {
@@ -220,122 +192,99 @@ globalOpts.elements.financial = {
 	}
 };
 
-function isVertical(bar) {
-	return bar._view.width !== undefined;
-}
-
 /**
- * Helper function to get the bounds of the candle
+ * Helper function to get the bounds of the bar regardless of the orientation
+ * @param {Rectangle} bar the bar
+ * @param {boolean} [useFinalPosition]
+ * @return {object} bounds of the bar
  * @private
- * @param bar {Chart.Element.financial} the bar
- * @return {Bounds} bounds of the bar
  */
-function getBarBounds(candle) {
-	const vm = candle._view;
+function getBarBounds(bar, useFinalPosition) {
+	const {x, y, base, width, height} = bar.getProps(['x', 'low', 'high', 'width', 'height'], useFinalPosition);
 
-	const halfWidth = vm.width / 2;
-	const x1 = vm.x - halfWidth;
-	const x2 = vm.x + halfWidth;
-	const y1 = vm.candleHigh;
-	const y2 = vm.candleLow;
+	let left, right, top, bottom, half;
 
-	return {
-		left: x1,
-		top: y1,
-		right: x2,
-		bottom: y2
-	};
+	if (bar.horizontal) {
+		half = height / 2;
+		left = Math.min(x, base);
+		right = Math.max(x, base);
+		top = y - half;
+		bottom = y + half;
+	} else {
+		half = width / 2;
+		left = x - half;
+		right = x + half;
+		top = Math.min(y, base);
+		bottom = Math.max(y, base);
+	}
+
+	return {left, top, right, bottom};
 }
 
-const FinancialElement = Chart.Element.extend({
+function inRange(bar, x, y, useFinalPosition) {
+	const skipX = x === null;
+	const skipY = y === null;
+	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar, useFinalPosition);
+
+	return bounds
+		&& (skipX || x >= bounds.left && x <= bounds.right)
+		&& (skipY || y >= bounds.top && y <= bounds.bottom);
+}
+
+class FinancialElement extends Chart.Element {
 
 	height() {
-		const vm = this._view;
-		return vm.base - vm.y;
-	},
-	inRange(mouseX, mouseY) {
-		let inRange = false;
-
-		if (this._view) {
-			const bounds = getBarBounds(this);
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
-	},
-	inLabelRange(mouseX, mouseY) {
-		const me = this;
-		if (!me._view) {
-			return false;
-		}
-
-		let inRange = false;
-		const bounds = getBarBounds(me);
-
-		if (isVertical(me)) {
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right;
-		} else {
-			inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
-	},
-	inXRange(mouseX) {
-		const bounds = getBarBounds(this);
-		return mouseX >= bounds.left && mouseX <= bounds.right;
-	},
-	inYRange(mouseY) {
-		const bounds = getBarBounds(this);
-		return mouseY >= bounds.top && mouseY <= bounds.bottom;
-	},
-	getCenterPoint() {
-		const vm = this._view;
-		return {
-			x: vm.x,
-			y: (vm.candleHigh + vm.candleLow) / 2
-		};
-	},
-	getArea() {
-		const vm = this._view;
-		return vm.width * Math.abs(vm.y - vm.base);
-	},
-	tooltipPosition() {
-		const vm = this._view;
-		return {
-			x: vm.x,
-			y: (vm.candleOpen + vm.candleClose) / 2
-		};
-	},
-	hasValue() {
-		const model = this._model;
-		return helpers$2.isNumber(model.x) &&
-			helpers$2.isNumber(model.candleOpen) &&
-			helpers$2.isNumber(model.candleHigh) &&
-			helpers$2.isNumber(model.candleLow) &&
-			helpers$2.isNumber(model.candleClose);
+		return this.base - this.y;
 	}
-});
 
-const helpers$3 = Chart.helpers;
-const globalOpts$1 = Chart.defaults.global;
+	inRange(mouseX, mouseY, useFinalPosition) {
+		return inRange(this, mouseX, mouseY, useFinalPosition);
+	}
 
-globalOpts$1.elements.candlestick = helpers$3.merge({}, [globalOpts$1.elements.financial, {
+	inXRange(mouseX, useFinalPosition) {
+		return inRange(this, mouseX, null, useFinalPosition);
+	}
+
+	inYRange(mouseY, useFinalPosition) {
+		return inRange(this, null, mouseY, useFinalPosition);
+	}
+
+	getRange(axis) {
+		return axis === 'x' ? this.width / 2 : this.height / 2;
+	}
+
+	getCenterPoint(useFinalPosition) {
+		const {x, low, high} = this.getProps(['x', 'low', 'high'], useFinalPosition);
+		return {
+			x,
+			y: (high + low) / 2
+		};
+	}
+
+	tooltipPosition(useFinalPosition) {
+		const {x, open, close} = this.getProps(['x', 'open', 'close'], useFinalPosition);
+		return {
+			x,
+			y: (open + close) / 2
+		};
+	}
+}
+
+const helpers$2 = Chart.helpers;
+const globalOpts$1 = Chart.defaults;
+
+globalOpts$1.elements.candlestick = helpers$2.merge({}, [globalOpts$1.elements.financial, {
 	borderColor: globalOpts$1.elements.financial.color.unchanged,
 	borderWidth: 1,
 }]);
 
-const CandlestickElement = FinancialElement.extend({
-	draw() {
-		const ctx = this._chart.ctx;
-		const vm = this._view;
+class CandlestickElement extends FinancialElement {
+	draw(ctx) {
+		const me = this;
 
-		const x = vm.x;
-		const o = vm.candleOpen;
-		const h = vm.candleHigh;
-		const l = vm.candleLow;
-		const c = vm.candleClose;
+		const {x, open, high, low, close} = me;
 
-		let borderColors = vm.borderColor;
+		let borderColors = me.borderColor;
 		if (typeof borderColors === 'string') {
 			borderColors = {
 				up: borderColors,
@@ -345,92 +294,82 @@ const CandlestickElement = FinancialElement.extend({
 		}
 
 		let borderColor;
-		if (c < o) {
-			borderColor = helpers$3.getValueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$3.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
-		} else if (c > o) {
-			borderColor = helpers$3.getValueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$3.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
+		if (close < open) {
+			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
+		} else if (close > open) {
+			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
 		} else {
-			borderColor = helpers$3.getValueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$3.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
+			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
 		}
 
-		ctx.lineWidth = helpers$3.getValueOrDefault(vm.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
-		ctx.strokeStyle = helpers$3.getValueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
+		ctx.lineWidth = helpers$2.valueOrDefault(me.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
+		ctx.strokeStyle = helpers$2.valueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
 
 		ctx.beginPath();
-		ctx.moveTo(x, h);
-		ctx.lineTo(x, Math.min(o, c));
-		ctx.moveTo(x, l);
-		ctx.lineTo(x, Math.max(o, c));
+		ctx.moveTo(x, high);
+		ctx.lineTo(x, Math.min(open, close));
+		ctx.moveTo(x, low);
+		ctx.lineTo(x, Math.max(open, close));
 		ctx.stroke();
-		ctx.fillRect(x - vm.width / 2, c, vm.width, o - c);
-		ctx.strokeRect(x - vm.width / 2, c, vm.width, o - c);
+		ctx.fillRect(x - me.width / 2, close, me.width, open - close);
+		ctx.strokeRect(x - me.width / 2, close, me.width, open - close);
 		ctx.closePath();
 	}
-});
+}
 
 Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
 
-Chart.defaults._set('global', {
-	datasets: {
-		candlestick: Chart.defaults.global.datasets.bar
+class CandlestickController extends FinancialController {
+
+	updateElements(elements, start, mode) {
+		for (let i = 0; i < elements.length; i++) {
+			const me = this;
+			const dataset = me.getDataset();
+			const index = start + i;
+			const options = me.resolveDataElementOptions(index, mode);
+
+			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const properties = {
+				...baseProperties,
+				datasetLabel: dataset.label || '',
+				// label: '', // to get label value please use dataset.data[index].label
+
+				// Appearance
+				color: dataset.color,
+				borderColor: dataset.borderColor,
+				borderWidth: dataset.borderWidth,
+			};
+			properties.options = options;
+
+			me.updateElement(elements[i], index, properties, mode);
+		}
 	}
-});
 
-const CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
-	dataElementType: CandlestickElement,
+}
 
-	updateElement(element, index, reset) {
-		const me = this;
-		const meta = me.getMeta();
-		const dataset = me.getDataset();
-		const options = me._resolveDataElementOptions(element, index);
+CandlestickController.prototype.dataElementType = CandlestickElement;
+Chart.controllers.candlestick = CandlestickController;
 
-		element._xScale = me.getScaleForId(meta.xAxisID);
-		element._yScale = me.getScaleForId(meta.yAxisID);
-		element._datasetIndex = me.index;
-		element._index = index;
+const helpers$3 = Chart.helpers;
+const globalOpts$2 = Chart.defaults;
 
-		element._model = {
-			datasetLabel: dataset.label || '',
-			// label: '', // to get label value please use dataset.data[index].label
-
-			// Appearance
-			color: dataset.color,
-			borderColor: dataset.borderColor,
-			borderWidth: dataset.borderWidth,
-		};
-
-		me._updateElementGeometry(element, index, reset, options);
-
-		element.pivot();
-	},
-
-});
-
-const helpers$4 = Chart.helpers;
-const globalOpts$2 = Chart.defaults.global;
-
-globalOpts$2.elements.ohlc = helpers$4.merge({}, [globalOpts$2.elements.financial, {
+globalOpts$2.elements.ohlc = helpers$3.merge({}, [globalOpts$2.elements.financial, {
 	lineWidth: 2,
 	armLength: null,
 	armLengthRatio: 0.8,
 }]);
 
-const OhlcElement = FinancialElement.extend({
-	draw() {
-		const ctx = this._chart.ctx;
-		const vm = this._view;
+class OhlcElement extends FinancialElement {
+	draw(ctx) {
+		const me = this;
 
-		const x = vm.x;
-		const o = vm.candleOpen;
-		const h = vm.candleHigh;
-		const l = vm.candleLow;
-		const c = vm.candleClose;
-		const armLengthRatio = helpers$4.getValueOrDefault(vm.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
-		let armLength = helpers$4.getValueOrDefault(vm.armLength, globalOpts$2.elements.ohlc.armLength);
+		const {x, open, high, low, close} = me;
+
+		const armLengthRatio = helpers$3.valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
+		let armLength = helpers$3.valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
 		if (armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
@@ -438,65 +377,64 @@ const OhlcElement = FinancialElement.extend({
 			// and armLengthRatio is multipled by 0.5,
 			// so that when armLengthRatio=1.0, the arms from neighbour ohcl touch,
 			// and when armLengthRatio=0.0, ohcl are just vertical lines.
-			armLength = vm.width * armLengthRatio * 0.5;
+			armLength = me.width * armLengthRatio * 0.5;
 		}
 
-		if (c < o) {
-			ctx.strokeStyle = helpers$4.getValueOrDefault(vm.color ? vm.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
-		} else if (c > o) {
-			ctx.strokeStyle = helpers$4.getValueOrDefault(vm.color ? vm.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
+		if (close < open) {
+			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
+		} else if (close > open) {
+			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
 		} else {
-			ctx.strokeStyle = helpers$4.getValueOrDefault(vm.color ? vm.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
+			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
 		}
-		ctx.lineWidth = helpers$4.getValueOrDefault(vm.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
+		ctx.lineWidth = helpers$3.valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
 
 		ctx.beginPath();
-		ctx.moveTo(x, h);
-		ctx.lineTo(x, l);
-		ctx.moveTo(x - armLength, o);
-		ctx.lineTo(x, o);
-		ctx.moveTo(x + armLength, c);
-		ctx.lineTo(x, c);
+		ctx.moveTo(x, high);
+		ctx.lineTo(x, low);
+		ctx.moveTo(x - armLength, open);
+		ctx.lineTo(x, open);
+		ctx.moveTo(x + armLength, close);
+		ctx.lineTo(x, close);
 		ctx.stroke();
 	}
-});
+}
 
 Chart.defaults.ohlc = Chart.helpers.merge({}, Chart.defaults.financial);
-
-Chart.defaults._set('global', {
+Chart.defaults.set('ohlc', {
 	datasets: {
-		ohlc: {
-			barPercentage: 1.0,
-			categoryPercentage: 1.0
-		}
+		barPercentage: 1.0,
+		categoryPercentage: 1.0
 	}
 });
 
-const OhlcController = Chart.controllers.ohlc = FinancialController.extend({
+class OhlcController extends FinancialController {
 
-	dataElementType: OhlcElement,
+	updateElements(elements, start, mode) {
+		for (let i = 0; i < elements.length; i++) {
+			const me = this;
+			const dataset = me.getDataset();
+			const index = start + i;
+			const options = me.resolveDataElementOptions(index, mode);
 
-	updateElement(element, index, reset) {
-		const me = this;
-		const meta = me.getMeta();
-		const dataset = me.getDataset();
-		const options = me._resolveDataElementOptions(element, index);
+			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const properties = {
+				...baseProperties,
+				datasetLabel: dataset.label || '',
+				lineWidth: dataset.lineWidth,
+				armLength: dataset.armLength,
+				armLengthRatio: dataset.armLengthRatio,
+				color: dataset.color,
+			};
+			properties.options = options;
 
-		element._xScale = me.getScaleForId(meta.xAxisID);
-		element._yScale = me.getScaleForId(meta.yAxisID);
-		element._datasetIndex = me.index;
-		element._index = index;
-		element._model = {
-			datasetLabel: dataset.label || '',
-			lineWidth: dataset.lineWidth,
-			armLength: dataset.armLength,
-			armLengthRatio: dataset.armLengthRatio,
-			color: dataset.color,
-		};
-		me._updateElementGeometry(element, index, reset, options);
-		element.pivot();
-	},
+			me.updateElement(elements[i], index, properties, mode);
+		}
+	}
 
-});
+}
+
+OhlcController.prototype.dataElementType = OhlcElement;
+Chart.controllers.ohlc = OhlcController;
 
 })));

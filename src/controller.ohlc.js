@@ -5,41 +5,40 @@ import FinancialController from './controller.financial';
 import OhlcElement from './element.ohlc';
 
 Chart.defaults.ohlc = Chart.helpers.merge({}, Chart.defaults.financial);
-
-Chart.defaults._set('global', {
+Chart.defaults.set('ohlc', {
 	datasets: {
-		ohlc: {
-			barPercentage: 1.0,
-			categoryPercentage: 1.0
-		}
+		barPercentage: 1.0,
+		categoryPercentage: 1.0
 	}
 });
 
-const OhlcController = Chart.controllers.ohlc = FinancialController.extend({
+class OhlcController extends FinancialController {
 
-	dataElementType: OhlcElement,
+	updateElements(elements, start, mode) {
+		for (let i = 0; i < elements.length; i++) {
+			const me = this;
+			const dataset = me.getDataset();
+			const index = start + i;
+			const options = me.resolveDataElementOptions(index, mode);
 
-	updateElement(element, index, reset) {
-		const me = this;
-		const meta = me.getMeta();
-		const dataset = me.getDataset();
-		const options = me._resolveDataElementOptions(element, index);
+			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const properties = {
+				...baseProperties,
+				datasetLabel: dataset.label || '',
+				lineWidth: dataset.lineWidth,
+				armLength: dataset.armLength,
+				armLengthRatio: dataset.armLengthRatio,
+				color: dataset.color,
+			};
+			properties.options = options;
 
-		element._xScale = me.getScaleForId(meta.xAxisID);
-		element._yScale = me.getScaleForId(meta.yAxisID);
-		element._datasetIndex = me.index;
-		element._index = index;
-		element._model = {
-			datasetLabel: dataset.label || '',
-			lineWidth: dataset.lineWidth,
-			armLength: dataset.armLength,
-			armLengthRatio: dataset.armLengthRatio,
-			color: dataset.color,
-		};
-		me._updateElementGeometry(element, index, reset, options);
-		element.pivot();
-	},
+			me.updateElement(elements[i], index, properties, mode);
+		}
+	}
 
-});
+}
+
+OhlcController.prototype.dataElementType = OhlcElement;
+Chart.controllers.ohlc = OhlcController;
 
 export default OhlcController;

@@ -6,41 +6,35 @@ import CandlestickElement from './element.candlestick';
 
 Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
 
-Chart.defaults._set('global', {
-	datasets: {
-		candlestick: Chart.defaults.global.datasets.bar
+class CandlestickController extends FinancialController {
+
+	updateElements(elements, start, mode) {
+		for (let i = 0; i < elements.length; i++) {
+			const me = this;
+			const dataset = me.getDataset();
+			const index = start + i;
+			const options = me.resolveDataElementOptions(index, mode);
+
+			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const properties = {
+				...baseProperties,
+				datasetLabel: dataset.label || '',
+				// label: '', // to get label value please use dataset.data[index].label
+
+				// Appearance
+				color: dataset.color,
+				borderColor: dataset.borderColor,
+				borderWidth: dataset.borderWidth,
+			};
+			properties.options = options;
+
+			me.updateElement(elements[i], index, properties, mode);
+		}
 	}
-});
 
-const CandlestickController = Chart.controllers.candlestick = FinancialController.extend({
-	dataElementType: CandlestickElement,
+}
 
-	updateElement(element, index, reset) {
-		const me = this;
-		const meta = me.getMeta();
-		const dataset = me.getDataset();
-		const options = me._resolveDataElementOptions(element, index);
-
-		element._xScale = me.getScaleForId(meta.xAxisID);
-		element._yScale = me.getScaleForId(meta.yAxisID);
-		element._datasetIndex = me.index;
-		element._index = index;
-
-		element._model = {
-			datasetLabel: dataset.label || '',
-			// label: '', // to get label value please use dataset.data[index].label
-
-			// Appearance
-			color: dataset.color,
-			borderColor: dataset.borderColor,
-			borderWidth: dataset.borderWidth,
-		};
-
-		me._updateElementGeometry(element, index, reset, options);
-
-		element.pivot();
-	},
-
-});
+CandlestickController.prototype.dataElementType = CandlestickElement;
+Chart.controllers.candlestick = CandlestickController;
 
 export default CandlestickController;

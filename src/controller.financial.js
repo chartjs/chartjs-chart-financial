@@ -11,26 +11,37 @@ Chart.defaults.financial = {
 		mode: 'label'
 	},
 
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'height', 'open', 'high', 'low', 'close']
+			}
+		}
+	},
+
 	scales: {
-		xAxes: [{
+		x: {
 			type: 'time',
 			distribution: 'series',
 			offset: true,
 			ticks: {
 				major: {
 					enabled: true,
-					fontStyle: 'bold'
 				},
+				fontStyle: context => context.tick.major ? 'bold' : undefined,
 				source: 'data',
 				maxRotation: 0,
 				autoSkip: true,
 				autoSkipPadding: 75,
 				sampleSize: 100
 			}
-		}],
-		yAxes: [{
-			type: 'financialLinear'
-		}]
+		},
+		y: {
+			type: 'linear'
+		}
 	},
 
 	tooltips: {
@@ -45,10 +56,7 @@ Chart.defaults.financial = {
 					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
 				}
 
-				const o = point.o;
-				const h = point.h;
-				const l = point.l;
-				const c = point.c;
+				const {o, h, l, c} = point;
 
 				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
 			}
@@ -56,60 +64,107 @@ Chart.defaults.financial = {
 	}
 };
 
+function parseFloatBar(obj, item, vScale, i) {
+	const low = vScale.parse(obj.l, i);
+	const high = vScale.parse(obj.h, i);
+	const min = Math.min(low, high);
+	const max = Math.max(low, high);
+	let barStart = min;
+	let barEnd = max;
+
+	if (Math.abs(min) > Math.abs(max)) {
+		barStart = max;
+		barEnd = min;
+	}
+
+	// Store `barEnd` (furthest away from origin) as parsed value,
+	// to make stacking straight forward
+	item[vScale.axis] = barEnd;
+
+	item._custom = {
+		barStart,
+		barEnd,
+		min,
+		max
+	};
+}
+
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-const FinancialController = Chart.controllers.bar.extend({
-
-	dataElementType: Chart.elements.Financial,
+class FinancialController extends Chart.controllers.bar {
 
 	/**
-	 * @private
+	 * Overriding since we use {o, h, l, c}
+	 * @protected
 	 */
-	_updateElementGeometry(element, index, reset, options) {
+	parseObjectData(meta, data, start, count) {
+		const {iScale, vScale} = meta;
+		const parsed = [];
+		let i, ilen, item, obj;
+		for (i = start, ilen = start + count; i < ilen; ++i) {
+			obj = data[i];
+			item = {};
+			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
+			parseFloatBar(obj, item, vScale, i);
+			parsed.push(item);
+		}
+		return parsed;
+	}
+
+	/**
+	 * Implement this ourselves since it doesn't handle high and low values
+	 * https://github.com/chartjs/Chart.js/issues/7328
+	 * @protected
+	 */
+	getMinMax(scale) {
+		const meta = this._cachedMeta;
+		const _parsed = meta._parsed;
+
+		if (scale.axis === 'x') {
+			return {min: _parsed[0].x, max: _parsed[_parsed.length - 1].x};
+		}
+
+		let min = Number.POSITIVE_INFINITY;
+		let max = Number.NEGATIVE_INFINITY;
+		for (let i = 0; i < _parsed.length; i++) {
+			const custom = _parsed[i]._custom;
+			min = Math.min(min, custom.min);
+			max = Math.max(max, custom.max);
+		}
+		return {min, max};
+	}
+
+	/**
+	 * @protected
+	 */
+	calculateElementProperties(index, reset, options) {
 		const me = this;
-		const model = element._model;
 		const vscale = me._getValueScale();
 		const base = vscale.getBasePixel();
 		const horizontal = vscale.isHorizontal();
-		const ruler = me._ruler || me.getRuler();
-		const vpixels = me.calculateBarValuePixels(me.index, index, options);
-		const ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
-		const chart = me.chart;
-		const datasets = chart.data.datasets;
+		const ruler = me._ruler || me._getRuler();
+		const vpixels = me._calculateBarValuePixels(index, options);
+		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
+		const datasets = me.chart.data.datasets;
 		const indexData = datasets[me.index].data[index];
 
-		model.horizontal = horizontal;
-		model.base = reset ? base : vpixels.base;
-		model.x = horizontal ? reset ? base : vpixels.head : ipixels.center;
-		model.y = horizontal ? ipixels.center : reset ? base : vpixels.head;
-		model.height = horizontal ? ipixels.size : undefined;
-		model.width = horizontal ? undefined : ipixels.size;
-		model.candleOpen = vscale.getPixelForValue(Number(indexData.o));
-		model.candleHigh = vscale.getPixelForValue(Number(indexData.h));
-		model.candleLow = vscale.getPixelForValue(Number(indexData.l));
-		model.candleClose = vscale.getPixelForValue(Number(indexData.c));
-	},
-
-	draw() {
-		const ctx = this.chart.chart.ctx;
-		const elements = this.getMeta().data;
-		const dataset = this.getDataset();
-		const ilen = elements.length;
-		let i = 0;
-		let d;
-
-		Chart.canvasHelpers.clipArea(ctx, this.chart.chartArea);
-
-		for (; i < ilen; ++i) {
-			d = dataset.data[i].o;
-			if (d !== null && d !== undefined && !isNaN(d)) {
-				elements[i].draw();
-			}
-		}
-
-		Chart.canvasHelpers.unclipArea(ctx);
+		return {
+			horizontal,
+			base: reset ? base : vpixels.base,
+			x: horizontal ? reset ? base : vpixels.head : ipixels.center,
+			y: horizontal ? ipixels.center : reset ? base : vpixels.head,
+			height: horizontal ? ipixels.size : undefined,
+			width: horizontal ? undefined : ipixels.size,
+			open: vscale.getPixelForValue(indexData.o),
+			high: vscale.getPixelForValue(indexData.h),
+			low: vscale.getPixelForValue(indexData.l),
+			close: vscale.getPixelForValue(indexData.c)
+		};
 	}
-});
+
+}
+
+FinancialController.prototype.dataElementType = Chart.elements.Financial;
 
 export default FinancialController;

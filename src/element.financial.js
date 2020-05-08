@@ -3,7 +3,7 @@
 import Chart from 'chart.js';
 
 const helpers = Chart.helpers;
-const globalOpts = Chart.defaults.global;
+const globalOpts = Chart.defaults;
 
 globalOpts.elements.financial = {
 	color: {
@@ -13,100 +13,82 @@ globalOpts.elements.financial = {
 	}
 };
 
-function isVertical(bar) {
-	return bar._view.width !== undefined;
-}
-
 /**
- * Helper function to get the bounds of the candle
+ * Helper function to get the bounds of the bar regardless of the orientation
+ * @param {Rectangle} bar the bar
+ * @param {boolean} [useFinalPosition]
+ * @return {object} bounds of the bar
  * @private
- * @param bar {Chart.Element.financial} the bar
- * @return {Bounds} bounds of the bar
  */
-function getBarBounds(candle) {
-	const vm = candle._view;
+function getBarBounds(bar, useFinalPosition) {
+	const {x, y, base, width, height} = bar.getProps(['x', 'low', 'high', 'width', 'height'], useFinalPosition);
 
-	const halfWidth = vm.width / 2;
-	const x1 = vm.x - halfWidth;
-	const x2 = vm.x + halfWidth;
-	const y1 = vm.candleHigh;
-	const y2 = vm.candleLow;
+	let left, right, top, bottom, half;
 
-	return {
-		left: x1,
-		top: y1,
-		right: x2,
-		bottom: y2
-	};
+	if (bar.horizontal) {
+		half = height / 2;
+		left = Math.min(x, base);
+		right = Math.max(x, base);
+		top = y - half;
+		bottom = y + half;
+	} else {
+		half = width / 2;
+		left = x - half;
+		right = x + half;
+		top = Math.min(y, base);
+		bottom = Math.max(y, base);
+	}
+
+	return {left, top, right, bottom};
 }
 
-const FinancialElement = Chart.Element.extend({
+function inRange(bar, x, y, useFinalPosition) {
+	const skipX = x === null;
+	const skipY = y === null;
+	const bounds = !bar || (skipX && skipY) ? false : getBarBounds(bar, useFinalPosition);
+
+	return bounds
+		&& (skipX || x >= bounds.left && x <= bounds.right)
+		&& (skipY || y >= bounds.top && y <= bounds.bottom);
+}
+
+class FinancialElement extends Chart.Element {
 
 	height() {
-		const vm = this._view;
-		return vm.base - vm.y;
-	},
-	inRange(mouseX, mouseY) {
-		let inRange = false;
-
-		if (this._view) {
-			const bounds = getBarBounds(this);
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
-	},
-	inLabelRange(mouseX, mouseY) {
-		const me = this;
-		if (!me._view) {
-			return false;
-		}
-
-		let inRange = false;
-		const bounds = getBarBounds(me);
-
-		if (isVertical(me)) {
-			inRange = mouseX >= bounds.left && mouseX <= bounds.right;
-		} else {
-			inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
-		}
-
-		return inRange;
-	},
-	inXRange(mouseX) {
-		const bounds = getBarBounds(this);
-		return mouseX >= bounds.left && mouseX <= bounds.right;
-	},
-	inYRange(mouseY) {
-		const bounds = getBarBounds(this);
-		return mouseY >= bounds.top && mouseY <= bounds.bottom;
-	},
-	getCenterPoint() {
-		const vm = this._view;
-		return {
-			x: vm.x,
-			y: (vm.candleHigh + vm.candleLow) / 2
-		};
-	},
-	getArea() {
-		const vm = this._view;
-		return vm.width * Math.abs(vm.y - vm.base);
-	},
-	tooltipPosition() {
-		const vm = this._view;
-		return {
-			x: vm.x,
-			y: (vm.candleOpen + vm.candleClose) / 2
-		};
-	},
-	hasValue() {
-		const model = this._model;
-		return helpers.isNumber(model.x) &&
-			helpers.isNumber(model.candleOpen) &&
-			helpers.isNumber(model.candleHigh) &&
-			helpers.isNumber(model.candleLow) &&
-			helpers.isNumber(model.candleClose);
+		return this.base - this.y;
 	}
-});
+
+	inRange(mouseX, mouseY, useFinalPosition) {
+		return inRange(this, mouseX, mouseY, useFinalPosition);
+	}
+
+	inXRange(mouseX, useFinalPosition) {
+		return inRange(this, mouseX, null, useFinalPosition);
+	}
+
+	inYRange(mouseY, useFinalPosition) {
+		return inRange(this, null, mouseY, useFinalPosition);
+	}
+
+	getRange(axis) {
+		return axis === 'x' ? this.width / 2 : this.height / 2;
+	}
+
+	getCenterPoint(useFinalPosition) {
+		const {x, low, high} = this.getProps(['x', 'low', 'high'], useFinalPosition);
+		return {
+			x,
+			y: (high + low) / 2
+		};
+	}
+
+	tooltipPosition(useFinalPosition) {
+		const {x, open, close} = this.getProps(['x', 'open', 'close'], useFinalPosition);
+		return {
+			x,
+			y: (open + close) / 2
+		};
+	}
+}
 
 export default FinancialElement;

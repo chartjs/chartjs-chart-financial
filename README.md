@@ -18,7 +18,9 @@ Chart.js 2.8.0 added datetime adapters and [time scale performance improvements]
 
 Chart.js 2.9.0 added [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6509), [support for floating bars](https://github.com/chartjs/Chart.js/pull/6056), [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999), and [numerous performance improvements](https://github.com/chartjs/Chart.js/releases/tag/v2.9.0).
 
-We are very close to ready for an initial release. We would also like to make drawing sharper and add support for scriptable elements. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
+Chart.js 3.0.0-alpha removed the need for custom scales, which means logarithmic scale is now supported. It also has numerous performance improvements.
+
+We are waiting for Chart.js 3.0.0 before an initial release. We would also like to make drawing sharper and add support for scriptable elements. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
 
 ## Comparison
 
@@ -39,6 +41,8 @@ As we near an initial release we will add additional documentation. For now, ple
 Examples are available here: https://chartjs.github.io/chartjs-chart-financial/
 
 ### Date Libraries & IE Support
+
+IE may not be supported because we use some newer ES features. We will need to apply Babel to fix this
 
 Chart.js requires that you supply a date library. The examples utilize [chartjs-adapter-luxon](https://github.com/chartjs/chartjs-adapter-luxon), which has the best support for i18n and time zones. However, in order to use [Luxon](http://moment.github.io/luxon/) with IE you need to supply polyfills. If you require IE support you may find it easier to use another date library like [Moment](https://momentjs.com/) or [date-fns](https://date-fns.org/). Please see the Chart.js documentation for more details on date adapters.
 
