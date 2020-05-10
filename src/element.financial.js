@@ -2,7 +2,6 @@
 
 import Chart from 'chart.js';
 
-const helpers = Chart.helpers;
 const globalOpts = Chart.defaults;
 
 globalOpts.elements.financial = {
