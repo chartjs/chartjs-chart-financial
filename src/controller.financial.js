@@ -53,7 +53,7 @@ Chart.defaults.financial = {
 				const point = dataset.data[tooltipItem.index];
 
 				if (!helpers.isNullOrUndef(point.y)) {
-					return Chart.defaults.global.tooltips.callbacks.label(tooltipItem, data);
+					return Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
 				}
 
 				const {o, h, l, c} = point;
