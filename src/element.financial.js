@@ -34,7 +34,7 @@ function getBarBounds(bar, useFinalPosition) {
 		half = width / 2;
 		left = x - half;
 		right = x + half;
-		top = Math.min(y, base);
+		top = Math.min(y, base); // use min because 0 pixel at top of screen
 		bottom = Math.max(y, base);
 	}
 

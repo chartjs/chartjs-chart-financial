@@ -121,8 +121,12 @@ class FinancialController extends Chart.controllers.bar {
 		const meta = this._cachedMeta;
 		const _parsed = meta._parsed;
 
-		if (scale.axis === 'x') {
-			return {min: _parsed[0].x, max: _parsed[_parsed.length - 1].x};
+		if (_parsed.length < 2) {
+			return {min: 0, max: 1};
+		}
+
+		if (scale === meta.iScale) {
+			return {min: _parsed[0][scale.axis], max: _parsed[_parsed.length - 1][scale.axis]};
 		}
 
 		let min = Number.POSITIVE_INFINITY;
