@@ -21,6 +21,8 @@ const helpers = Chart.helpers;
 Chart.defaults.financial = {
 	label: '',
 
+	parsing: false,
+
 	hover: {
 		mode: 'label'
 	},
@@ -31,7 +33,7 @@ Chart.defaults.financial = {
 		animation: {
 			numbers: {
 				type: 'number',
-				properties: ['x', 'y', 'base', 'width', 'height', 'open', 'high', 'low', 'close']
+				properties: ['x', 'y', 'base', 'width', 'open', 'high', 'low', 'close']
 			}
 		}
 	},
@@ -78,52 +80,31 @@ Chart.defaults.financial = {
 	}
 };
 
-function parseFloatBar(obj, item, vScale, i) {
-	const low = vScale.parse(obj.l, i);
-	const high = vScale.parse(obj.h, i);
-	const min = Math.min(low, high);
-	const max = Math.max(low, high);
-	let barStart = min;
-	let barEnd = max;
-
-	if (Math.abs(min) > Math.abs(max)) {
-		barStart = max;
-		barEnd = min;
-	}
-
-	// Store `barEnd` (furthest away from origin) as parsed value,
-	// to make stacking straight forward
-	item[vScale.axis] = barEnd;
-
-	item._custom = {
-		barStart,
-		barEnd,
-		min,
-		max
-	};
-}
-
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
 class FinancialController extends Chart.controllers.bar {
 
-	/**
-	 * Overriding since we use {o, h, l, c}
-	 * @protected
-	 */
-	parseObjectData(meta, data, start, count) {
-		const {iScale, vScale} = meta;
-		const parsed = [];
-		let i, ilen, item, obj;
-		for (i = start, ilen = start + count; i < ilen; ++i) {
-			obj = data[i];
-			item = {};
-			item[iScale.axis] = iScale.parseObject(obj, iScale.axis, i);
-			parseFloatBar(obj, item, vScale, i);
-			parsed.push(item);
+	getLabelAndValue(index) {
+		const me = this;
+		const parsed = me.getParsed(index);
+
+		const {o, h, l, c} = parsed;
+		const value = 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
+
+		return {
+			label: '' + me._cachedMeta.iScale.getLabelForValue(parsed.t),
+			value
+		};
+	}
+
+	getAllParsedValues(scale) {
+		const parsed = this._cachedMeta._parsed;
+		const values = [];
+		for (let i = 0; i < parsed.length; ++i) {
+			values.push(parsed[i].t);
 		}
-		return parsed;
+		return values;
 	}
 
 	/**
@@ -135,18 +116,39 @@ class FinancialController extends Chart.controllers.bar {
 		const meta = this._cachedMeta;
 		const _parsed = meta._parsed;
 
-		if (scale.axis === 'x') {
-			return {min: _parsed[0].x, max: _parsed[_parsed.length - 1].x};
+		if (_parsed.length < 2) {
+			return {min: 0, max: 1};
+		}
+
+		if (scale === meta.iScale) {
+			return {min: _parsed[0].t, max: _parsed[_parsed.length - 1].t};
 		}
 
 		let min = Number.POSITIVE_INFINITY;
 		let max = Number.NEGATIVE_INFINITY;
 		for (let i = 0; i < _parsed.length; i++) {
-			const custom = _parsed[i]._custom;
-			min = Math.min(min, custom.min);
-			max = Math.max(max, custom.max);
+			const data = _parsed[i];
+			min = Math.min(min, data.l);
+			max = Math.max(max, data.h);
 		}
 		return {min, max};
+	}
+
+	_getRuler() {
+		const me = this;
+		const meta = me._cachedMeta;
+		const iScale = meta.iScale;
+		const pixels = [];
+		for (let i = 0; i < meta.data.length; ++i) {
+			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
+		}
+		return {
+			pixels: pixels,
+			start: iScale._startPixel,
+			end: iScale._endPixel,
+			stackCount: me._getStackCount(),
+			scale: iScale
+		};
 	}
 
 	/**
@@ -156,32 +158,41 @@ class FinancialController extends Chart.controllers.bar {
 		const me = this;
 		const vscale = me._getValueScale();
 		const base = vscale.getBasePixel();
-		const horizontal = vscale.isHorizontal();
 		const ruler = me._ruler || me._getRuler();
-		const vpixels = me._calculateBarValuePixels(index, options);
 		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
-		const datasets = me.chart.data.datasets;
-		const indexData = datasets[me.index].data[index];
+		const data = me.chart.data.datasets[me.index].data[index];
+		const open = vscale.getPixelForValue(data.o);
+		const high = vscale.getPixelForValue(data.h);
+		const low = vscale.getPixelForValue(data.l);
+		const close = vscale.getPixelForValue(data.c);
 
 		return {
-			horizontal,
-			base: reset ? base : vpixels.base,
-			x: horizontal ? reset ? base : vpixels.head : ipixels.center,
-			y: horizontal ? ipixels.center : reset ? base : vpixels.head,
-			height: horizontal ? ipixels.size : undefined,
-			width: horizontal ? undefined : ipixels.size,
-			open: vscale.getPixelForValue(indexData.o),
-			high: vscale.getPixelForValue(indexData.h),
-			low: vscale.getPixelForValue(indexData.l),
-			close: vscale.getPixelForValue(indexData.c)
+			base: reset ? base : low,
+			x: ipixels.center,
+			y: (low + high) / 2,
+			width: ipixels.size,
+			open,
+			high,
+			low,
+			close
 		};
 	}
+
+    draw() {
+      const me = this;
+      const chart = me.chart;
+      const rects = me._cachedMeta.data;
+      helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+      for (let i = 0; i < rects.length; ++i) {
+        rects[i].draw(me._ctx);
+      }
+      helpers.canvas.unclipArea(chart.ctx);
+    }
 
 }
 
 FinancialController.prototype.dataElementType = Chart.elements.Financial;
 
-const helpers$1 = Chart.helpers;
 const globalOpts = Chart.defaults;
 
 globalOpts.elements.financial = {
@@ -214,7 +225,7 @@ function getBarBounds(bar, useFinalPosition) {
 		half = width / 2;
 		left = x - half;
 		right = x + half;
-		top = Math.min(y, base);
+		top = Math.min(y, base); // use min because 0 pixel at top of screen
 		bottom = Math.max(y, base);
 	}
 
@@ -270,10 +281,10 @@ class FinancialElement extends Chart.Element {
 	}
 }
 
-const helpers$2 = Chart.helpers;
+const helpers$1 = Chart.helpers;
 const globalOpts$1 = Chart.defaults;
 
-globalOpts$1.elements.candlestick = helpers$2.merge({}, [globalOpts$1.elements.financial, {
+globalOpts$1.elements.candlestick = helpers$1.merge({}, [globalOpts$1.elements.financial, {
 	borderColor: globalOpts$1.elements.financial.color.unchanged,
 	borderWidth: 1,
 }]);
@@ -295,18 +306,18 @@ class CandlestickElement extends FinancialElement {
 
 		let borderColor;
 		if (close < open) {
-			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
+			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
 		} else if (close > open) {
-			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
+			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
 		} else {
-			borderColor = helpers$2.valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$2.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
+			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
 		}
 
-		ctx.lineWidth = helpers$2.valueOrDefault(me.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
-		ctx.strokeStyle = helpers$2.valueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
+		ctx.lineWidth = helpers$1.valueOrDefault(me.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
+		ctx.strokeStyle = helpers$1.valueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -353,10 +364,10 @@ class CandlestickController extends FinancialController {
 CandlestickController.prototype.dataElementType = CandlestickElement;
 Chart.controllers.candlestick = CandlestickController;
 
-const helpers$3 = Chart.helpers;
+const helpers$2 = Chart.helpers;
 const globalOpts$2 = Chart.defaults;
 
-globalOpts$2.elements.ohlc = helpers$3.merge({}, [globalOpts$2.elements.financial, {
+globalOpts$2.elements.ohlc = helpers$2.merge({}, [globalOpts$2.elements.financial, {
 	lineWidth: 2,
 	armLength: null,
 	armLengthRatio: 0.8,
@@ -368,8 +379,8 @@ class OhlcElement extends FinancialElement {
 
 		const {x, open, high, low, close} = me;
 
-		const armLengthRatio = helpers$3.valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
-		let armLength = helpers$3.valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
+		const armLengthRatio = helpers$2.valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
+		let armLength = helpers$2.valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
 		if (armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
@@ -381,13 +392,13 @@ class OhlcElement extends FinancialElement {
 		}
 
 		if (close < open) {
-			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
+			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
 		} else if (close > open) {
-			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
+			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
 		} else {
-			ctx.strokeStyle = helpers$3.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
+			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
 		}
-		ctx.lineWidth = helpers$3.valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
+		ctx.lineWidth = helpers$2.valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
