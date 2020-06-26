@@ -53,6 +53,36 @@ Chart.defaults.financial = {
 				autoSkip: true,
 				autoSkipPadding: 75,
 				sampleSize: 100
+			},
+			afterBuildTicks: scale => {
+				const DateTime = window && window.luxon && window.luxon.DateTime;
+				if (!DateTime) {
+					return;
+				}
+				const majorUnit = scale._majorUnit;
+				const ticks = scale.ticks;
+				const firstTick = ticks[0];
+
+				let val = DateTime.fromMillis(ticks[0].value);
+				if ((majorUnit === 'minute' && val.second === 0)
+						|| (majorUnit === 'hour' && val.minute === 0)
+						|| (majorUnit === 'day' && val.hour === 9)
+						|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
+						|| (majorUnit === 'year' && val.month === 1)) {
+					firstTick.major = true;
+				} else {
+					firstTick.major = false;
+				}
+				let lastMajor = val.get(majorUnit);
+
+				for (let i = 1; i < ticks.length; i++) {
+					const tick = ticks[i];
+					val = DateTime.fromMillis(tick.value);
+					const currMajor = val.get(majorUnit);
+					tick.major = currMajor !== lastMajor;
+					lastMajor = currMajor;
+				}
+				scale.ticks = ticks;
 			}
 		},
 		y: {
@@ -98,7 +128,7 @@ class FinancialController extends Chart.controllers.bar {
 		};
 	}
 
-	getAllParsedValues(scale) {
+	getAllParsedValues() {
 		const parsed = this._cachedMeta._parsed;
 		const values = [];
 		for (let i = 0; i < parsed.length; ++i) {
@@ -143,7 +173,7 @@ class FinancialController extends Chart.controllers.bar {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
 		}
 		return {
-			pixels: pixels,
+			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
 			stackCount: me._getStackCount(),
@@ -178,16 +208,16 @@ class FinancialController extends Chart.controllers.bar {
 		};
 	}
 
-    draw() {
-      const me = this;
-      const chart = me.chart;
-      const rects = me._cachedMeta.data;
-      helpers.canvas.clipArea(chart.ctx, chart.chartArea);
-      for (let i = 0; i < rects.length; ++i) {
-        rects[i].draw(me._ctx);
-      }
-      helpers.canvas.unclipArea(chart.ctx);
-    }
+	draw() {
+		const me = this;
+		const chart = me.chart;
+		const rects = me._cachedMeta.data;
+		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+		for (let i = 0; i < rects.length; ++i) {
+			rects[i].draw(me._ctx);
+		}
+		helpers.canvas.unclipArea(chart.ctx);
+	}
 
 }
 
