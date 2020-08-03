@@ -170,11 +170,10 @@ class FinancialController extends Chart.controllers.bar {
 	/**
 	 * @protected
 	 */
-	calculateElementProperties(index, reset, options) {
+	calculateElementProperties(index, ruler, reset, options) {
 		const me = this;
 		const vscale = me._getValueScale();
 		const base = vscale.getBasePixel();
-		const ruler = me._ruler || me._getRuler();
 		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 		const data = me.chart.data.datasets[me.index].data[index];
 		const open = vscale.getPixelForValue(data.o);

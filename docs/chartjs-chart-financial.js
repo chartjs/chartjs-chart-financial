@@ -11,7 +11,7 @@
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('chart.js')) :
 typeof define === 'function' && define.amd ? define(['chart.js'], factory) :
-(global = global || self, factory(global.Chart));
+(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Chart));
 }(this, (function (Chart) { 'use strict';
 
 Chart = Chart && Object.prototype.hasOwnProperty.call(Chart, 'default') ? Chart['default'] : Chart;
@@ -184,11 +184,10 @@ class FinancialController extends Chart.controllers.bar {
 	/**
 	 * @protected
 	 */
-	calculateElementProperties(index, reset, options) {
+	calculateElementProperties(index, ruler, reset, options) {
 		const me = this;
 		const vscale = me._getValueScale();
 		const base = vscale.getBasePixel();
-		const ruler = me._ruler || me._getRuler();
 		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 		const data = me.chart.data.datasets[me.index].data[index];
 		const open = vscale.getPixelForValue(data.o);
@@ -366,13 +365,15 @@ Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
 class CandlestickController extends FinancialController {
 
 	updateElements(elements, start, mode) {
+		const me = this;
+		const dataset = me.getDataset();
+		const ruler = me._ruler || me._getRuler();
+
 		for (let i = 0; i < elements.length; i++) {
-			const me = this;
-			const dataset = me.getDataset();
 			const index = start + i;
 			const options = me.resolveDataElementOptions(index, mode);
 
-			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const baseProperties = me.calculateElementProperties(index, ruler, mode === 'reset', options);
 			const properties = {
 				...baseProperties,
 				datasetLabel: dataset.label || '',
@@ -452,13 +453,15 @@ Chart.defaults.set('ohlc', {
 class OhlcController extends FinancialController {
 
 	updateElements(elements, start, mode) {
+		const me = this;
+		const dataset = me.getDataset();
+		const ruler = me._ruler || me._getRuler();
+
 		for (let i = 0; i < elements.length; i++) {
-			const me = this;
-			const dataset = me.getDataset();
 			const index = start + i;
 			const options = me.resolveDataElementOptions(index, mode);
 
-			const baseProperties = me.calculateElementProperties(index, mode === 'reset', options);
+			const baseProperties = me.calculateElementProperties(index, ruler, mode === 'reset', options);
 			const properties = {
 				...baseProperties,
 				datasetLabel: dataset.label || '',
