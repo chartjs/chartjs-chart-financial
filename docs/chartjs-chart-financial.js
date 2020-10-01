@@ -42,8 +42,7 @@ Chart__default['default'].defaults.financial = {
 
 	scales: {
 		x: {
-			type: 'time',
-			distribution: 'series',
+			type: 'timeseries',
 			offset: true,
 			ticks: {
 				major: {
@@ -96,12 +95,11 @@ Chart__default['default'].defaults.financial = {
 		intersect: false,
 		mode: 'index',
 		callbacks: {
-			label(tooltipItem, data) {
-				const dataset = data.datasets[tooltipItem.datasetIndex];
-				const point = dataset.data[tooltipItem.index];
+			label(ctx) {
+				const point = ctx.dataPoint;
 
 				if (!helpers.isNullOrUndef(point.y)) {
-					return Chart__default['default'].defaults.tooltips.callbacks.label(tooltipItem, data);
+					return Chart__default['default'].defaults.tooltips.callbacks.label(ctx);
 				}
 
 				const {o, h, l, c} = point;
@@ -111,6 +109,27 @@ Chart__default['default'].defaults.financial = {
 		}
 	}
 };
+
+/**
+ * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
+ * @private
+ */
+function computeMinSampleSize(scale, pixels) {
+	let min = scale._length;
+	let prev, curr, i, ilen;
+
+	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
+	}
+
+	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+		curr = scale.getPixelForTick(i);
+		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
+		prev = curr;
+	}
+
+	return min;
+}
 
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
@@ -174,7 +193,9 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 		for (let i = 0; i < meta.data.length; ++i) {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
 		}
+		const min = computeMinSampleSize(iScale, pixels);
 		return {
+			min,
 			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
@@ -188,7 +209,7 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 	 */
 	calculateElementProperties(index, ruler, reset, options) {
 		const me = this;
-		const vscale = me._getValueScale();
+		const vscale = me._cachedMeta.vScale;
 		const base = vscale.getBasePixel();
 		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 		const data = me.chart.data.datasets[me.index].data[index];
@@ -213,16 +234,14 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 		const me = this;
 		const chart = me.chart;
 		const rects = me._cachedMeta.data;
-		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+		helpers.clipArea(chart.ctx, chart.chartArea);
 		for (let i = 0; i < rects.length; ++i) {
 			rects[i].draw(me._ctx);
 		}
-		helpers.canvas.unclipArea(chart.ctx);
+		helpers.unclipArea(chart.ctx);
 	}
 
 }
-
-FinancialController.prototype.dataElementType = Chart__default['default'].elements.Financial;
 
 const globalOpts = Chart__default['default'].defaults;
 
@@ -315,11 +334,6 @@ class FinancialElement extends Chart__default['default'].Element {
 const helpers$1 = Chart__default['default'].helpers;
 const globalOpts$1 = Chart__default['default'].defaults;
 
-globalOpts$1.elements.candlestick = helpers$1.merge({}, [globalOpts$1.elements.financial, {
-	borderColor: globalOpts$1.elements.financial.color.unchanged,
-	borderWidth: 1,
-}]);
-
 class CandlestickElement extends FinancialElement {
 	draw(ctx) {
 		const me = this;
@@ -362,20 +376,28 @@ class CandlestickElement extends FinancialElement {
 	}
 }
 
-Chart__default['default'].defaults.candlestick = Chart__default['default'].helpers.merge({}, Chart__default['default'].defaults.financial);
+CandlestickElement.id = 'candlestick';
+CandlestickElement.defaults = helpers$1.merge({}, [globalOpts$1.elements.financial, {
+	borderColor: globalOpts$1.elements.financial.color.unchanged,
+	borderWidth: 1,
+}]);
 
 class CandlestickController extends FinancialController {
 
-	updateElements(elements, start, mode) {
+	updateElements(elements, start, count, mode) {
 		const me = this;
 		const dataset = me.getDataset();
 		const ruler = me._ruler || me._getRuler();
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = 0; i < elements.length; i++) {
-			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-			const baseProperties = me.calculateElementProperties(index, ruler, mode === 'reset', options);
+		for (let i = start; i < count; i++) {
+			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
+
+			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
 			const properties = {
 				...baseProperties,
 				datasetLabel: dataset.label || '',
@@ -386,25 +408,23 @@ class CandlestickController extends FinancialController {
 				borderColor: dataset.borderColor,
 				borderWidth: dataset.borderWidth,
 			};
-			properties.options = options;
 
-			me.updateElement(elements[i], index, properties, mode);
+			if (includeOptions) {
+				properties.options = options;
+			}
+			me.updateElement(elements[i], i, properties, mode);
 		}
 	}
 
 }
 
-CandlestickController.prototype.dataElementType = CandlestickElement;
-Chart__default['default'].controllers.candlestick = CandlestickController;
+CandlestickController.id = 'candlestick';
+CandlestickController.defaults = Chart__default['default'].helpers.merge({
+	dataElementType: CandlestickElement.id
+}, Chart__default['default'].defaults.financial);
 
 const helpers$2 = Chart__default['default'].helpers;
 const globalOpts$2 = Chart__default['default'].defaults;
-
-globalOpts$2.elements.ohlc = helpers$2.merge({}, [globalOpts$2.elements.financial, {
-	lineWidth: 2,
-	armLength: null,
-	armLengthRatio: 0.8,
-}]);
 
 class OhlcElement extends FinancialElement {
 	draw(ctx) {
@@ -444,26 +464,27 @@ class OhlcElement extends FinancialElement {
 	}
 }
 
-Chart__default['default'].defaults.ohlc = Chart__default['default'].helpers.merge({}, Chart__default['default'].defaults.financial);
-Chart__default['default'].defaults.set('ohlc', {
-	datasets: {
-		barPercentage: 1.0,
-		categoryPercentage: 1.0
-	}
-});
+OhlcElement.id = 'ohlc';
+OhlcElement.defaults = helpers$2.merge({}, [globalOpts$2.elements.financial, {
+	lineWidth: 2,
+	armLength: null,
+	armLengthRatio: 0.8,
+}]);
 
 class OhlcController extends FinancialController {
 
-	updateElements(elements, start, mode) {
+	updateElements(elements, start, count, mode) {
 		const me = this;
 		const dataset = me.getDataset();
 		const ruler = me._ruler || me._getRuler();
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = 0; i < elements.length; i++) {
-			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
+		for (let i = 0; i < count; i++) {
+			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
 
-			const baseProperties = me.calculateElementProperties(index, ruler, mode === 'reset', options);
+			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
 			const properties = {
 				...baseProperties,
 				datasetLabel: dataset.label || '',
@@ -472,15 +493,25 @@ class OhlcController extends FinancialController {
 				armLengthRatio: dataset.armLengthRatio,
 				color: dataset.color,
 			};
-			properties.options = options;
 
-			me.updateElement(elements[i], index, properties, mode);
+			if (includeOptions) {
+				properties.options = options;
+			}
+			me.updateElement(elements[i], i, properties, mode);
 		}
 	}
 
 }
 
-OhlcController.prototype.dataElementType = OhlcElement;
-Chart__default['default'].controllers.ohlc = OhlcController;
+OhlcController.id = 'ohlc';
+OhlcController.defaults = Chart__default['default'].helpers.merge({
+	dataElementType: OhlcElement.id,
+	datasets: {
+		barPercentage: 1.0,
+		categoryPercentage: 1.0
+	}
+}, Chart__default['default'].defaults.financial);
+
+Chart__default['default'].register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
 
 })));

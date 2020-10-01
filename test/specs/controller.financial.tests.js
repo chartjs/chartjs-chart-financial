@@ -1,7 +1,3 @@
-import CandlestickController from '../../src/controller.candlestick';
-import CandlestickElement from '../../src/element.candlestick';
-import FinancialController from '../../src/controller.financial';
-
 describe('Financial controller tests', function() {
 	it('Should create candlestick elements for each data item during initialization', function () {
 		var chart = window.acquireChart({ type: 'candlestick',
@@ -30,11 +26,11 @@ describe('Financial controller tests', function() {
 			}
 		});
 
-		new CandlestickController(chart, 0);
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.data.length).toBe(10);
 		for (var i = 0; i < meta.data.length; i++) {
-			expect(meta.data[i] instanceof CandlestickElement).toBe(true);
+			expect(meta.data[i].x > 0).toBe(true);
+			expect(meta.data[i].y > 0).toBe(true);
 		}
 	});
 

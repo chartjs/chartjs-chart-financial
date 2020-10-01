@@ -4,20 +4,22 @@ import Chart from 'chart.js';
 import FinancialController from './controller.financial';
 import CandlestickElement from './element.candlestick';
 
-Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
-
 class CandlestickController extends FinancialController {
 
-	updateElements(elements, start, mode) {
+	updateElements(elements, start, count, mode) {
 		const me = this;
 		const dataset = me.getDataset();
 		const ruler = me._ruler || me._getRuler();
+		const firstOpts = me.resolveDataElementOptions(start, mode);
+		const sharedOptions = me.getSharedOptions(firstOpts);
+		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = 0; i < elements.length; i++) {
-			const index = start + i;
-			const options = me.resolveDataElementOptions(index, mode);
+		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-			const baseProperties = me.calculateElementProperties(index, ruler, mode === 'reset', options);
+		for (let i = start; i < count; i++) {
+			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
+
+			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
 			const properties = {
 				...baseProperties,
 				datasetLabel: dataset.label || '',
@@ -28,15 +30,19 @@ class CandlestickController extends FinancialController {
 				borderColor: dataset.borderColor,
 				borderWidth: dataset.borderWidth,
 			};
-			properties.options = options;
 
-			me.updateElement(elements[i], index, properties, mode);
+			if (includeOptions) {
+				properties.options = options;
+			}
+			me.updateElement(elements[i], i, properties, mode);
 		}
 	}
 
 }
 
-CandlestickController.prototype.dataElementType = CandlestickElement;
-Chart.controllers.candlestick = CandlestickController;
+CandlestickController.id = 'candlestick';
+CandlestickController.defaults = Chart.helpers.merge({
+	dataElementType: CandlestickElement.id
+}, Chart.defaults.financial);
 
 export default CandlestickController;

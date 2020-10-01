@@ -26,8 +26,7 @@ Chart.defaults.financial = {
 
 	scales: {
 		x: {
-			type: 'time',
-			distribution: 'series',
+			type: 'timeseries',
 			offset: true,
 			ticks: {
 				major: {
@@ -80,12 +79,11 @@ Chart.defaults.financial = {
 		intersect: false,
 		mode: 'index',
 		callbacks: {
-			label(tooltipItem, data) {
-				const dataset = data.datasets[tooltipItem.datasetIndex];
-				const point = dataset.data[tooltipItem.index];
+			label(ctx) {
+				const point = ctx.dataPoint;
 
 				if (!helpers.isNullOrUndef(point.y)) {
-					return Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+					return Chart.defaults.tooltips.callbacks.label(ctx);
 				}
 
 				const {o, h, l, c} = point;
@@ -95,6 +93,27 @@ Chart.defaults.financial = {
 		}
 	}
 };
+
+/**
+ * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
+ * @private
+ */
+function computeMinSampleSize(scale, pixels) {
+	let min = scale._length;
+	let prev, curr, i, ilen;
+
+	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
+	}
+
+	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+		curr = scale.getPixelForTick(i);
+		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
+		prev = curr;
+	}
+
+	return min;
+}
 
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
@@ -158,7 +177,9 @@ class FinancialController extends Chart.controllers.bar {
 		for (let i = 0; i < meta.data.length; ++i) {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
 		}
+		const min = computeMinSampleSize(iScale, pixels);
 		return {
+			min,
 			pixels,
 			start: iScale._startPixel,
 			end: iScale._endPixel,
@@ -172,7 +193,7 @@ class FinancialController extends Chart.controllers.bar {
 	 */
 	calculateElementProperties(index, ruler, reset, options) {
 		const me = this;
-		const vscale = me._getValueScale();
+		const vscale = me._cachedMeta.vScale;
 		const base = vscale.getBasePixel();
 		const ipixels = me._calculateBarIndexPixels(index, ruler, options);
 		const data = me.chart.data.datasets[me.index].data[index];
@@ -197,15 +218,13 @@ class FinancialController extends Chart.controllers.bar {
 		const me = this;
 		const chart = me.chart;
 		const rects = me._cachedMeta.data;
-		helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+		helpers.clipArea(chart.ctx, chart.chartArea);
 		for (let i = 0; i < rects.length; ++i) {
 			rects[i].draw(me._ctx);
 		}
-		helpers.canvas.unclipArea(chart.ctx);
+		helpers.unclipArea(chart.ctx);
 	}
 
 }
-
-FinancialController.prototype.dataElementType = Chart.elements.Financial;
 
 export default FinancialController;

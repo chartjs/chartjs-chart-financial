@@ -9,13 +9,13 @@
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "peerDependencies": {
-    "chart.js": "^3.0.0-alpha"
+    "chart.js": "^3.0.0-beta.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "chartjs-adapter-luxon": "^0.2.2",
-    "chart.js": "^3.0.0-alpha",
+    "chartjs-adapter-luxon": "^0.2.1",
+    "chart.js": "^3.0.0-beta.3",
     "eslint": "^7.10.0",
     "eslint-config-chartjs": "^0.2.0",
     "eslint-config-esnext": "^4.1.0",

@@ -6,12 +6,6 @@ import FinancialElement from './element.financial';
 const helpers = Chart.helpers;
 const globalOpts = Chart.defaults;
 
-globalOpts.elements.ohlc = helpers.merge({}, [globalOpts.elements.financial, {
-	lineWidth: 2,
-	armLength: null,
-	armLengthRatio: 0.8,
-}]);
-
 class OhlcElement extends FinancialElement {
 	draw(ctx) {
 		const me = this;
@@ -49,5 +43,12 @@ class OhlcElement extends FinancialElement {
 		ctx.stroke();
 	}
 }
+
+OhlcElement.id = 'ohlc';
+OhlcElement.defaults = helpers.merge({}, [globalOpts.elements.financial, {
+	lineWidth: 2,
+	armLength: null,
+	armLengthRatio: 0.8,
+}]);
 
 export default OhlcElement;

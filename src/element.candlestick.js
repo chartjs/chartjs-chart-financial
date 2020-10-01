@@ -6,11 +6,6 @@ import FinancialElement from './element.financial';
 const helpers = Chart.helpers;
 const globalOpts = Chart.defaults;
 
-globalOpts.elements.candlestick = helpers.merge({}, [globalOpts.elements.financial, {
-	borderColor: globalOpts.elements.financial.color.unchanged,
-	borderWidth: 1,
-}]);
-
 class CandlestickElement extends FinancialElement {
 	draw(ctx) {
 		const me = this;
@@ -52,5 +47,11 @@ class CandlestickElement extends FinancialElement {
 		ctx.closePath();
 	}
 }
+
+CandlestickElement.id = 'candlestick';
+CandlestickElement.defaults = helpers.merge({}, [globalOpts.elements.financial, {
+	borderColor: globalOpts.elements.financial.color.unchanged,
+	borderWidth: 1,
+}]);
 
 export default CandlestickElement;

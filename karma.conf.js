@@ -10,7 +10,7 @@ module.exports = function(karma) {
 	// we will prefer the unminified build which is easier to browse and works
 	// better with source mapping. In other cases, pick the minified build to
 	// make sure that the minification process (terser) doesn't break anything.
-	const regex = args.watch ? /chartjs-chart-financia\.js$/ : /chartjs-chart-financial\.min\.js$/;
+	const regex = args.watch ? /chartjs-chart-financial\.js$/ : /chartjs-chart-financial\.min\.js$/;
 	const build = builds.filter(v => v.output.file.match(regex))[0];
 
 	karma.set({
@@ -37,7 +37,7 @@ module.exports = function(karma) {
 
 		files: [
 			'node_modules/luxon/build/global/luxon.js',
-			'node_modules/chart.js/dist/Chart.js',
+			'node_modules/chart.js/dist/chart.js',
 			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js',
 			'test/index.js',
 			'src/index.js'
