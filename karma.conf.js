@@ -1,6 +1,6 @@
 const commonjs = require('@rollup/plugin-commonjs');
 const istanbul = require('rollup-plugin-istanbul');
-const resolve = require('@rollup/plugin-node-resolve');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const builds = require('./rollup.config');
 
 module.exports = function(karma) {
@@ -49,7 +49,7 @@ module.exports = function(karma) {
 		},
 		rollupPreprocessor: {
 			plugins: [
-				resolve(),
+				nodeResolve(),
 				commonjs()
 			],
 			external: [

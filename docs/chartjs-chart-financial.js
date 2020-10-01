@@ -14,11 +14,13 @@ typeof define === 'function' && define.amd ? define(['chart.js'], factory) :
 (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Chart));
 }(this, (function (Chart) { 'use strict';
 
-Chart = Chart && Object.prototype.hasOwnProperty.call(Chart, 'default') ? Chart['default'] : Chart;
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-const helpers = Chart.helpers;
+var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart);
 
-Chart.defaults.financial = {
+const helpers = Chart__default['default'].helpers;
+
+Chart__default['default'].defaults.financial = {
 	label: '',
 
 	parsing: false,
@@ -99,7 +101,7 @@ Chart.defaults.financial = {
 				const point = dataset.data[tooltipItem.index];
 
 				if (!helpers.isNullOrUndef(point.y)) {
-					return Chart.defaults.tooltips.callbacks.label(tooltipItem, data);
+					return Chart__default['default'].defaults.tooltips.callbacks.label(tooltipItem, data);
 				}
 
 				const {o, h, l, c} = point;
@@ -113,7 +115,7 @@ Chart.defaults.financial = {
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-class FinancialController extends Chart.controllers.bar {
+class FinancialController extends Chart__default['default'].controllers.bar {
 
 	getLabelAndValue(index) {
 		const me = this;
@@ -220,9 +222,9 @@ class FinancialController extends Chart.controllers.bar {
 
 }
 
-FinancialController.prototype.dataElementType = Chart.elements.Financial;
+FinancialController.prototype.dataElementType = Chart__default['default'].elements.Financial;
 
-const globalOpts = Chart.defaults;
+const globalOpts = Chart__default['default'].defaults;
 
 globalOpts.elements.financial = {
 	color: {
@@ -271,7 +273,7 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-class FinancialElement extends Chart.Element {
+class FinancialElement extends Chart__default['default'].Element {
 
 	height() {
 		return this.base - this.y;
@@ -310,8 +312,8 @@ class FinancialElement extends Chart.Element {
 	}
 }
 
-const helpers$1 = Chart.helpers;
-const globalOpts$1 = Chart.defaults;
+const helpers$1 = Chart__default['default'].helpers;
+const globalOpts$1 = Chart__default['default'].defaults;
 
 globalOpts$1.elements.candlestick = helpers$1.merge({}, [globalOpts$1.elements.financial, {
 	borderColor: globalOpts$1.elements.financial.color.unchanged,
@@ -360,7 +362,7 @@ class CandlestickElement extends FinancialElement {
 	}
 }
 
-Chart.defaults.candlestick = Chart.helpers.merge({}, Chart.defaults.financial);
+Chart__default['default'].defaults.candlestick = Chart__default['default'].helpers.merge({}, Chart__default['default'].defaults.financial);
 
 class CandlestickController extends FinancialController {
 
@@ -393,10 +395,10 @@ class CandlestickController extends FinancialController {
 }
 
 CandlestickController.prototype.dataElementType = CandlestickElement;
-Chart.controllers.candlestick = CandlestickController;
+Chart__default['default'].controllers.candlestick = CandlestickController;
 
-const helpers$2 = Chart.helpers;
-const globalOpts$2 = Chart.defaults;
+const helpers$2 = Chart__default['default'].helpers;
+const globalOpts$2 = Chart__default['default'].defaults;
 
 globalOpts$2.elements.ohlc = helpers$2.merge({}, [globalOpts$2.elements.financial, {
 	lineWidth: 2,
@@ -442,8 +444,8 @@ class OhlcElement extends FinancialElement {
 	}
 }
 
-Chart.defaults.ohlc = Chart.helpers.merge({}, Chart.defaults.financial);
-Chart.defaults.set('ohlc', {
+Chart__default['default'].defaults.ohlc = Chart__default['default'].helpers.merge({}, Chart__default['default'].defaults.financial);
+Chart__default['default'].defaults.set('ohlc', {
 	datasets: {
 		barPercentage: 1.0,
 		categoryPercentage: 1.0
@@ -479,6 +481,6 @@ class OhlcController extends FinancialController {
 }
 
 OhlcController.prototype.dataElementType = OhlcElement;
-Chart.controllers.ohlc = OhlcController;
+Chart__default['default'].controllers.ohlc = OhlcController;
 
 })));
