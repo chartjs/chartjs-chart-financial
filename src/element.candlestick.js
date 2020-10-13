@@ -1,9 +1,9 @@
 ﻿'use strict';
 
 import Chart from 'chart.js';
+import {merge, valueOrDefault} from 'chart.js/helpers';
 import FinancialElement from './element.financial';
 
-const helpers = Chart.helpers;
 const globalOpts = Chart.defaults;
 
 class CandlestickElement extends FinancialElement {
@@ -23,18 +23,18 @@ class CandlestickElement extends FinancialElement {
 
 		let borderColor;
 		if (close < open) {
-			borderColor = helpers.valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers.valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.candlestick.color.up);
+			borderColor = valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.candlestick.color.up);
 		} else if (close > open) {
-			borderColor = helpers.valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers.valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.candlestick.color.down);
+			borderColor = valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.candlestick.color.down);
 		} else {
-			borderColor = helpers.valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
+			borderColor = valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
 		}
 
-		ctx.lineWidth = helpers.valueOrDefault(me.borderWidth, globalOpts.elements.candlestick.borderWidth);
-		ctx.strokeStyle = helpers.valueOrDefault(borderColor, globalOpts.elements.candlestick.borderColor);
+		ctx.lineWidth = valueOrDefault(me.borderWidth, globalOpts.elements.candlestick.borderWidth);
+		ctx.strokeStyle = valueOrDefault(borderColor, globalOpts.elements.candlestick.borderColor);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -49,7 +49,7 @@ class CandlestickElement extends FinancialElement {
 }
 
 CandlestickElement.id = 'candlestick';
-CandlestickElement.defaults = helpers.merge({}, [globalOpts.elements.financial, {
+CandlestickElement.defaults = merge({}, [globalOpts.elements.financial, {
 	borderColor: globalOpts.elements.financial.color.unchanged,
 	borderWidth: 1,
 }]);

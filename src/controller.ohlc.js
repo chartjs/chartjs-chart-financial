@@ -1,6 +1,7 @@
 ﻿'use strict';
 
 import Chart from 'chart.js';
+import {merge} from 'chart.js/helpers';
 import FinancialController from './controller.financial';
 import OhlcElement from './element.ohlc';
 
@@ -37,7 +38,7 @@ class OhlcController extends FinancialController {
 }
 
 OhlcController.id = 'ohlc';
-OhlcController.defaults = Chart.helpers.merge({
+OhlcController.defaults = merge({
 	dataElementType: OhlcElement.id,
 	datasets: {
 		barPercentage: 1.0,

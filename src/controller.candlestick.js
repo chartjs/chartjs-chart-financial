@@ -1,6 +1,7 @@
 ﻿'use strict';
 
 import Chart from 'chart.js';
+import {merge} from 'chart.js/helpers';
 import FinancialController from './controller.financial';
 import CandlestickElement from './element.candlestick';
 
@@ -41,7 +42,7 @@ class CandlestickController extends FinancialController {
 }
 
 CandlestickController.id = 'candlestick';
-CandlestickController.defaults = Chart.helpers.merge({
+CandlestickController.defaults = merge({
 	dataElementType: CandlestickElement.id
 }, Chart.defaults.financial);
 
