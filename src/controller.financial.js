@@ -31,7 +31,7 @@ defaults.financial = {
 				major: {
 					enabled: true,
 				},
-				fontStyle: context => (context.tick.major ? 'bold' : undefined),
+				fontStyle: context => context.tick.major ? 'bold' : undefined,
 				source: 'data',
 				maxRotation: 0,
 				autoSkip: true,
