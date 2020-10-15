@@ -1,9 +1,9 @@
 ﻿'use strict';
 
 import Chart from 'chart.js';
+import {merge, valueOrDefault} from 'chart.js/helpers';
 import FinancialElement from './element.financial';
 
-const helpers = Chart.helpers;
 const globalOpts = Chart.defaults;
 
 class OhlcElement extends FinancialElement {
@@ -12,8 +12,8 @@ class OhlcElement extends FinancialElement {
 
 		const {x, open, high, low, close} = me;
 
-		const armLengthRatio = helpers.valueOrDefault(me.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
-		let armLength = helpers.valueOrDefault(me.armLength, globalOpts.elements.ohlc.armLength);
+		const armLengthRatio = valueOrDefault(me.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
+		let armLength = valueOrDefault(me.armLength, globalOpts.elements.ohlc.armLength);
 		if (armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
@@ -25,13 +25,13 @@ class OhlcElement extends FinancialElement {
 		}
 
 		if (close < open) {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.ohlc.color.up);
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.ohlc.color.up);
 		} else if (close > open) {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.ohlc.color.down);
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.ohlc.color.down);
 		} else {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.ohlc.color.unchanged);
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.ohlc.color.unchanged);
 		}
-		ctx.lineWidth = helpers.valueOrDefault(me.lineWidth, globalOpts.elements.ohlc.lineWidth);
+		ctx.lineWidth = valueOrDefault(me.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -45,7 +45,7 @@ class OhlcElement extends FinancialElement {
 }
 
 OhlcElement.id = 'ohlc';
-OhlcElement.defaults = helpers.merge({}, [globalOpts.elements.financial, {
+OhlcElement.defaults = merge({}, [globalOpts.elements.financial, {
 	lineWidth: 2,
 	armLength: null,
 	armLengthRatio: 0.8,

@@ -1,6 +1,6 @@
 'use strict';
 
-import Chart from 'chart.js';
+import {Chart} from 'chart.js';
 
 import CandlestickController from './controller.candlestick.js';
 import OhlcController from './controller.ohlc.js';

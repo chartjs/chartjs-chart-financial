@@ -18,9 +18,102 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart);
 
-const helpers = Chart__default['default'].helpers;
+/*!
+ * Chart.js v3.0.0-beta.3
+ * https://www.chartjs.org
+ * (c) 2020 Chart.js Contributors
+ * Released under the MIT License
+ */
+function isNullOrUndef(value) {
+	return value === null || typeof value === 'undefined';
+}
+function isArray(value) {
+	if (Array.isArray && Array.isArray(value)) {
+		return true;
+	}
+	const type = Object.prototype.toString.call(value);
+	if (type.substr(0, 7) === '[object' && type.substr(-6) === 'Array]') {
+		return true;
+	}
+	return false;
+}
+function isObject(value) {
+	return value !== null && Object.prototype.toString.call(value) === '[object Object]';
+}
+function valueOrDefault(value, defaultValue) {
+	return typeof value === 'undefined' ? defaultValue : value;
+}
+function clone(source) {
+	if (isArray(source)) {
+		return source.map(clone);
+	}
+	if (isObject(source)) {
+		const target = {};
+		const keys = Object.keys(source);
+		const klen = keys.length;
+		let k = 0;
+		for (; k < klen; ++k) {
+			target[keys[k]] = clone(source[keys[k]]);
+		}
+		return target;
+	}
+	return source;
+}
+function _merger(key, target, source, options) {
+	const tval = target[key];
+	const sval = source[key];
+	if (isObject(tval) && isObject(sval)) {
+		merge(tval, sval, options);
+	} else {
+		target[key] = clone(sval);
+	}
+}
+function merge(target, source, options) {
+	const sources = isArray(source) ? source : [source];
+	const ilen = sources.length;
+	if (!isObject(target)) {
+		return target;
+	}
+	options = options || {};
+	const merger = options.merger || _merger;
+	for (let i = 0; i < ilen; ++i) {
+		source = sources[i];
+		if (!isObject(source)) {
+			continue;
+		}
+		const keys = Object.keys(source);
+		for (let k = 0, klen = keys.length; k < klen; ++k) {
+			merger(keys[k], target, source, options);
+		}
+	}
+	return target;
+}
+function clipArea(ctx, area) {
+	ctx.save();
+	ctx.beginPath();
+	ctx.rect(area.left, area.top, area.right - area.left, area.bottom - area.top);
+	ctx.clip();
+}
+function unclipArea(ctx) {
+	ctx.restore();
+}
+const supportsEventListenerOptions = (function() {
+	let passiveSupported = false;
+	try {
+		const options = {
+			get passive() {
+				passiveSupported = true;
+				return false;
+			}
+		};
+		window.addEventListener('test', null, options);
+		window.removeEventListener('test', null, options);
+	} catch (e) {
+	}
+	return passiveSupported;
+}());
 
-Chart__default['default'].defaults.financial = {
+Chart.defaults.financial = {
 	label: '',
 
 	parsing: false,
@@ -48,7 +141,7 @@ Chart__default['default'].defaults.financial = {
 				major: {
 					enabled: true,
 				},
-				fontStyle: context => context.tick.major ? 'bold' : undefined,
+				fontStyle: context => (context.tick.major ? 'bold' : undefined),
 				source: 'data',
 				maxRotation: 0,
 				autoSkip: true,
@@ -57,7 +150,7 @@ Chart__default['default'].defaults.financial = {
 			},
 			afterBuildTicks: scale => {
 				const DateTime = window && window.luxon && window.luxon.DateTime;
-				if (!DateTime) {
+				if(!DateTime) {
 					return;
 				}
 				const majorUnit = scale._majorUnit;
@@ -65,18 +158,18 @@ Chart__default['default'].defaults.financial = {
 				const firstTick = ticks[0];
 
 				let val = DateTime.fromMillis(ticks[0].value);
-				if ((majorUnit === 'minute' && val.second === 0)
-						|| (majorUnit === 'hour' && val.minute === 0)
-						|| (majorUnit === 'day' && val.hour === 9)
-						|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
-						|| (majorUnit === 'year' && val.month === 1)) {
+				if((majorUnit === 'minute' && val.second === 0)
+          || (majorUnit === 'hour' && val.minute === 0)
+          || (majorUnit === 'day' && val.hour === 9)
+          || (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
+          || (majorUnit === 'year' && val.month === 1)) {
 					firstTick.major = true;
 				} else {
 					firstTick.major = false;
 				}
 				let lastMajor = val.get(majorUnit);
 
-				for (let i = 1; i < ticks.length; i++) {
+				for(let i = 1; i < ticks.length; i++) {
 					const tick = ticks[i];
 					val = DateTime.fromMillis(tick.value);
 					const currMajor = val.get(majorUnit);
@@ -98,13 +191,13 @@ Chart__default['default'].defaults.financial = {
 			label(ctx) {
 				const point = ctx.dataPoint;
 
-				if (!helpers.isNullOrUndef(point.y)) {
-					return Chart__default['default'].defaults.tooltips.callbacks.label(ctx);
+				if(!isNullOrUndef(point.y)) {
+					return Chart.Chart.defaults.tooltips.callbacks.label(ctx);
 				}
 
 				const {o, h, l, c} = point;
 
-				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
+				return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 			}
 		}
 	}
@@ -118,11 +211,11 @@ function computeMinSampleSize(scale, pixels) {
 	let min = scale._length;
 	let prev, curr, i, ilen;
 
-	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
+	for(i = 1, ilen = pixels.length; i < ilen; ++i) {
 		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
-	for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+	for(i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
 		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
@@ -134,17 +227,17 @@ function computeMinSampleSize(scale, pixels) {
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-class FinancialController extends Chart__default['default'].controllers.bar {
+class FinancialController extends Chart.BarController {
 
 	getLabelAndValue(index) {
 		const me = this;
 		const parsed = me.getParsed(index);
 
 		const {o, h, l, c} = parsed;
-		const value = 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
+		const value = `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 
 		return {
-			label: '' + me._cachedMeta.iScale.getLabelForValue(parsed.t),
+			label: `${me._cachedMeta.iScale.getLabelForValue(parsed.t)}`,
 			value
 		};
 	}
@@ -152,32 +245,32 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 	getAllParsedValues() {
 		const parsed = this._cachedMeta._parsed;
 		const values = [];
-		for (let i = 0; i < parsed.length; ++i) {
+		for(let i = 0; i < parsed.length; ++i) {
 			values.push(parsed[i].t);
 		}
 		return values;
 	}
 
 	/**
-	 * Implement this ourselves since it doesn't handle high and low values
-	 * https://github.com/chartjs/Chart.js/issues/7328
-	 * @protected
-	 */
+   * Implement this ourselves since it doesn't handle high and low values
+   * https://github.com/chartjs/Chart.js/issues/7328
+   * @protected
+   */
 	getMinMax(scale) {
 		const meta = this._cachedMeta;
 		const _parsed = meta._parsed;
 
-		if (_parsed.length < 2) {
+		if(_parsed.length < 2) {
 			return {min: 0, max: 1};
 		}
 
-		if (scale === meta.iScale) {
+		if(scale === meta.iScale) {
 			return {min: _parsed[0].t, max: _parsed[_parsed.length - 1].t};
 		}
 
 		let min = Number.POSITIVE_INFINITY;
 		let max = Number.NEGATIVE_INFINITY;
-		for (let i = 0; i < _parsed.length; i++) {
+		for(let i = 0; i < _parsed.length; i++) {
 			const data = _parsed[i];
 			min = Math.min(min, data.l);
 			max = Math.max(max, data.h);
@@ -190,7 +283,7 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
 		const pixels = [];
-		for (let i = 0; i < meta.data.length; ++i) {
+		for(let i = 0; i < meta.data.length; ++i) {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
 		}
 		const min = computeMinSampleSize(iScale, pixels);
@@ -205,8 +298,8 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 	}
 
 	/**
-	 * @protected
-	 */
+   * @protected
+   */
 	calculateElementProperties(index, ruler, reset, options) {
 		const me = this;
 		const vscale = me._cachedMeta.vScale;
@@ -234,11 +327,11 @@ class FinancialController extends Chart__default['default'].controllers.bar {
 		const me = this;
 		const chart = me.chart;
 		const rects = me._cachedMeta.data;
-		helpers.clipArea(chart.ctx, chart.chartArea);
-		for (let i = 0; i < rects.length; ++i) {
+		clipArea(chart.ctx, chart.chartArea);
+		for(let i = 0; i < rects.length; ++i) {
 			rects[i].draw(me._ctx);
 		}
-		helpers.unclipArea(chart.ctx);
+		unclipArea(chart.ctx);
 	}
 
 }
@@ -265,7 +358,7 @@ function getBarBounds(bar, useFinalPosition) {
 
 	let left, right, top, bottom, half;
 
-	if (bar.horizontal) {
+	if(bar.horizontal) {
 		half = height / 2;
 		left = Math.min(x, base);
 		right = Math.max(x, base);
@@ -331,7 +424,6 @@ class FinancialElement extends Chart__default['default'].Element {
 	}
 }
 
-const helpers$1 = Chart__default['default'].helpers;
 const globalOpts$1 = Chart__default['default'].defaults;
 
 class CandlestickElement extends FinancialElement {
@@ -341,7 +433,7 @@ class CandlestickElement extends FinancialElement {
 		const {x, open, high, low, close} = me;
 
 		let borderColors = me.borderColor;
-		if (typeof borderColors === 'string') {
+		if(typeof borderColors === 'string') {
 			borderColors = {
 				up: borderColors,
 				down: borderColors,
@@ -350,19 +442,19 @@ class CandlestickElement extends FinancialElement {
 		}
 
 		let borderColor;
-		if (close < open) {
-			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
-		} else if (close > open) {
-			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
+		if(close < open) {
+			borderColor = valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.up : undefined, globalOpts$1.elements.candlestick.color.up);
+		} else if(close > open) {
+			borderColor = valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.down : undefined, globalOpts$1.elements.candlestick.color.down);
 		} else {
-			borderColor = helpers$1.valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
-			ctx.fillStyle = helpers$1.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
+			borderColor = valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts$1.elements.candlestick.borderColor);
+			ctx.fillStyle = valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$1.elements.candlestick.color.unchanged);
 		}
 
-		ctx.lineWidth = helpers$1.valueOrDefault(me.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
-		ctx.strokeStyle = helpers$1.valueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
+		ctx.lineWidth = valueOrDefault(me.borderWidth, globalOpts$1.elements.candlestick.borderWidth);
+		ctx.strokeStyle = valueOrDefault(borderColor, globalOpts$1.elements.candlestick.borderColor);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -377,7 +469,7 @@ class CandlestickElement extends FinancialElement {
 }
 
 CandlestickElement.id = 'candlestick';
-CandlestickElement.defaults = helpers$1.merge({}, [globalOpts$1.elements.financial, {
+CandlestickElement.defaults = merge({}, [globalOpts$1.elements.financial, {
 	borderColor: globalOpts$1.elements.financial.color.unchanged,
 	borderWidth: 1,
 }]);
@@ -394,7 +486,7 @@ class CandlestickController extends FinancialController {
 
 		me.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-		for (let i = start; i < count; i++) {
+		for(let i = start; i < count; i++) {
 			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
 
 			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
@@ -409,7 +501,7 @@ class CandlestickController extends FinancialController {
 				borderWidth: dataset.borderWidth,
 			};
 
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = options;
 			}
 			me.updateElement(elements[i], i, properties, mode);
@@ -419,11 +511,10 @@ class CandlestickController extends FinancialController {
 }
 
 CandlestickController.id = 'candlestick';
-CandlestickController.defaults = Chart__default['default'].helpers.merge({
+CandlestickController.defaults = merge({
 	dataElementType: CandlestickElement.id
 }, Chart__default['default'].defaults.financial);
 
-const helpers$2 = Chart__default['default'].helpers;
 const globalOpts$2 = Chart__default['default'].defaults;
 
 class OhlcElement extends FinancialElement {
@@ -432,9 +523,9 @@ class OhlcElement extends FinancialElement {
 
 		const {x, open, high, low, close} = me;
 
-		const armLengthRatio = helpers$2.valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
-		let armLength = helpers$2.valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
-		if (armLength === null) {
+		const armLengthRatio = valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
+		let armLength = valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
+		if(armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
 			// barPercentage and categoryPercentage are now set to 1.0 (see controller.ohlc)
@@ -444,14 +535,14 @@ class OhlcElement extends FinancialElement {
 			armLength = me.width * armLengthRatio * 0.5;
 		}
 
-		if (close < open) {
-			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
-		} else if (close > open) {
-			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
+		if(close < open) {
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
+		} else if(close > open) {
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
 		} else {
-			ctx.strokeStyle = helpers$2.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
+			ctx.strokeStyle = valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
 		}
-		ctx.lineWidth = helpers$2.valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
+		ctx.lineWidth = valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -465,7 +556,7 @@ class OhlcElement extends FinancialElement {
 }
 
 OhlcElement.id = 'ohlc';
-OhlcElement.defaults = helpers$2.merge({}, [globalOpts$2.elements.financial, {
+OhlcElement.defaults = merge({}, [globalOpts$2.elements.financial, {
 	lineWidth: 2,
 	armLength: null,
 	armLengthRatio: 0.8,
@@ -481,7 +572,7 @@ class OhlcController extends FinancialController {
 		const sharedOptions = me.getSharedOptions(firstOpts);
 		const includeOptions = me.includeOptions(mode, sharedOptions);
 
-		for (let i = 0; i < count; i++) {
+		for(let i = 0; i < count; i++) {
 			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
 
 			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
@@ -494,7 +585,7 @@ class OhlcController extends FinancialController {
 				color: dataset.color,
 			};
 
-			if (includeOptions) {
+			if(includeOptions) {
 				properties.options = options;
 			}
 			me.updateElement(elements[i], i, properties, mode);
@@ -504,7 +595,7 @@ class OhlcController extends FinancialController {
 }
 
 OhlcController.id = 'ohlc';
-OhlcController.defaults = Chart__default['default'].helpers.merge({
+OhlcController.defaults = merge({
 	dataElementType: OhlcElement.id,
 	datasets: {
 		barPercentage: 1.0,
@@ -512,6 +603,6 @@ OhlcController.defaults = Chart__default['default'].helpers.merge({
 	}
 }, Chart__default['default'].defaults.financial);
 
-Chart__default['default'].register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
+Chart.Chart.register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
 
 })));

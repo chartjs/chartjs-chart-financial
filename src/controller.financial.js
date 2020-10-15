@@ -1,10 +1,9 @@
 ﻿'use strict';
 
-import Chart from 'chart.js';
+import {BarController, Chart, defaults} from 'chart.js';
+import {clipArea, isNullOrUndef, unclipArea} from 'chart.js/helpers';
 
-const helpers = Chart.helpers;
-
-Chart.defaults.financial = {
+defaults.financial = {
 	label: '',
 
 	parsing: false,
@@ -82,13 +81,13 @@ Chart.defaults.financial = {
 			label(ctx) {
 				const point = ctx.dataPoint;
 
-				if (!helpers.isNullOrUndef(point.y)) {
+				if (!isNullOrUndef(point.y)) {
 					return Chart.defaults.tooltips.callbacks.label(ctx);
 				}
 
 				const {o, h, l, c} = point;
 
-				return 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
+				return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 			}
 		}
 	}
@@ -118,17 +117,17 @@ function computeMinSampleSize(scale, pixels) {
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-class FinancialController extends Chart.controllers.bar {
+class FinancialController extends BarController {
 
 	getLabelAndValue(index) {
 		const me = this;
 		const parsed = me.getParsed(index);
 
 		const {o, h, l, c} = parsed;
-		const value = 'O: ' + o + '  H: ' + h + '  L: ' + l + '  C: ' + c;
+		const value = `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 
 		return {
-			label: '' + me._cachedMeta.iScale.getLabelForValue(parsed.t),
+			label: `${me._cachedMeta.iScale.getLabelForValue(parsed.t)}`,
 			value
 		};
 	}
@@ -218,11 +217,11 @@ class FinancialController extends Chart.controllers.bar {
 		const me = this;
 		const chart = me.chart;
 		const rects = me._cachedMeta.data;
-		helpers.clipArea(chart.ctx, chart.chartArea);
+		clipArea(chart.ctx, chart.chartArea);
 		for (let i = 0; i < rects.length; ++i) {
 			rects[i].draw(me._ctx);
 		}
-		helpers.unclipArea(chart.ctx);
+		unclipArea(chart.ctx);
 	}
 
 }
