@@ -82,7 +82,7 @@ defaults.financial = {
 				const point = ctx.dataPoint;
 
 				if (!isNullOrUndef(point.y)) {
-					return Chart.defaults.tooltips.callbacks.label(ctx);
+					return Chart.defaults.plugins.tooltip.callbacks.label(ctx);
 				}
 
 				const {o, h, l, c} = point;
