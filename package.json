@@ -8,6 +8,11 @@
     "type": "git",
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
+  "scripts": {
+    "build": "gulp build",
+    "lint": "gulp lint",
+    "test": "gulp test"
+  },
   "peerDependencies": {
     "chart.js": "^3.0.0-beta.3"
   },

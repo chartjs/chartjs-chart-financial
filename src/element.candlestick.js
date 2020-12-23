@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-import Chart from 'chart.js';
+import {Chart} from 'chart.js';
 import {merge, valueOrDefault} from 'chart.js/helpers';
 import FinancialElement from './element.financial';
 
