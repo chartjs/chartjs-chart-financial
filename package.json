@@ -20,7 +20,7 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "chartjs-adapter-luxon": "^0.2.2",
-    "chart.js": "^3.0.0-beta.6",
+    "chart.js": "^3.0.0-beta.7",
     "eslint": "^7.16.0",
     "eslint-config-chartjs": "^0.2.0",
     "eslint-plugin-es": "^3.0.1",

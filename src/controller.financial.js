@@ -74,20 +74,22 @@ defaults.financial = {
 		}
 	},
 
-	tooltips: {
-		intersect: false,
-		mode: 'index',
-		callbacks: {
-			label(ctx) {
-				const point = ctx.dataPoint;
+	plugins: {
+		tooltip: {
+			intersect: false,
+			mode: 'index',
+			callbacks: {
+				label(ctx) {
+					const point = ctx.dataPoint;
 
-				if (!isNullOrUndef(point.y)) {
-					return Chart.defaults.tooltips.callbacks.label(ctx);
+					if (!isNullOrUndef(point.y)) {
+						return Chart.defaults.interaction.callbacks.label(ctx);
+					}
+
+					const {o, h, l, c} = point;
+
+					return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 				}
-
-				const {o, h, l, c} = point;
-
-				return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 			}
 		}
 	}
