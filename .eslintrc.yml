@@ -5,6 +5,7 @@ extends:
 env:
   es6: true
   browser: true
+  jasmine: true
   node: true
 
 parserOptions:

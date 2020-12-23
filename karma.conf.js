@@ -12,6 +12,7 @@ module.exports = function(karma) {
 	// make sure that the minification process (terser) doesn't break anything.
 	const regex = args.watch ? /chartjs-chart-financial\.js$/ : /chartjs-chart-financial\.min\.js$/;
 	const build = builds.filter(v => v.output.file.match(regex))[0];
+	const inputs = args.inputs || 'test/specs/**/*.js';
 
 	karma.set({
 		browsers: ['chrome'],
@@ -41,7 +42,7 @@ module.exports = function(karma) {
 			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js',
 			'test/index.js',
 			'src/index.js'
-		].concat(args.inputs),
+		].concat(inputs),
 		preprocessors: {
 			'test/specs/**/*.js': ['rollup'],
 			'test/index.js': ['rollup'],

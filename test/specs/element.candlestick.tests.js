@@ -1,7 +1,7 @@
 import CandlestickElement from '../../src/element.candlestick';
 
 describe('Candlestick element tests', function() {
-  
+
 	it('Should correctly identify as in range', function() {
 		const candle = new CandlestickElement();
 

@@ -1,6 +1,6 @@
 describe('Financial controller tests', function() {
-	it('Should create candlestick elements for each data item during initialization', function () {
-		var chart = window.acquireChart({ type: 'candlestick',
+	it('Should create candlestick elements for each data item during initialization', function() {
+		var chart = window.acquireChart({type: 'candlestick',
 			data: {
 				datasets: [{
 					data: [

@@ -9,9 +9,9 @@
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "scripts": {
-    "build": "gulp build",
-    "lint": "gulp lint",
-    "test": "gulp test"
+    "build": "rollup -c",
+    "lint": "eslint docs/**/*.html src/**/*.js test/**/*.js",
+    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
   },
   "peerDependencies": {
     "chart.js": "^3.0.0-beta.6"
@@ -21,14 +21,11 @@
     "@rollup/plugin-node-resolve": "^11.0.1",
     "chartjs-adapter-luxon": "^0.2.2",
     "chart.js": "^3.0.0-beta.7",
+    "cross-env": "^7.0.3",
     "eslint": "^7.16.0",
     "eslint-config-chartjs": "^0.2.0",
     "eslint-plugin-es": "^3.0.1",
     "eslint-plugin-html": "^6.1.1",
-    "gulp": "^4.0.2",
-    "gulp-concat": ">=2.6.1",
-    "gulp-eslint": "^6.0.0",
-    "gulp-htmllint": "^0.0.19",
     "jasmine": "^3.6.3",
     "karma": "^5.2.3",
     "karma-chrome-launcher": "^3.1.0",
@@ -40,7 +37,6 @@
     "luxon": "^1.25.0",
     "rollup": "^2.35.1",
     "rollup-plugin-istanbul": "^3.0.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "yargs": "^16.2.0"
+    "rollup-plugin-terser": "^7.0.2"
   }
 }

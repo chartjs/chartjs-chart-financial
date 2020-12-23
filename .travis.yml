@@ -8,8 +8,8 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 script:
-  - gulp build
-  - gulp test --coverage
+  - npm run build
+  - npm test --coverage
 
 sudo: required
 dist: trusty
