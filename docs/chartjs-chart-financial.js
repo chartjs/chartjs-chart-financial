@@ -19,7 +19,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart);
 
 /*!
- * Chart.js v3.0.0-beta.3
+ * Chart.js v3.0.0-beta.7
  * https://www.chartjs.org
  * (c) 2020 Chart.js Contributors
  * Released under the MIT License
@@ -48,7 +48,7 @@ function clone(source) {
 		return source.map(clone);
 	}
 	if (isObject(source)) {
-		const target = {};
+		const target = Object.create(null);
 		const keys = Object.keys(source);
 		const klen = keys.length;
 		let k = 0;
@@ -59,7 +59,13 @@ function clone(source) {
 	}
 	return source;
 }
+function isValidKey(key) {
+	return ['__proto__', 'prototype', 'constructor'].indexOf(key) === -1;
+}
 function _merger(key, target, source, options) {
+	if (!isValidKey(key)) {
+		return;
+	}
 	const tval = target[key];
 	const sval = source[key];
 	if (isObject(tval) && isObject(sval)) {
