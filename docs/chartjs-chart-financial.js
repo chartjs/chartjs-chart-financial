@@ -874,6 +874,7 @@ class FinancialController extends Chart$1.BarController {
 
 	_getRuler() {
 		const me = this;
+		const opts = me.options;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
 		const axis = iScale.axis;
@@ -881,6 +882,7 @@ class FinancialController extends Chart$1.BarController {
 		for (let i = 0; i < meta.data.length; ++i) {
 			pixels.push(iScale.getPixelForValue(me.getParsed(i)[axis]));
 		}
+		const barThickness = opts.barThickness;
 		const min = computeMinSampleSize(iScale, pixels);
 		return {
 			min,
@@ -888,7 +890,8 @@ class FinancialController extends Chart$1.BarController {
 			start: iScale._startPixel,
 			end: iScale._endPixel,
 			stackCount: me._getStackCount(),
-			scale: iScale
+			scale: iScale,
+			ratio: barThickness ? 1 : opts.categoryPercentage * opts.barPercentage
 		};
 	}
 
