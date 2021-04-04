@@ -1,99 +1,7 @@
 ﻿'use strict';
 
-import {BarController, Chart, defaults} from 'chart.js';
+import {BarController} from 'chart.js';
 import {clipArea, isNullOrUndef, unclipArea} from 'chart.js/helpers';
-
-defaults.financial = {
-	label: '',
-
-	parsing: false,
-
-	hover: {
-		mode: 'label'
-	},
-
-	datasets: {
-		categoryPercentage: 0.8,
-		barPercentage: 0.9,
-		animation: {
-			numbers: {
-				type: 'number',
-				properties: ['x', 'y', 'base', 'width', 'open', 'high', 'low', 'close']
-			}
-		}
-	},
-
-	scales: {
-		x: {
-			type: 'timeseries',
-			offset: true,
-			ticks: {
-				major: {
-					enabled: true,
-				},
-				fontStyle: context => context.tick.major ? 'bold' : undefined,
-				source: 'data',
-				maxRotation: 0,
-				autoSkip: true,
-				autoSkipPadding: 75,
-				sampleSize: 100
-			},
-			afterBuildTicks: scale => {
-				const DateTime = window && window.luxon && window.luxon.DateTime;
-				if (!DateTime) {
-					return;
-				}
-				const majorUnit = scale._majorUnit;
-				const ticks = scale.ticks;
-				const firstTick = ticks[0];
-
-				let val = DateTime.fromMillis(ticks[0].value);
-				if ((majorUnit === 'minute' && val.second === 0)
-						|| (majorUnit === 'hour' && val.minute === 0)
-						|| (majorUnit === 'day' && val.hour === 9)
-						|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
-						|| (majorUnit === 'year' && val.month === 1)) {
-					firstTick.major = true;
-				} else {
-					firstTick.major = false;
-				}
-				let lastMajor = val.get(majorUnit);
-
-				for (let i = 1; i < ticks.length; i++) {
-					const tick = ticks[i];
-					val = DateTime.fromMillis(tick.value);
-					const currMajor = val.get(majorUnit);
-					tick.major = currMajor !== lastMajor;
-					lastMajor = currMajor;
-				}
-				scale.ticks = ticks;
-			}
-		},
-		y: {
-			type: 'linear'
-		}
-	},
-
-	plugins: {
-		tooltip: {
-			intersect: false,
-			mode: 'index',
-			callbacks: {
-				label(ctx) {
-					const point = ctx.dataPoint;
-
-					if (!isNullOrUndef(point.y)) {
-						return Chart.defaults.interaction.callbacks.label(ctx);
-					}
-
-					const {o, h, l, c} = point;
-
-					return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
-				}
-			}
-		}
-	}
-};
 
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
@@ -124,21 +32,24 @@ class FinancialController extends BarController {
 	getLabelAndValue(index) {
 		const me = this;
 		const parsed = me.getParsed(index);
+		const axis = me._cachedMeta.iScale.axis;
 
 		const {o, h, l, c} = parsed;
 		const value = `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
 
 		return {
-			label: `${me._cachedMeta.iScale.getLabelForValue(parsed.t)}`,
+			label: `${me._cachedMeta.iScale.getLabelForValue(parsed[axis])}`,
 			value
 		};
 	}
 
 	getAllParsedValues() {
-		const parsed = this._cachedMeta._parsed;
+		const meta = this._cachedMeta;
+		const axis = meta.iScale.axis;
+		const parsed = meta._parsed;
 		const values = [];
 		for (let i = 0; i < parsed.length; ++i) {
-			values.push(parsed[i].t);
+			values.push(parsed[i][axis]);
 		}
 		return values;
 	}
@@ -151,13 +62,14 @@ class FinancialController extends BarController {
 	getMinMax(scale) {
 		const meta = this._cachedMeta;
 		const _parsed = meta._parsed;
+		const axis = meta.iScale.axis;
 
 		if (_parsed.length < 2) {
 			return {min: 0, max: 1};
 		}
 
 		if (scale === meta.iScale) {
-			return {min: _parsed[0].t, max: _parsed[_parsed.length - 1].t};
+			return {min: _parsed[0][axis], max: _parsed[_parsed.length - 1][axis]};
 		}
 
 		let min = Number.POSITIVE_INFINITY;
@@ -174,9 +86,10 @@ class FinancialController extends BarController {
 		const me = this;
 		const meta = me._cachedMeta;
 		const iScale = meta.iScale;
+		const axis = iScale.axis;
 		const pixels = [];
 		for (let i = 0; i < meta.data.length; ++i) {
-			pixels.push(iScale.getPixelForValue(me.getParsed(i).t));
+			pixels.push(iScale.getPixelForValue(me.getParsed(i)[axis]));
 		}
 		const min = computeMinSampleSize(iScale, pixels);
 		return {
@@ -227,5 +140,100 @@ class FinancialController extends BarController {
 	}
 
 }
+
+FinancialController.overrides = {
+	label: '',
+
+	parsing: false,
+
+	hover: {
+		mode: 'label'
+	},
+
+	datasets: {
+		categoryPercentage: 0.8,
+		barPercentage: 0.9,
+		animation: {
+			numbers: {
+				type: 'number',
+				properties: ['x', 'y', 'base', 'width', 'open', 'high', 'low', 'close']
+			}
+		}
+	},
+
+	scales: {
+		x: {
+			type: 'timeseries',
+			offset: true,
+			ticks: {
+				major: {
+					enabled: true,
+				},
+				fontStyle: context => context.tick.major ? 'bold' : undefined,
+				source: 'data',
+				maxRotation: 0,
+				autoSkip: true,
+				autoSkipPadding: 75,
+				sampleSize: 100
+			},
+			afterBuildTicks: scale => {
+				const DateTime = window && window.luxon && window.luxon.DateTime;
+				if (!DateTime) {
+					return;
+				}
+				const majorUnit = scale._majorUnit;
+				const ticks = scale.ticks;
+				const firstTick = ticks[0];
+				if (!firstTick) {
+					return;
+				}
+
+				let val = DateTime.fromMillis(firstTick.value);
+				if ((majorUnit === 'minute' && val.second === 0)
+						|| (majorUnit === 'hour' && val.minute === 0)
+						|| (majorUnit === 'day' && val.hour === 9)
+						|| (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
+						|| (majorUnit === 'year' && val.month === 1)) {
+					firstTick.major = true;
+				} else {
+					firstTick.major = false;
+				}
+				let lastMajor = val.get(majorUnit);
+
+				for (let i = 1; i < ticks.length; i++) {
+					const tick = ticks[i];
+					val = DateTime.fromMillis(tick.value);
+					const currMajor = val.get(majorUnit);
+					tick.major = currMajor !== lastMajor;
+					lastMajor = currMajor;
+				}
+				scale.ticks = ticks;
+			}
+		},
+		y: {
+			type: 'linear'
+		}
+	},
+
+	plugins: {
+		tooltip: {
+			intersect: false,
+			mode: 'index',
+			callbacks: {
+				label(ctx) {
+					const point = ctx.dataPoint;
+
+					if (!isNullOrUndef(point.y)) {
+						return Chart.defaults.interaction.callbacks.label(ctx);
+					}
+
+					const {o, h, l, c} = point;
+
+					return `O: ${o}  H: ${h}  L: ${l}  C: ${c}`;
+				}
+			}
+		}
+	}
+};
 
 export default FinancialController;

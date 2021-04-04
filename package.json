@@ -9,18 +9,18 @@
     "url": "https://github.com/chartjs/chartjs-chart-financial.git"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && cp dist/chartjs-chart-financial.js docs/",
     "lint": "eslint docs/**/*.html src/**/*.js test/**/*.js",
     "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
   },
   "peerDependencies": {
-    "chart.js": "^3.0.0-beta.9"
+    "chart.js": "^3.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
-    "chartjs-adapter-luxon": "^0.2.2",
-    "chart.js": "^3.0.0-beta.9",
+    "chart.js": "^3.0.0",
+    "chartjs-adapter-luxon": "^1.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.16.0",
     "eslint-config-chartjs": "^0.2.0",
