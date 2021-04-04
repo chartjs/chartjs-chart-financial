@@ -221,7 +221,7 @@ FinancialController.overrides = {
 			mode: 'index',
 			callbacks: {
 				label(ctx) {
-					const point = ctx.dataPoint;
+					const point = ctx.parsed;
 
 					if (!isNullOrUndef(point.y)) {
 						return Chart.defaults.interaction.callbacks.label(ctx);
