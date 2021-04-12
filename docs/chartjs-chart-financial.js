@@ -12,11 +12,11 @@
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('chart.js')) :
 typeof define === 'function' && define.amd ? define(['chart.js'], factory) :
 (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Chart));
-}(this, (function (Chart$1) { 'use strict';
+}(this, (function (Chart) { 'use strict';
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart$1);
+var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart);
 
 /*!
  * Chart.js v3.0.1
@@ -817,7 +817,7 @@ function computeMinSampleSize(scale, pixels) {
 /**
  * This class is based off controller.bar.js from the upstream Chart.js library
  */
-class FinancialController extends Chart$1.BarController {
+class FinancialController extends Chart.BarController {
 
 	getLabelAndValue(index) {
 		const me = this;
@@ -1029,7 +1029,7 @@ FinancialController.overrides = {
 	}
 };
 
-const globalOpts = Chart$1.Chart.defaults;
+const globalOpts = Chart.Chart.defaults;
 
 globalOpts.elements.financial = {
 	color: {
@@ -1078,7 +1078,7 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || y >= bounds.top && y <= bounds.bottom);
 }
 
-class FinancialElement extends Chart$1.Element {
+class FinancialElement extends Chart.Element {
 
 	height() {
 		return this.base - this.y;
@@ -1117,7 +1117,7 @@ class FinancialElement extends Chart$1.Element {
 	}
 }
 
-const globalOpts$1 = Chart$1.Chart.defaults;
+const globalOpts$1 = Chart.Chart.defaults;
 
 class CandlestickElement extends FinancialElement {
 	draw(ctx) {
@@ -1208,7 +1208,7 @@ CandlestickController.defaults = merge({
 	dataElementType: CandlestickElement.id
 }, Chart__default['default'].defaults.financial);
 
-const globalOpts$2 = Chart$1.Chart.defaults;
+const globalOpts$2 = Chart.Chart.defaults;
 
 class OhlcElement extends FinancialElement {
 	draw(ctx) {
@@ -1294,8 +1294,8 @@ OhlcController.defaults = merge({
 		barPercentage: 1.0,
 		categoryPercentage: 1.0
 	}
-}, Chart$1.Chart.defaults.financial);
+}, Chart.Chart.defaults.financial);
 
-Chart$1.Chart.register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
+Chart.Chart.register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
 
 })));

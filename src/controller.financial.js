@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-import {BarController} from 'chart.js';
+import {BarController, defaults} from 'chart.js';
 import {clipArea, isNullOrUndef, unclipArea} from 'chart.js/helpers';
 
 /**
@@ -227,7 +227,7 @@ FinancialController.overrides = {
 					const point = ctx.parsed;
 
 					if (!isNullOrUndef(point.y)) {
-						return Chart.defaults.interaction.callbacks.label(ctx);
+						return defaults.interaction.callbacks.label(ctx);
 					}
 
 					const {o, h, l, c} = point;
