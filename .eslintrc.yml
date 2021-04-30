@@ -1,6 +1,6 @@
 extends:
   - chartjs
-  - plugin:es/no-2019
+  - plugin:es/no-new-in-es2019
 
 env:
   es6: true
@@ -22,6 +22,7 @@ plugins: ['html', 'es']
 rules:
   class-methods-use-this: "off"
   complexity: ["warn", 10]
+  indent: ["error", "tab"]
   max-statements: ["warn", 30]
   no-empty-function: "off"
   no-use-before-define: ["error", { "functions": false }]
