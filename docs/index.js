@@ -4,12 +4,16 @@ var initialDateStr = '01 Apr 2017 00:00 Z';
 var ctx = document.getElementById('chart').getContext('2d');
 ctx.canvas.width = 1000;
 ctx.canvas.height = 250;
+
+var barData = getRandomData(initialDateStr, barCount);
+function lineData() { return barData.map(d => { return { x: d.x, y: d.c} }) };
+
 var chart = new Chart(ctx, {
 	type: 'candlestick',
 	data: {
 		datasets: [{
 			label: 'CHRT - Chart.js Corporation',
-			data: getRandomData(initialDateStr, barCount)
+			data: barData
 		}]
 	}
 });
@@ -85,14 +89,36 @@ var update = function() {
 		};
 	}
 
+	// mixed charts
+	var mixed = document.getElementById('mixed').value;
+	if(mixed === 'true') {
+		chart.config.data.datasets = [
+			{
+				label: 'CHRT - Chart.js Corporation',
+				data: barData
+			},
+			{
+				label: 'Close price',
+				type: 'line',
+				data: lineData()
+			}	
+		]
+	}
+	else {
+		chart.config.data.datasets = [
+			{
+				label: 'CHRT - Chart.js Corporation',
+				data: barData
+			}	
+		]
+	}
+
 	chart.update();
 };
 
 document.getElementById('update').addEventListener('click', update);
 
 document.getElementById('randomizeData').addEventListener('click', function() {
-	chart.data.datasets.forEach(function(dataset) {
-		dataset.data = getRandomData(initialDateStr, barCount);
-	});
+	barData = getRandomData(initialDateStr, barCount);
 	update();
 });

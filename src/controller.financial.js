@@ -227,7 +227,7 @@ FinancialController.overrides = {
 					const point = ctx.parsed;
 
 					if (!isNullOrUndef(point.y)) {
-						return defaults.interaction.callbacks.label(ctx);
+						return defaults.plugins.tooltip.callbacks.label(ctx);
 					}
 
 					const {o, h, l, c} = point;
