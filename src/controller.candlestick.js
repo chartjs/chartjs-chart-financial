@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-import Chart from 'chart.js';
+import {Chart} from 'chart.js';
 import {merge} from 'chart.js/helpers';
 import FinancialController from './controller.financial';
 import CandlestickElement from './element.candlestick';
