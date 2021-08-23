@@ -1,5 +1,3 @@
-'use strict';
-
 export {OhlcElement} from './element.ohlc.js';
 export {OhlcController} from './controller.ohlc.js';
 
