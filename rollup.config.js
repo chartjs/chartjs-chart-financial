@@ -31,11 +31,7 @@ module.exports = [
 
 			if (suffix.match(/\.min\.js$/)) {
 				config.plugins.push(
-					terser({
-						output: {
-							comments: /^!/,
-						},
-					}),
+					terser(),
 				);
 			}
 
