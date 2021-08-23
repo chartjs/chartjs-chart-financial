@@ -2,10 +2,10 @@
 
 import {Chart} from 'chart.js';
 import {merge} from 'chart.js/helpers';
-import FinancialController from './controller.financial';
-import CandlestickElement from './element.candlestick';
+import {FinancialController} from './controller.financial';
+import {CandlestickElement} from './element.candlestick';
 
-class CandlestickController extends FinancialController {
+export class CandlestickController extends FinancialController {
 
 	updateElements(elements, start, count, mode) {
 		const me = this;
@@ -45,5 +45,3 @@ CandlestickController.id = 'candlestick';
 CandlestickController.defaults = merge({
 	dataElementType: CandlestickElement.id
 }, Chart.defaults.financial);
-
-export default CandlestickController;
