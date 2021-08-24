@@ -238,7 +238,7 @@ FinancialController.overrides = {
 					const point = ctx.parsed;
 
 					if (!helpers.isNullOrUndef(point.y)) {
-						return chart_js.defaults.interaction.callbacks.label(ctx);
+						return chart_js.defaults.plugins.tooltip.callbacks.label(ctx);
 					}
 
 					const {o, h, l, c} = point;
@@ -250,9 +250,9 @@ FinancialController.overrides = {
 	}
 };
 
-const globalOpts = chart_js.Chart.defaults;
+const globalOpts$2 = chart_js.Chart.defaults;
 
-globalOpts.elements.financial = {
+globalOpts$2.elements.financial = {
 	color: {
 		up: 'rgba(80, 160, 115, 1)',
 		down: 'rgba(215, 85, 65, 1)',
@@ -429,7 +429,7 @@ CandlestickController.defaults = helpers.merge({
 	dataElementType: CandlestickElement.id
 }, chart_js.Chart.defaults.financial);
 
-const globalOpts$2 = chart_js.Chart.defaults;
+const globalOpts = chart_js.Chart.defaults;
 
 class OhlcElement extends FinancialElement {
 	draw(ctx) {
@@ -437,8 +437,8 @@ class OhlcElement extends FinancialElement {
 
 		const {x, open, high, low, close} = me;
 
-		const armLengthRatio = helpers.valueOrDefault(me.armLengthRatio, globalOpts$2.elements.ohlc.armLengthRatio);
-		let armLength = helpers.valueOrDefault(me.armLength, globalOpts$2.elements.ohlc.armLength);
+		const armLengthRatio = helpers.valueOrDefault(me.armLengthRatio, globalOpts.elements.ohlc.armLengthRatio);
+		let armLength = helpers.valueOrDefault(me.armLength, globalOpts.elements.ohlc.armLength);
 		if (armLength === null) {
 			// The width of an ohlc is affected by barPercentage and categoryPercentage
 			// This behavior is caused by extending controller.financial, which extends controller.bar
@@ -450,13 +450,13 @@ class OhlcElement extends FinancialElement {
 		}
 
 		if (close < open) {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.up : undefined, globalOpts$2.elements.ohlc.color.up);
+			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.ohlc.color.up);
 		} else if (close > open) {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.down : undefined, globalOpts$2.elements.ohlc.color.down);
+			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.ohlc.color.down);
 		} else {
-			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts$2.elements.ohlc.color.unchanged);
+			ctx.strokeStyle = helpers.valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.ohlc.color.unchanged);
 		}
-		ctx.lineWidth = helpers.valueOrDefault(me.lineWidth, globalOpts$2.elements.ohlc.lineWidth);
+		ctx.lineWidth = helpers.valueOrDefault(me.lineWidth, globalOpts.elements.ohlc.lineWidth);
 
 		ctx.beginPath();
 		ctx.moveTo(x, high);
@@ -470,7 +470,7 @@ class OhlcElement extends FinancialElement {
 }
 
 OhlcElement.id = 'ohlc';
-OhlcElement.defaults = helpers.merge({}, [globalOpts$2.elements.financial, {
+OhlcElement.defaults = helpers.merge({}, [globalOpts.elements.financial, {
 	lineWidth: 2,
 	armLength: null,
 	armLengthRatio: 0.8,
