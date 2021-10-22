@@ -16,19 +16,23 @@
   ],
   "scripts": {
     "build": "rollup -c && cp dist/chartjs-chart-financial.js docs/",
+    "package": "npm run build && node scripts/create-packages.js",
     "lint": "eslint docs/**/*.html src/**/*.js test/**/*.js",
     "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
-    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
+    "test": "npm run test-types && npm run test-unit",
+    "test-unit": "karma start --single-run --coverage --grep",
+    "test-unit:dev": "karma start --auto-watch --grep",
     "test-types": "tsc -p types/tests/"
   },
   "peerDependencies": {
     "chart.js": "^3.2.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.29.3",
-    "@typescript-eslint/parser": "^4.29.3",
-    "chart.js": "^3.5.1",
-    "chartjs-adapter-luxon": "^1.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "archiver": "^5.3.0",
+    "chart.js": "^3.2.0",
+    "chartjs-adapter-luxon": "^1.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-chartjs": "^0.3.0",
@@ -46,6 +50,6 @@
     "rollup": "^2.56.3",
     "rollup-plugin-istanbul": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.2.4"
   }
 }
