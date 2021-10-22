@@ -4,8 +4,6 @@ Chart.js module for Candlestick and OHLC charts
 
 ## Roadmap
 
-This module has not yet had its initial release and is not yet available on npm. This library depends on Chart.js and we are currently adding support for some of the necessary features there
-
 Chart.js 2.7.0 added our timeseries scale as new option called [`distribution: series`](http://www.chartjs.org/docs/latest/axes/cartesian/time.html). This has greatly improved support for financial timeseries.
 
 Chart.js 2.7.1 added [fixes for timeseries](https://github.com/chartjs/Chart.js/pull/4779).
@@ -18,9 +16,7 @@ Chart.js 2.8.0 added datetime adapters and [time scale performance improvements]
 
 Chart.js 2.9.0 added [improved autoskipping](https://github.com/chartjs/Chart.js/pull/6509), [support for floating bars](https://github.com/chartjs/Chart.js/pull/6056), [better support for mixed chart types](https://github.com/chartjs/Chart.js/pull/5999), and [numerous performance improvements](https://github.com/chartjs/Chart.js/releases/tag/v2.9.0).
 
-Chart.js 3.0.0-alpha removed the need for custom scales, which means logarithmic scale is now supported. It also has numerous performance improvements.
-
-We are waiting for Chart.js 3.0.0 before an initial release. We would also like to make drawing sharper and add support for scriptable elements. The current work is centered around providing this infrastructure in the core Chart.js library. While there is not much activity in this repo, there is ongoing active development towards improved financial charting!
+Chart.js 3.0.0 removed the need for custom scales, which means logarithmic scale is now supported. It also has numerous performance improvements.
 
 ## Comparison
 
