@@ -52,7 +52,7 @@ The plugins below may be particularly interesting to use with financial charts. 
 
 - [chartjs-plugin-zoom](https://github.com/chartjs/chartjs-plugin-zoom)
 - [chartjs-plugin-crosshair](https://github.com/abelheinsbroek/chartjs-plugin-crosshair) ([demo](https://www.abelheinsbroek.nl/financial/))
-- [chartjs-plugin-streaming](https://github.com/nagix/chartjs-plugin-streaming) ([demo](https://nagix.github.io/chartjs-plugin-streaming/samples/financial.html))
+- [chartjs-plugin-streaming](https://github.com/nagix/chartjs-plugin-streaming) ([demo](https://nagix.github.io/chartjs-plugin-streaming/master/samples/integration/financial.html))
 
 ## Building
 
