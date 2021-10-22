@@ -38,7 +38,7 @@ jobs:
       - name: Publish to NPM
         run: ./scripts/publish.sh
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Upload NPM package file
         id: upload-npm-package-file
