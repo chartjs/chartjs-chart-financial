@@ -1,24 +1,53 @@
-# https://docs.github.com/actions/reference/workflow-syntax-for-github-actions
-
 name: Release
 
-on: workflow_dispatch
+on:
+  release:
+    types: [published]
 
 jobs:
-  create-release:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.trim.outputs.version }}
+    steps:
+      - id: trim
+        run: echo "::set-output name=version::${TAG:1}"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+  release:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
-      - run: node scripts/attach-gh-assets.js
+        with:
+          node-version: '14.x'
+          registry-url: https://registry.npmjs.org/
+          cache: npm
+      - name: Setup and build
+        run: |
+          npm ci
+          npm install -g json
+          json -I -f package.json -e "this.version=\"$VERSION\""
+          json -I -f package-lock.json -e "this.version=\"$VERSION\""
+          npm run build
+          npm pack
         env:
-          # https://github.com/cli/cli/discussions/3029
-          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
-          DEBUG: api
-      - run: node scripts/create-release-tag.js
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Publish to NPM
+        run: ./scripts/publish.sh
         env:
-          GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
-          GH_AUTH_NAME: ${{ secrets.GH_AUTH_NAME }}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Upload NPM package file
+        id: upload-npm-package-file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.setup.outputs.version }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ format('chartjs-chart-financial-{0}.tgz', needs.setup.outputs.version) }}
+          asset_name: ${{ format('chartjs-chart-financial-{0}.tgz', needs.setup.outputs.version) }}
+          asset_content_type: application/gzip
