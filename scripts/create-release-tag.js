@@ -8,7 +8,6 @@ const TAG_FILES = [
   `dist/${pkg.name}.js`,
   `dist/${pkg.name}.min.js`,
   `dist/${pkg.name}.esm.js`,
-  'bower.json',
 ];
 
 (async() => {
