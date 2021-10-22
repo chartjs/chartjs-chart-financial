@@ -238,7 +238,7 @@ FinancialController.overrides = {
 					const point = ctx.parsed;
 
 					if (!helpers.isNullOrUndef(point.y)) {
-						return chart_js.defaults.interaction.callbacks.label(ctx);
+						return chart_js.defaults.plugins.tooltip.callbacks.label(ctx);
 					}
 
 					const {o, h, l, c} = point;
