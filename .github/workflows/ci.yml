@@ -93,3 +93,28 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           parallel-finished: true
+
+  build-nodejs:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+    - name: Install Cairo dependencies
+      run: |
+        Invoke-WebRequest "http://ftp.gnome.org/pub/GNOME/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip" -OutFile "gtk.zip"
+        Expand-Archive gtk.zip -DestinationPath "C:\GTK"
+        Invoke-WebRequest "https://downloads.sourceforge.net/project/libjpeg-turbo/2.0.4/libjpeg-turbo-2.0.4-vc64.exe" -OutFile "libjpeg.exe" -UserAgent NativeHost
+        .\libjpeg.exe /S
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-version: '15.0'
+    - name: Install
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Test
+      run: npm run test-node
