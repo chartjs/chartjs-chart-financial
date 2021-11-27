@@ -15,7 +15,7 @@
     "types/*.d.ts"
   ],
   "scripts": {
-    "build": "rollup -c && cp dist/chartjs-chart-financial.js docs/",
+    "build": "rollup -c && copyfiles dist/chartjs-chart-financial.js docs/",
     "package": "npm run build && node scripts/create-packages.js",
     "lint": "eslint docs/**/*.html src/**/*.js test/**/*.js",
     "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
@@ -35,6 +35,7 @@
     "chart.js": "^3.2.0",
     "chartjs-adapter-luxon": "^1.0.0",
     "chartjs-node-canvas": "^4.1.5",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-chartjs": "^0.3.0",
