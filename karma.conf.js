@@ -3,15 +3,18 @@ const builds = require('./rollup.config');
 
 module.exports = function(karma) {
 	const args = karma.args || {};
+	const watch = args.watch;
+	const inputs = args.inputs;
+	const coverage = args.coverage || karma.coverage;
 
 	// Use the same rollup config as our dist files: when debugging (--watch),
 	// we will prefer the unminified build which is easier to browse and works
 	// better with source mapping. In other cases, pick the minified build to
 	// make sure that the minification process (terser) doesn't break anything.
-	const regex = args.watch ? /chartjs-chart-financial\.js$/ : /chartjs-chart-financial\.min\.js$/;
+	const regex = watch ? /chartjs-chart-financial\.js$/ : /chartjs-chart-financial\.min\.js$/;
 	const output = builds[0].output.filter((v) => v.file.match(regex))[0];
 	const build = Object.assign({}, builds[0], {output: output});
-	const inputs = args.inputs || 'test/specs/**/*.js';
+	const files = inputs || 'test/specs/**/*.js';
 
 	karma.set({
 		browsers: ['chrome'],
@@ -41,7 +44,7 @@ module.exports = function(karma) {
 			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js',
 			'test/index.js',
 			'src/index.js'
-		].concat(inputs),
+		].concat(files),
 		preprocessors: {
 			'test/specs/**/*.js': ['rollup'],
 			'test/index.js': ['rollup'],
@@ -78,7 +81,7 @@ module.exports = function(karma) {
 		karma.customLaunchers.chrome.flags.push('--no-sandbox');
 	}
 
-	if (args.coverage) {
+	if (coverage) {
 		karma.reporters.push('coverage');
 		karma.coverageReporter = {
 			dir: 'coverage/',
