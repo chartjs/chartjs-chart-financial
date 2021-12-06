@@ -26,6 +26,7 @@ declare module 'chart.js' {
       chartOptions: BarControllerChartOptions;
       datasetOptions: BarControllerDatasetOptions;
       defaultDataPoint: FinancialDataPoint;
+      metaExtensions: {};
       parsedDataType: FinancialParsedData;
       scales: keyof CartesianScaleTypeRegistry;
     };
@@ -33,6 +34,7 @@ declare module 'chart.js' {
       chartOptions: BarControllerChartOptions;
       datasetOptions: BarControllerDatasetOptions;
       defaultDataPoint: FinancialDataPoint;
+      metaExtensions: {};
       parsedDataType: FinancialParsedData;
       scales: keyof CartesianScaleTypeRegistry;
     }
