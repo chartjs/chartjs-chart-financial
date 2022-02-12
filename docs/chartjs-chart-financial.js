@@ -12,7 +12,7 @@
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('chart.js'), require('chart.js/helpers')) :
 typeof define === 'function' && define.amd ? define(['chart.js', 'chart.js/helpers'], factory) :
 (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Chart, global.Chart.helpers));
-}(this, (function (chart_js, helpers) { 'use strict';
+})(this, (function (chart_js, helpers) { 'use strict';
 
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
@@ -191,7 +191,7 @@ FinancialController.overrides = {
 				sampleSize: 100
 			},
 			afterBuildTicks: scale => {
-				const DateTime = window && window.luxon && window.luxon.DateTime;
+				const DateTime = (typeof (window) !== 'undefined') && window.luxon && window.luxon.DateTime;
 				if (!DateTime) {
 					return;
 				}
@@ -519,4 +519,4 @@ OhlcController.defaults = helpers.merge({
 
 chart_js.Chart.register(CandlestickController, OhlcController, CandlestickElement, OhlcElement);
 
-})));
+}));
