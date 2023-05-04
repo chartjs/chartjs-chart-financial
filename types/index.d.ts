@@ -21,10 +21,18 @@ declare module 'chart.js' {
     _custom?: any
   }
 
+  type CandlestickControllerDatasetOptions = BarControllerDatasetOptions & {
+    borderColor: {
+      up: string,
+      down: string,
+      unchanged: string
+    };
+  }
+
   interface ChartTypeRegistry {
     candlestick: {
       chartOptions: BarControllerChartOptions;
-      datasetOptions: BarControllerDatasetOptions;
+      datasetOptions: CandlestickControllerDatasetOptions;
       defaultDataPoint: FinancialDataPoint;
       metaExtensions: {};
       parsedDataType: FinancialParsedData;
