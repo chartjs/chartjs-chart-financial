@@ -1,7 +1,5 @@
 # Chart.js Financial Charting
-
 Chart.js module for Candlestick and OHLC charts
-
 ## Roadmap
 
 Chart.js 2.7.0 added our timeseries scale as new option called [`distribution: series`](http://www.chartjs.org/docs/latest/axes/cartesian/time.html). This has greatly improved support for financial timeseries.
@@ -52,9 +50,20 @@ The plugins below may be particularly interesting to use with financial charts. 
 
 ## Building
 
-<a href="https://travis-ci.org/chartjs/chartjs-chart-financial"><img src="https://img.shields.io/travis/chartjs/chartjs-chart-financial.svg?style=flat-square&maxAge=600" alt="Builds"></a>
+* [webpack](https://webpack.js.org/guides/getting-started/)
+```bash
+npm install
+npm run build
+```
 
 ```sh
-npm install
-gulp build
+> chartjs-chart-financial@0.1.0 build
+> rollup -c && cp dist/chartjs-chart-financial.js docs/
+
+
+src/index.js → dist/chartjs-chart-financial.js, dist/chartjs-chart-financial.min.js...
+created dist/chartjs-chart-financial.js, dist/chartjs-chart-financial.min.js in 1.1s
+
+src/index.esm.js → dist/chartjs-chart-financial.esm.js...
+created dist/chartjs-chart-financial.esm.js in 288ms
 ```
