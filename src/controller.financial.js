@@ -54,6 +54,14 @@ export class FinancialController extends BarController {
 		return values;
 	}
 
+	getUserBounds(scale) {
+		const {min, max, minDefined, maxDefined} = scale.getUserBounds();
+		return {
+			min: minDefined ? min : Number.NEGATIVE_INFINITY,
+			max: maxDefined ? max : Number.POSITIVE_INFINITY
+		};
+	}
+
 	/**
 	 * Implement this ourselves since it doesn't handle high and low values
 	 * https://github.com/chartjs/Chart.js/issues/7328
@@ -63,6 +71,8 @@ export class FinancialController extends BarController {
 		const meta = this._cachedMeta;
 		const _parsed = meta._parsed;
 		const axis = meta.iScale.axis;
+		const otherScale = this._getOtherScale(scale);
+		const {min: otherMin, max: otherMax} = this.getUserBounds(otherScale);
 
 		if (_parsed.length < 2) {
 			return {min: 0, max: 1};
@@ -72,10 +82,12 @@ export class FinancialController extends BarController {
 			return {min: _parsed[0][axis], max: _parsed[_parsed.length - 1][axis]};
 		}
 
+		const newParsedData = _parsed.filter(({x}) => x >= otherMin && x < otherMax);
+
 		let min = Number.POSITIVE_INFINITY;
 		let max = Number.NEGATIVE_INFINITY;
-		for (let i = 0; i < _parsed.length; i++) {
-			const data = _parsed[i];
+		for (let i = 0; i < newParsedData.length; i++) {
+			const data = newParsedData[i];
 			min = Math.min(min, data.l);
 			max = Math.max(max, data.h);
 		}
