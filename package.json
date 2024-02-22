@@ -37,7 +37,7 @@
     "eslint": "^7.32.0",
     "eslint-config-chartjs": "^0.3.0",
     "eslint-plugin-es": "^4.1.0",
-    "eslint-plugin-html": "^6.1.2",
+    "eslint-plugin-html": "^8.0.0",
     "jasmine": "^3.9.0",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
