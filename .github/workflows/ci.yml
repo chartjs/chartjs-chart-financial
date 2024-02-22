@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '14'
           cache: npm
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
