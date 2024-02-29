@@ -1,47 +1,33 @@
-﻿'use strict';
-
-import {Chart} from 'chart.js';
-import {merge} from 'chart.js/helpers';
-import {FinancialController} from './controller.financial';
+﻿import {FinancialController} from './controller.financial';
 import {OhlcElement} from './element.ohlc';
 
 export class OhlcController extends FinancialController {
+  static id = 'ohlc';
 
-	updateElements(elements, start, count, mode) {
-		const me = this;
-		const dataset = me.getDataset();
-		const ruler = me._ruler || me._getRuler();
-		const firstOpts = me.resolveDataElementOptions(start, mode);
-		const sharedOptions = me.getSharedOptions(firstOpts);
-		const includeOptions = me.includeOptions(mode, sharedOptions);
+  static defaults = {
+    ...FinancialController.defaults,
+    dataElementType: OhlcElement.id,
+    datasets: {
+      barPercentage: 1.0,
+      categoryPercentage: 1.0
+    }
+  };
 
-		for (let i = 0; i < count; i++) {
-			const options = sharedOptions || me.resolveDataElementOptions(i, mode);
+  updateElements(elements, start, count, mode) {
+    const reset = mode === 'reset';
+    const ruler = this._getRuler();
+    const {sharedOptions, includeOptions} = this._getSharedOptions(start, mode);
 
-			const baseProperties = me.calculateElementProperties(i, ruler, mode === 'reset', options);
-			const properties = {
-				...baseProperties,
-				datasetLabel: dataset.label || '',
-				lineWidth: dataset.lineWidth,
-				armLength: dataset.armLength,
-				armLengthRatio: dataset.armLengthRatio,
-				color: dataset.color,
-			};
+    for (let i = start; i < start + count; i++) {
+      const options = sharedOptions || this.resolveDataElementOptions(i, mode);
 
-			if (includeOptions) {
-				properties.options = options;
-			}
-			me.updateElement(elements[i], i, properties, mode);
-		}
-	}
+      const baseProperties = this.calculateElementProperties(i, ruler, reset, options);
+
+      if (includeOptions) {
+        baseProperties.options = options;
+      }
+      this.updateElement(elements[i], i, baseProperties, mode);
+    }
+  }
 
 }
-
-OhlcController.id = 'ohlc';
-OhlcController.defaults = merge({
-	dataElementType: OhlcElement.id,
-	datasets: {
-		barPercentage: 1.0,
-		categoryPercentage: 1.0
-	}
-}, Chart.defaults.financial);

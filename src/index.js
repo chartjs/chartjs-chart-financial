@@ -1,5 +1,3 @@
-'use strict';
-
 import {Chart} from 'chart.js';
 
 import {CandlestickController} from './controller.candlestick.js';

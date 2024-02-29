@@ -1,51 +1,51 @@
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Financial | Chart.js</title>
-		<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.1/dist/chart.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
-		<script src="./chartjs-chart-financial.js" type="text/javascript"></script>
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<link rel="icon" href="./favicon.ico"/>
-	</head>
-	<body>
-		<h1>Chart.js - Financial chart</h1>
-		<p>See the <a href="https://github.com/chartjs/chartjs-chart-financial/tree/master/docs">source for this example</a>, <a href="https://github.com/chartjs/chartjs-chart-financial">README</a>, and <a href="https://www.chartjs.org/docs/">Chart.js docs</a> for more details.</p>
-		<h2>Sample Chart</h2>
-		<div style="width:1000px">
-			<canvas id="chart"></canvas>
-		</div>
-		<div>
-			Bar Type:
-			<select id="type">
-				<option value="candlestick" selected>Candlestick</option>
-				<option value="ohlc">OHLC</option>
-			</select>
-			Scale Type:
-			<select id="scale-type">
-				<option value="linear" selected>Linear</option>
-				<option value="logarithmic">Logarithmic</option>
-			</select>
-			Color Scheme:
-			<select id="color-scheme">
-				<option value="muted" selected>Muted</option>
-				<option value="neon">Neon</option>
-			</select>
-			Border:
-			<select id="border">
-				<option value="true" selected>Yes</option>
-				<option value="false">No</option>
-			</select>
-			Mixed:
-			<select id="mixed">
-				<option value="true">Yes</option>
-				<option value="false" selected>No</option>
-			</select>
-			<button id="update">Update</button>
-			<button id="randomizeData">Randomize Data</button>
-		</div>
-		<script type="text/javascript" src="index.js"></script>
-	</body>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Financial |  Chart.js</title>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1"></script>
+	<script src="./chartjs-chart-financial.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="icon" href="./favicon.ico"/>
+</head>
+<body>
+<h1>Chart.js - Financial chart</h1>
+<p>See the <a href="https://github.com/chartjs/chartjs-chart-financial/tree/master/docs">source for this example</a>, <a href="https://github.com/chartjs/chartjs-chart-financial">README</a>, and <a href="https://www.chartjs.org/docs/">Chart.js docs</a> for more details.</p>
+<h2>Sample Chart</h2>
+<div style="width:1000px">
+	<canvas id="chart"></canvas>
+</div>
+<div>
+	Bar Type:
+	<select id="type">
+		<option value="candlestick" selected>Candlestick</option>
+		<option value="ohlc">OHLC</option>
+	</select>
+	Scale Type:
+	<select id="scale-type">
+		<option value="linear" selected>Linear</option>
+		<option value="logarithmic">Logarithmic</option>
+	</select>
+	Color Scheme:
+	<select id="color-scheme">
+		<option value="muted" selected>Muted</option>
+		<option value="neon">Neon</option>
+	</select>
+	Border:
+	<select id="border">
+		<option value="true" selected>Yes</option>
+		<option value="false">No</option>
+	</select>
+	Mixed:
+	<select id="mixed">
+		<option value="true">Yes</option>
+		<option value="false" selected>No</option>
+	</select>
+	<button id="update">Update</button>
+	<button id="randomizeData">Randomize Data</button>
+</div>
+<script type="text/javascript" src="./index.js"></script>
+</body>
 </html>
