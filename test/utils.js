@@ -47,19 +47,17 @@ function acquireChart(config, options) {
   options.canvas = options.canvas || {height: 512, width: 512};
   options.wrapper = options.wrapper || {class: 'chartjs-wrapper'};
 
-  for (key in options.canvas) {
-    if (Object.prototype.hasOwnProperty.call(options.canvas, key)) {
-      canvas.setAttribute(key, options.canvas[key]);
+  function setAttributes(element, attributes) {
+    for (key in attributes) {
+      if (Object.prototype.hasOwnProperty.call(attributes, key)) {
+        element.setAttribute(key, attributes[key]);
+      }
     }
   }
 
-  for (key in options.wrapper) {
-    if (Object.prototype.hasOwnProperty.call(options.wrapper, key)) {
-      wrapper.setAttribute(key, options.wrapper[key]);
-    }
-  }
+  setAttributes(canvas, options.canvas);
+  setAttributes(wrapper, options.wrapper);
 
-  // by default, remove chart animation and auto resize
   config.options = config.options || {};
   config.options.animation = config.options.animation === undefined ? false : config.options.animation;
   config.options.responsive = config.options.responsive === undefined ? false : config.options.responsive;
