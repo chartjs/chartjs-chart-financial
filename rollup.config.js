@@ -1,4 +1,4 @@
-import terser from "@rollup/plugin-terser";
+import terser from '@rollup/plugin-terser';
 import {readFileSync} from 'fs';
 
 const {name, version, module} = JSON.parse(readFileSync('./package.json'));
@@ -40,6 +40,7 @@ export default [
 
       return config;
     }), []),
+    plugins: [],
     external: [
       'chart.js',
       'chart.js/helpers',
