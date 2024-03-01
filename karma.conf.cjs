@@ -24,7 +24,7 @@ module.exports = async function(karma) {
 	}
 
 	karma.set({
-		browsers: ['chrome'],
+		browsers: (args.browsers || 'chrome,firefox').split(','),
 		// Explicitly disable hardware acceleration to make image
 		// diff more stable when ran on Travis and dev machine.
 		// https://github.com/chartjs/Chart.js/pull/5629
