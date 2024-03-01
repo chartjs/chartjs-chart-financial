@@ -1,5 +1,7 @@
-import {terser} from 'rollup-plugin-terser';
-import {name, version, module} from './package.json';
+import terser from "@rollup/plugin-terser";
+import {readFileSync} from 'fs';
+
+const {name, version, module} = JSON.parse(readFileSync('./package.json'));
 
 
 const banner = `/*!

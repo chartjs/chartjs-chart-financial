@@ -1,7 +1,8 @@
 const istanbul = require('rollup-plugin-istanbul');
-const builds = require('./rollup.config');
 
-module.exports = function(karma) {
+module.exports = async function(karma) {
+	const builds = (await import('./rollup.config.js')).default;
+
 	const args = karma.args || {};
 
 	// Use the same rollup config as our dist files: when debugging (--watch),
@@ -37,8 +38,8 @@ module.exports = function(karma) {
 
 		files: [
 			'node_modules/luxon/build/global/luxon.js',
-			'node_modules/chart.js/dist/chart.js',
-			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js',
+			'node_modules/chart.js/dist/chart.umd.js',
+			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.umd.js',
 			'test/index.js',
 			'src/index.js'
 		].concat(inputs),

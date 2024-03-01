@@ -2,7 +2,7 @@
  * @license
  * chartjs-chart-financial
  * http://chartjs.org/
- * Version: 0.1.0
+ * Version: 0.2.0
  *
  * Copyright 2024 Chart.js Contributors
  * Released under the MIT license
