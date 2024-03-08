@@ -3,26 +3,26 @@
 import {Chart} from 'chart.js';
 
 function createCanvas(w, h) {
-  var canvas = document.createElement('CANVAS');
+  const canvas = document.createElement('CANVAS');
   canvas.width = w;
   canvas.height = h;
   return canvas;
 }
 
 function createImageData(w, h) {
-  var canvas = createCanvas(w, h);
-  var context = canvas.getContext('2d');
+  const canvas = createCanvas(w, h);
+  const context = canvas.getContext('2d');
   return context.getImageData(0, 0, w, h);
 }
 
 function readImageData(url, callback) {
-  var image = new Image();
+  const image = new Image();
 
   image.onload = function() {
-    var h = image.height;
-    var w = image.width;
-    var canvas = createCanvas(w, h);
-    var ctx = canvas.getContext('2d');
+    const h = image.height;
+    const w = image.width;
+    const canvas = createCanvas(w, h);
+    const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, w, h);
     callback(ctx.getImageData(0, 0, w, h));
   };
@@ -31,16 +31,16 @@ function readImageData(url, callback) {
 }
 
 function canvasFromImageData(data) {
-  var canvas = createCanvas(data.width, data.height);
-  var context = canvas.getContext('2d');
+  const canvas = createCanvas(data.width, data.height);
+  const context = canvas.getContext('2d');
   context.putImageData(data, 0, 0);
   return canvas;
 }
 
 function acquireChart(config, options) {
-  var wrapper = document.createElement('DIV');
-  var canvas = document.createElement('CANVAS');
-  var chart, key;
+  const wrapper = document.createElement('DIV');
+  const canvas = document.createElement('CANVAS');
+  let chart, key;
 
   config = config || {};
   options = options || {};
@@ -83,8 +83,8 @@ function acquireChart(config, options) {
 
 function injectCSS(css) {
   // http://stackoverflow.com/q/3922139
-  var head = document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
+  const head = document.getElementsByTagName('head')[0];
+  const style = document.createElement('style');
   style.setAttribute('type', 'text/css');
   if (style.styleSheet) {   // IE
     style.styleSheet.cssText = css;
@@ -97,19 +97,19 @@ function injectCSS(css) {
 function releaseChart(chart) {
   chart.destroy();
 
-  var wrapper = (chart.$test || {}).wrapper;
+  const wrapper = (chart.$test || {}).wrapper;
   if (wrapper && wrapper.parentNode) {
     wrapper.parentNode.removeChild(wrapper);
   }
 }
 
 function triggerMouseEvent(chart, type, el) {
-  var node = chart.canvas;
-  var rect = node.getBoundingClientRect();
-  var x = el ? el.x !== undefined ? el.x : el._model.x : null;
-  var y = el ? el.y !== undefined ? el.y : el._model.y : null;
+  const node = chart.canvas;
+  const rect = node.getBoundingClientRect();
+  const x = el ? el.x !== undefined ? el.x : el._model.x : null;
+  const y = el ? el.y !== undefined ? el.y : el._model.y : null;
 
-  var event = new MouseEvent(type, {
+  const event = new MouseEvent(type, {
     clientX: el ? rect.left + x : undefined,
     clientY: el ? rect.top + y : undefined,
     cancelable: true,
