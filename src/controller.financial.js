@@ -85,10 +85,10 @@ export class FinancialController extends BarController {
   }
 
   /**
-	 * Implement this ourselves since it doesn't handle high and low values
-	 * https://github.com/chartjs/Chart.js/issues/7328
-	 * @protected
-	 */
+   * Implement this ourselves since it doesn't handle high and low values
+   * https://github.com/chartjs/Chart.js/issues/7328
+   * @protected
+   */
   getMinMax(scale) {
     const meta = this._cachedMeta;
     const _parsed = meta._parsed;
@@ -117,8 +117,8 @@ export class FinancialController extends BarController {
   }
 
   /**
-	 * @protected
-	 */
+   * @protected
+   */
   calculateElementProperties(index, ruler, reset, options) {
     const me = this;
     const vscale = me._cachedMeta.vScale;
