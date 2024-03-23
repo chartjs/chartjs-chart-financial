@@ -2,7 +2,7 @@
   "name": "chartjs-chart-financial",
   "description": "Chart.js module for charting financial securities",
   "main": "dist/chartjs-chart-financial.min.js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "module": "dist/chartjs-chart-financial.esm.js",
   "types": "types/index.d.ts",

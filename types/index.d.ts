@@ -22,7 +22,12 @@ declare module 'chart.js' {
   }
 
   type CandlestickControllerDatasetOptions = BarControllerDatasetOptions & {
-    borderColor: {
+    borderColors: {
+      up: string,
+      down: string,
+      unchanged: string
+    };
+    backgroundColors: {
       up: string,
       down: string,
       unchanged: string
