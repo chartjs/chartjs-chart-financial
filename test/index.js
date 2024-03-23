@@ -6,14 +6,14 @@ import utils from './utils';
 var charts = {};
 
 function acquireChart() {
-	var chart = utils.acquireChart.apply(utils, arguments);
-	charts[chart.id] = chart;
-	return chart;
+  var chart = utils.acquireChart.apply(utils, arguments);
+  charts[chart.id] = chart;
+  return chart;
 }
 
 function releaseChart(chart) {
-	utils.releaseChart.apply(utils, arguments);
-	delete charts[chart.id];
+  utils.releaseChart.apply(utils, arguments);
+  delete charts[chart.id];
 }
 
 window.acquireChart = acquireChart;
@@ -21,7 +21,7 @@ window.releaseChart = releaseChart;
 
 // some style initialization to limit differences between browsers across different plateforms.
 utils.injectCSS(
-	'.chartjs-wrapper, .chartjs-wrapper canvas {' +
+  '.chartjs-wrapper, .chartjs-wrapper canvas {' +
 		'border: 0;' +
 		'margin: 0;' +
 		'padding: 0;' +
@@ -31,11 +31,11 @@ utils.injectCSS(
 	'}');
 
 afterEach(function() {
-	// Auto releasing acquired charts
-	Object.keys(charts).forEach(function(id) {
-		var chart = charts[id];
-		if (!(chart.$test || {}).persistent) {
-			releaseChart(chart);
-		}
-	});
+  // Auto releasing acquired charts
+  Object.keys(charts).forEach(function(id) {
+    var chart = charts[id];
+    if (!(chart.$test || {}).persistent) {
+      releaseChart(chart);
+    }
+  });
 });

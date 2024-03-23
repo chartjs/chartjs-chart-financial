@@ -1,55 +1,52 @@
-﻿'use strict';
-
-import {Chart} from 'chart.js';
-import {merge, valueOrDefault} from 'chart.js/helpers';
-import {FinancialElement} from './element.financial';
-
-const globalOpts = Chart.defaults;
+﻿import {FinancialElement} from './element.financial';
+import {valueOrDefault} from 'chart.js/helpers';
+import {defaults} from 'chart.js';
 
 export class CandlestickElement extends FinancialElement {
-	draw(ctx) {
-		const me = this;
+  static id = 'candlestick';
 
-		const {x, open, high, low, close} = me;
+  static defaults = {
+    ...FinancialElement.defaults,
+    borderWidth: 1,
+  };
 
-		let borderColors = me.borderColor;
-		if (typeof borderColors === 'string') {
-			borderColors = {
-				up: borderColors,
-				down: borderColors,
-				unchanged: borderColors
-			};
-		}
+  draw(ctx) {
+    const me = this;
 
-		let borderColor;
-		if (close < open) {
-			borderColor = valueOrDefault(borderColors ? borderColors.up : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = valueOrDefault(me.color ? me.color.up : undefined, globalOpts.elements.candlestick.color.up);
-		} else if (close > open) {
-			borderColor = valueOrDefault(borderColors ? borderColors.down : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = valueOrDefault(me.color ? me.color.down : undefined, globalOpts.elements.candlestick.color.down);
-		} else {
-			borderColor = valueOrDefault(borderColors ? borderColors.unchanged : undefined, globalOpts.elements.candlestick.borderColor);
-			ctx.fillStyle = valueOrDefault(me.color ? me.color.unchanged : undefined, globalOpts.elements.candlestick.color.unchanged);
-		}
+    const {x, open, high, low, close} = me;
 
-		ctx.lineWidth = valueOrDefault(me.borderWidth, globalOpts.elements.candlestick.borderWidth);
-		ctx.strokeStyle = valueOrDefault(borderColor, globalOpts.elements.candlestick.borderColor);
+    let borderColors = me.options.borderColors;
+    if (typeof borderColors === 'string') {
+      borderColors = {
+        up: borderColors,
+        down: borderColors,
+        unchanged: borderColors
+      };
+    }
 
-		ctx.beginPath();
-		ctx.moveTo(x, high);
-		ctx.lineTo(x, Math.min(open, close));
-		ctx.moveTo(x, low);
-		ctx.lineTo(x, Math.max(open, close));
-		ctx.stroke();
-		ctx.fillRect(x - me.width / 2, close, me.width, open - close);
-		ctx.strokeRect(x - me.width / 2, close, me.width, open - close);
-		ctx.closePath();
-	}
+    let borderColor;
+    if (close < open) {
+      borderColor = valueOrDefault(borderColors ? borderColors.up : undefined, defaults.elements.candlestick.borderColors.up);
+      ctx.fillStyle = valueOrDefault(me.options.backgroundColors ? me.options.backgroundColors.up : undefined, defaults.elements.candlestick.backgroundColors.up);
+    } else if (close > open) {
+      borderColor = valueOrDefault(borderColors ? borderColors.down : undefined, defaults.elements.candlestick.borderColors.down);
+      ctx.fillStyle = valueOrDefault(me.options.backgroundColors ? me.options.backgroundColors.down : undefined, defaults.elements.candlestick.backgroundColors.down);
+    } else {
+      borderColor = valueOrDefault(borderColors ? borderColors.unchanged : undefined, defaults.elements.candlestick.borderColors.unchanged);
+      ctx.fillStyle = valueOrDefault(me.backgroundColors ? me.backgroundColors.unchanged : undefined, defaults.elements.candlestick.backgroundColors.unchanged);
+    }
+
+    ctx.lineWidth = valueOrDefault(me.options.borderWidth, defaults.elements.candlestick.borderWidth);
+    ctx.strokeStyle = borderColor;
+
+    ctx.beginPath();
+    ctx.moveTo(x, high);
+    ctx.lineTo(x, Math.min(open, close));
+    ctx.moveTo(x, low);
+    ctx.lineTo(x, Math.max(open, close));
+    ctx.stroke();
+    ctx.fillRect(x - me.width / 2, close, me.width, open - close);
+    ctx.strokeRect(x - me.width / 2, close, me.width, open - close);
+    ctx.closePath();
+  }
 }
-
-CandlestickElement.id = 'candlestick';
-CandlestickElement.defaults = merge({}, [globalOpts.elements.financial, {
-	borderColor: globalOpts.elements.financial.color.unchanged,
-	borderWidth: 1,
-}]);

@@ -1,10 +1,14 @@
 const istanbul = require('rollup-plugin-istanbul');
-const builds = require('./rollup.config');
+const yargs = require('yargs');
 
-module.exports = function(karma) {
-	const args = karma.args || {};
+module.exports = async function(karma) {
+	const builds = (await import('./rollup.config.js')).default;
 
-	// Use the same rollup config as our dist files: when debugging (--watch),
+	const args = yargs
+		.option('verbose', {default: false})
+		.argv;
+
+	// Use the same rollup config as our dist files: when debugging (npm run dev),
 	// we will prefer the unminified build which is easier to browse and works
 	// better with source mapping. In other cases, pick the minified build to
 	// make sure that the minification process (terser) doesn't break anything.
@@ -13,8 +17,14 @@ module.exports = function(karma) {
 	const build = Object.assign({}, builds[0], {output: output});
 	const inputs = args.inputs || 'test/specs/**/*.js';
 
+	if (args.coverage) {
+		build.plugins.push(
+			istanbul({exclude: ['node_modules/**/*.js', 'package.json']})
+		);
+	}
+
 	karma.set({
-		browsers: ['chrome'],
+		browsers: (args.browsers || 'chrome,firefox').split(','),
 		// Explicitly disable hardware acceleration to make image
 		// diff more stable when ran on Travis and dev machine.
 		// https://github.com/chartjs/Chart.js/pull/5629
@@ -37,8 +47,8 @@ module.exports = function(karma) {
 
 		files: [
 			'node_modules/luxon/build/global/luxon.js',
-			'node_modules/chart.js/dist/chart.js',
-			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js',
+			'node_modules/chart.js/dist/chart.umd.js',
+			'node_modules/chartjs-adapter-luxon/dist/chartjs-adapter-luxon.umd.js',
 			'test/index.js',
 			'src/index.js'
 		].concat(inputs),
@@ -73,28 +83,14 @@ module.exports = function(karma) {
 		}
 	});
 
-	// https://swizec.com/blog/how-to-run-javascript-tests-in-chrome-on-travis/swizec/6647
-	if (process.env.TRAVIS) {
-		karma.customLaunchers.chrome.flags.push('--no-sandbox');
-	}
-
 	if (args.coverage) {
 		karma.reporters.push('coverage');
 		karma.coverageReporter = {
 			dir: 'coverage/',
 			reporters: [
 				{type: 'html', subdir: 'html'},
-				{type: 'lcovonly', subdir: '.'}
+				{type: 'lcovonly', subdir: (browser) => browser.toLowerCase().split(/[ /-]/)[0]}
 			]
 		};
-		[
-			karma.rollupPreprocessor,
-			karma.customPreprocessors.sources.options
-		].forEach(v => {
-			(v.plugins || (v.plugins = [])).unshift(
-				istanbul({
-					include: 'src/**/*.js'
-				}));
-		});
 	}
 };
