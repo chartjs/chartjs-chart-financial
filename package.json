@@ -51,7 +51,7 @@
     "karma-rollup-preprocessor": "^7.0.7",
     "luxon": "^3.4.4",
     "rollup": "^2.56.3",
-    "rollup-plugin-istanbul": "^3.0.0",
+    "rollup-plugin-istanbul": "^5.0.0",
     "typescript": "^4.2.4",
     "yargs": "^17.7.2"
   }
