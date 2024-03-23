@@ -18,6 +18,8 @@ Chart.js 2.9.0 added [improved autoskipping](https://github.com/chartjs/Chart.js
 
 Chart.js 3.0.0 removed the need for custom scales, which means logarithmic scale is now supported. It also has numerous performance improvements.
 
+Chart.js 4.0.0 has some breaking changes that required modifying this library configuration. Check the updated examples to see which changes are necessary.
+
 ## Comparison
 
 We are aiming to make Chart.js the only popular JavaScript library that is both performant and has good timescale handling.
