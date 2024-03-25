@@ -52,7 +52,7 @@
     "luxon": "^3.4.4",
     "rollup": "^2.56.3",
     "rollup-plugin-istanbul": "^5.0.0",
-    "typescript": "^4.2.4",
+    "typescript": "^5.4.3",
     "yargs": "^17.7.2"
   }
 }
