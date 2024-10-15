@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.9.0",
     "@typescript-eslint/parser": "^7.18.0",
     "archiver": "^7.0.1",
     "chart.js": "^4.4.1",
