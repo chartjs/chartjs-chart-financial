@@ -39,7 +39,7 @@ declare module 'chart.js' {
       chartOptions: BarControllerChartOptions;
       datasetOptions: CandlestickControllerDatasetOptions;
       defaultDataPoint: FinancialDataPoint;
-      metaExtensions: {};
+      metaExtensions: Record<string, never>;
       parsedDataType: FinancialParsedData;
       scales: keyof CartesianScaleTypeRegistry;
     };
@@ -47,7 +47,7 @@ declare module 'chart.js' {
       chartOptions: BarControllerChartOptions;
       datasetOptions: BarControllerDatasetOptions;
       defaultDataPoint: FinancialDataPoint;
-      metaExtensions: {};
+      metaExtensions: Record<string, never>;
       parsedDataType: FinancialParsedData;
       scales: keyof CartesianScaleTypeRegistry;
     }
