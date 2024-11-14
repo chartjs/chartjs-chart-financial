@@ -1,5 +1,6 @@
-import html from "eslint-plugin-html";
 import es from "eslint-plugin-es";
+import html from "eslint-plugin-html";
+import markdown from "eslint-plugin-markdown";
 import globals from "globals";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
@@ -18,7 +19,8 @@ const compat = new FlatCompat({
 
 export default [
     { ignores: ["**/*\\{.,-}min.js", "docs/Chart.Financial.js"] },
-    ...compat.extends("chartjs", "plugin:es/restrict-to-es2018", "plugin:markdown/recommended"),
+    ...compat.extends("chartjs", "plugin:es/restrict-to-es2018"),
+    ...markdown.configs.recommended,
     {
         files: ["**/*.html"],
         plugins: { html },
