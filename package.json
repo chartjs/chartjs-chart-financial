@@ -18,7 +18,7 @@
   "scripts": {
     "build": "rollup -c",
     "package": "npm run build && node scripts/create-packages.js",
-    "lint": "eslint docs/*.html src/**/*.js test/**/*.js",
+    "lint": "eslint \"docs/**/*.html\" \"src/**/*.js\" \"test/**/*.js\"",
     "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
     "test": "npm run test-types && npm run test-unit",
     "test-unit": "karma start ./karma.conf.cjs --single-run --coverage --grep",

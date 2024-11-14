@@ -20,8 +20,11 @@ export default [
     { ignores: ["**/*\\{.,-}min.js", "docs/Chart.Financial.js"] },
     ...compat.extends("chartjs", "plugin:es/restrict-to-es2018", "plugin:markdown/recommended"),
     {
+        files: ["**/*.html"],
+        plugins: { html },
+    },
+    {
         plugins: {
-            html,
             es
         },
 
@@ -31,6 +34,7 @@ export default [
                 ...globals.node,
 
                 // TODO: it would be nicer to apply these only to tests
+                afterEach: "readonly",
                 describe: "readonly",
                 expect: "readonly",
                 it: "readonly"
