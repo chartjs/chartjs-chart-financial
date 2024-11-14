@@ -42,7 +42,7 @@
     "eslint-config-chartjs": "^0.3.0",
     "eslint-plugin-es": "^4.1.0",
     "eslint-plugin-html": "^8.1.2",
-    "eslint-plugin-markdown": "^3.0.1",
+    "eslint-plugin-markdown": "^5.1.0",
     "globals": "^15.12.0",
     "jasmine": "^5.1.0",
     "karma": "^6.3.4",
