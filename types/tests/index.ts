@@ -1,4 +1,4 @@
-import { Chart } from 'chart.js';
+import {Chart} from 'chart.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const chart = new Chart('id', {
@@ -6,7 +6,7 @@ const chart = new Chart('id', {
   data: {
     labels: [],
     datasets: [{
-      data: [{ c: 10, x: new Date(), h: 11, l: 3, o: 2 }]
+      data: [{c: 10, x: new Date(), h: 11, l: 3, o: 2}]
     }]
   },
   options: {
